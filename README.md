@@ -4,8 +4,16 @@
 **Bước 2:** Tạo branch  
 - Tạo branch mới: `git checkout -b <tên branch>`
 - Update branch: `git push -u origin <tên branch>`
+
+
 # Lưu ý:
 - Phải tạo check branch trước khi pull hoặc push code `git checkout <tên branch>`
+- Ký hiệu trong tên `fx:id`:
+  - `txt`: `TextField`
+  - `pwd`: `PasswordField`
+  - `cb`: `CheckBox`
+  - `hl`: `HyperLink`
+  - `btn`: `Button`
 # Git Flow trong Project
 ## Quy trình khi bắt đầu code:
 **Lưu Trữ Các Thay Đổi Hiện Tại:**
