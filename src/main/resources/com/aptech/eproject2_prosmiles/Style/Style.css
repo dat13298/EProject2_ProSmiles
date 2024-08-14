@@ -1,0 +1,36 @@
+.parent{
+    -fx-background-color: #FFFFFF;
+    -fx-font-family: "JetBrains Mono";
+    -fx-font-size: 15px;
+}
+
+.title {
+    -fx-font-weight: bold;
+}
+
+.input-field{
+    -fx-border-width: 4px;
+    -fx-border-color: #717ED2;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.master_link:hover {
+    -fx-cursor: hand;
+    -fx-text-fill: #000000;
+}
+
+.master_link {
+    -fx-text-fill: #717ED2;
+}
+
+.master_button:hover{
+    -fx-cursor: hand;
+    -fx-text-fill: #000000;
+    -fx-background-color: #FFFFFF;
+}
+
+.master_button{
+    -fx-background-color: #717ED2;
+    -fx-text-fill: #FFFFFF;
+}
