@@ -32,9 +32,9 @@
       </Label>
       <VBox prefHeight="200.0" prefWidth="301.0" spacing="10.0" styleClass="parent" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="120.0">
          <children>
-            <Label styleClass="title" text="Email or phone number" />
+            <Label fx:id="lbl_username" styleClass="title" text="Email or phone number" />
             <TextField fx:id="txt_username" promptText="Enter your email or phone number" styleClass="input-field" />
-            <Label layoutX="10.0" layoutY="10.0" styleClass="title" text="Password" />
+            <Label fx:id="lbl_password" layoutX="10.0" layoutY="10.0" styleClass="title" text="Password" />
             <PasswordField fx:id="pwd_password" promptText="Enter your password">
                <styleClass>
                   <String fx:value="parent" />
@@ -55,6 +55,7 @@
                   <String fx:value="master_button" />
                </styleClass>
             </Button>
+            <Label fx:id="lbl_authenticate" cacheShape="false" prefWidth="301.0" visible="false" />
          </children>
       </VBox>
    </children>
