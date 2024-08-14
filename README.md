@@ -14,6 +14,7 @@
   - `cb`: `CheckBox`
   - `hl`: `HyperLink`
   - `btn`: `Button`
+  - `lbl`: `Label`
 # Git Flow trong Project
 ## Quy trình khi bắt đầu code:
 **Lưu Trữ Các Thay Đổi Hiện Tại:**
