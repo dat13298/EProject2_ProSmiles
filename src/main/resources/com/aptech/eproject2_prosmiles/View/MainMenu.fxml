@@ -8,7 +8,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.aptech.eproject2_prosmiles.View.MainMenu"
+            fx:controller="com.aptech.eproject2_prosmiles.Controller.MainMenuController"
             prefHeight="400.0" prefWidth="600.0">
-
+    <Label text="Hello"/>
 </AnchorPane>
