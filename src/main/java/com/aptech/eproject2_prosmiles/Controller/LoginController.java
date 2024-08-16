@@ -1,6 +1,8 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Global.AppProperties;
+import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,6 +16,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class LoginController implements Initializable {
@@ -32,6 +35,15 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Properties prop = new Properties();
+        if(AuthenticationService.authenticateFromFile(prop)){
+            Platform.runLater(() -> {
+                Stage stage = (Stage) btn_sign_in.getScene().getWindow(); // Get current stage
+                stage.close(); // Close current stage
+            });
+            loadMainMenu();
+        }
+
         btn_sign_in.setOnAction(new EventHandler<ActionEvent>() {
 
             /*EVENT LOGIN BUTTON*/
@@ -58,22 +70,14 @@ public class LoginController implements Initializable {
                         AppProperties.setProperty("user.userrole", "admin");
                         AppProperties.setProperty("user.userid", "1");
 
+//                        Is remember
+                        AppProperties.setProperty("user.isremember", cb_remember.isSelected() ? "true" : "false");
 
-//                        set up scene
                         Node node = (Node) event.getSource();
                         Stage stage = (Stage) node.getScene().getWindow(); //get current scene
                         stage.close(); //close login scene
-
-                        FXMLLoader fxmlLoader = new FXMLLoader(getClass()
-                                .getResource("/com/aptech/eproject2_prosmiles/View/MainMenu.fxml"));
-                        try {
-                            Scene scene = new Scene(fxmlLoader.load()); //
-                            stage.setTitle("Main Menu");
-                            stage.setScene(scene); // set MainMenu scene to stage
-                            stage.show(); //display stage
-                        } catch (IOException e) {
-                            throw new RuntimeException(e.getMessage());
-                        }
+//                        load main menu
+                        loadMainMenu();
                     }
                 } catch (Exception e) {
                     lbl_authenticate.visibleProperty().set(true);//set visible true
@@ -85,5 +89,19 @@ public class LoginController implements Initializable {
 
             /*FORGOT PASSWORD*/
         });
+    }
+    /* LOAD MAIN MENU FXML */
+    private void loadMainMenu() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass()
+                .getResource("/com/aptech/eproject2_prosmiles/View/MainMenu.fxml"));
+        try {
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Main Menu");
+            stage.setScene(scene); // Set MainMenu scene to new stage
+            stage.show(); // Display the stage
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load Main Menu: " + e.getMessage());
+        }
     }
 }
