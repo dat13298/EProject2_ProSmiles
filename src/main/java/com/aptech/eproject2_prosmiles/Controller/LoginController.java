@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Global.AppProperties;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -26,8 +27,8 @@ public class LoginController implements Initializable {
     private Label hl_forgot_password;
     @FXML
     private CheckBox cb_remember;
-    private String alert;
-    private String alert1;
+    @FXML
+    private Label lbl_authenticate;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -39,18 +40,26 @@ public class LoginController implements Initializable {
                 String username = txt_username.getText();
                 String password = pwd_password.getText();
 
+                try {
+                    lbl_authenticate.setText("");//Make sure the string is empty
 //                    alert if it empties
-                    alert = username.isEmpty() ? "Username is empty" : "";
-                    alert1 = password.isEmpty() ? "Password is empty" : "";
+                    if (username.isEmpty()) throw new Exception("Username cannot be empty");
+                    if (password.isEmpty()) throw new Exception("Password cannot be empty");
 //                    alert if it does not match
-                    if(!username.equals("admin") && alert.isEmpty()){
-                        alert = "Username does not exist";
-                    }
-                    if(!password.equals("admin") && alert1.isEmpty()){
-                        alert1 = "Password does not match";
-                    }
+                    if (!username.equals("admin") && lbl_authenticate.getText().isEmpty())
+                        throw new Exception("Username does not exist");
+                    if (!password.equals("admin") && lbl_authenticate.getText().isEmpty())
+                        throw new Exception("Password does not match");
 //                    load MainMenu if valid
-                    if(username.equals("admin") && password.equals("admin")){
+                    if (username.equals("admin") && password.equals("admin")) {
+//                        write file properties
+                        AppProperties.setProperty("user.loggedin", "true");
+                        AppProperties.setProperty("user.username", username);
+                        AppProperties.setProperty("user.userrole", "admin");
+                        AppProperties.setProperty("user.userid", "1");
+
+
+//                        set up scene
                         Node node = (Node) event.getSource();
                         Stage stage = (Stage) node.getScene().getWindow(); //get current scene
                         stage.close(); //close login scene
@@ -62,11 +71,15 @@ public class LoginController implements Initializable {
                             stage.setTitle("Main Menu");
                             stage.setScene(scene); // set MainMenu scene to stage
                             stage.show(); //display stage
-                        }catch (IOException e){
+                        } catch (IOException e) {
                             throw new RuntimeException(e.getMessage());
                         }
                     }
-                System.out.println(alert + alert1);
+                } catch (Exception e) {
+                    lbl_authenticate.visibleProperty().set(true);//set visible true
+                    lbl_authenticate.setStyle("-fx-text-fill: #f63838");
+                    lbl_authenticate.setText(e.getMessage());//Notification
+                }
             }
             /*END EVENT LOGIN BUTTON*/
 

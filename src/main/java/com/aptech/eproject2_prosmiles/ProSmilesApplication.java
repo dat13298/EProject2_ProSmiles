@@ -14,7 +14,7 @@ public class ProSmilesApplication extends Application {
         fxmlLoader.setLocation(ProSmilesApplication.class
                 .getResource("/com/aptech/eproject2_prosmiles/View/LoginForm.fxml")
         );
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
