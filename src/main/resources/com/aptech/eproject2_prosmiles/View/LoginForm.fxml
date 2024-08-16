@@ -11,49 +11,47 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0"
-            prefWidth="1000.0" styleClass="parent" stylesheets="@../Style/Style.css" xmlns="http://javafx.com/javafx/22"
-            xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="parent" stylesheets="@../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
    <ImageView fitHeight="600.0" fitWidth="675.0" layoutX="330.0" pickOnBounds="true" preserveRatio="true">
-      <Image url="@../Media/Slogan.png"/>
+      <Image url="@../Media/Slogan.png" />
    </ImageView>
-   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="parent"
-              AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
-      <Image url="@../Media/Logo.png"/>
+   <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" styleClass="parent" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+      <image>
+         <Image url="@../Media/Logo.png" />
+      </image>
    </ImageView>
    <Label text="Welcome back" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0">
       <styleClass>
-         <String fx:value="parent"/>
-         <String fx:value="title"/>
+         <String fx:value="parent" />
+         <String fx:value="title" />
       </styleClass>
    </Label>
-   <VBox prefHeight="200.0" prefWidth="301.0" spacing="10.0" styleClass="parent" AnchorPane.leftAnchor="10.0"
-         AnchorPane.topAnchor="120.0">
-      <Label fx:id="lbl_username" styleClass="title" text="Email or phone number"/>
-      <TextField fx:id="txt_username" promptText="Enter your email or phone number" styleClass="input-field"/>
-      <Label fx:id="lbl_password" layoutX="10.0" layoutY="10.0" styleClass="title" text="Password"/>
-      <PasswordField fx:id="pwd_password" promptText="Enter your password">
-         <styleClass>
-            <String fx:value="parent"/>
-            <String fx:value="input-field"/>
-         </styleClass>
-      </PasswordField>
-      <CheckBox fx:id="cb_remember" mnemonicParsing="false" text="Remember me"/>
-      <Label fx:id="hl_forgot_password" text="Forgot password?" textFill="#717ed2">
-         <styleClass>
-            <String fx:value="title"/>
-            <String fx:value="master_link"/>
-         </styleClass>
-      </Label>
-      <Button fx:id="btn_sign_in" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" text="Sign in"
-              textFill="WHITE">
-         <styleClass>
-            <String fx:value="title"/>
-            <String fx:value="input-field"/>
-            <String fx:value="master_button"/>
-         </styleClass>
-      </Button>
-      <Label fx:id="lbl_authenticate" cacheShape="false" prefWidth="301.0" visible="false"/>
+   <VBox prefHeight="200.0" prefWidth="301.0" spacing="10.0" styleClass="parent" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="120.0">
+      <children>
+         <Label fx:id="lbl_username" styleClass="title" text="Email or phone number" />
+         <TextField fx:id="txt_username" promptText="Enter your email or phone number" styleClass="input-field" />
+         <Label fx:id="lbl_password" layoutX="10.0" layoutY="10.0" styleClass="title" text="Password" />
+         <PasswordField fx:id="pwd_password" promptText="Enter your password">
+            <styleClass>
+               <String fx:value="parent" />
+               <String fx:value="input-field" />
+            </styleClass>
+         </PasswordField>
+         <CheckBox fx:id="cb_remember" mnemonicParsing="false" text="Remember me" />
+         <Label fx:id="hl_forgot_password" text="Forgot password?" textFill="#717ed2">
+            <styleClass>
+               <String fx:value="title" />
+               <String fx:value="master_link" />
+            </styleClass>
+         </Label>
+         <Button fx:id="btn_sign_in" mnemonicParsing="false" prefHeight="40.0" prefWidth="300.0" text="Sign in" textFill="WHITE">
+            <styleClass>
+               <String fx:value="title" />
+               <String fx:value="input-field" />
+               <String fx:value="master_button" />
+            </styleClass>
+         </Button>
+         <Label fx:id="lbl_authenticate" cacheShape="false" prefWidth="301.0" visible="false" />
+      </children>
    </VBox>
 </AnchorPane>
