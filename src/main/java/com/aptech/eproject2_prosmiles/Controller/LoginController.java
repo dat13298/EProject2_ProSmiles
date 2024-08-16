@@ -33,7 +33,7 @@ public class LoginController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         btn_sign_in.setOnAction(new EventHandler<ActionEvent>() {
 
-            /*CLICK LOGIN BUTTON*/
+            /*EVENT LOGIN BUTTON*/
             @Override
             public void handle(ActionEvent event) {
                 String username = txt_username.getText();
@@ -63,7 +63,7 @@ public class LoginController implements Initializable {
                             stage.setScene(scene); // set MainMenu scene to stage
                             stage.show(); //display stage
                         }catch (IOException e){
-                            e.printStackTrace();
+                            throw new RuntimeException(e.getMessage());
                         }
                     }
                 System.out.println(alert + alert1);
