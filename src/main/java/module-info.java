@@ -5,6 +5,7 @@ module com.aptech.eproject2_prosmiles {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
+    requires java.sql;
 
     opens com.aptech.eproject2_prosmiles to javafx.fxml;
     exports com.aptech.eproject2_prosmiles;
