@@ -1,30 +1,62 @@
 package com.aptech.eproject2_prosmiles.Model.Entity;
 
-import com.aptech.eproject2_prosmiles.Model.Enum.EItemType;
-import com.aptech.eproject2_prosmiles.Model.Enum.IsDeleted;
+import com.aptech.eproject2_prosmiles.Model.Enum.EGender;
+import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 
 import java.time.LocalDateTime;
 
-public class Staff extends Item{
+public class Staff {
+    private int id;
     private Role role;
-    private Room room;
+    private String firstName;
+    private String lastName;
+    private EGender gender;
     private String phone;
-    private String Password;
+    private String password;
     private String address;
     private String email;
-    private double salary;
     private int age;
+    private String imagePath;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private EIsDeleted isDeleted;
 
-    public Staff(int id, String name, Category category, LocalDateTime createAt, LocalDateTime updateAt, Role role, Room room, String phone, String password, String address, String email, double salary, int age) {
-        super(id, name, category, EItemType.STAFF, createAt, updateAt, IsDeleted.ACTIVE);
+    public Staff() {;}
+    public Staff(int id, Role role, String firstName, String lastName, EGender eGender, String phone
+            , String password, String address, String email, int age, String imagePath
+            , LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted) {
+        this.id = id;
         this.role = role;
-        this.room = room;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = eGender;
         this.phone = phone;
-        Password = password;
-        this.address = address;
+        this.password = password;
         this.email = email;
-        this.salary = salary;
         this.age = age;
+        this.imagePath = imagePath;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.isDeleted = isDeleted;
+    }
+
+//    boolean has Role
+    public boolean hasRole(String role) {
+        return this.getRole().getTitle().equals(role);
+    }
+
+//    boolean has Permission
+    public boolean hasPermission(String permission) {
+//        stream List permission to check anyMatch
+        return this.getRole().getPermissions().stream().anyMatch(p -> p.getTitle().equals(permission));
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Role getRole() {
@@ -35,12 +67,28 @@ public class Staff extends Item{
         this.role = role;
     }
 
-    public Room getRoom() {
-        return room;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public EGender getGender() {
+        return gender;
+    }
+
+    public void setGender(EGender gender) {
+        this.gender = gender;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPhone() {
@@ -52,11 +100,11 @@ public class Staff extends Item{
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        Password = password;
+        this.password = password;
     }
 
     public String getAddress() {
@@ -75,14 +123,6 @@ public class Staff extends Item{
         this.email = email;
     }
 
-    public double getSalary() {
-        return salary;
-    }
-
-    public void setSalary(double salary) {
-        this.salary = salary;
-    }
-
     public int getAge() {
         return age;
     }
@@ -91,17 +131,55 @@ public class Staff extends Item{
         this.age = age;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public EIsDeleted getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(EIsDeleted isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "Staff{" +
-                "role=" + role +
-                ", room=" + room +
+                "id=" + id +
+                ", role=" + role +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender=" + gender +
                 ", phone='" + phone + '\'' +
-                ", Password='" + Password + '\'' +
+                ", password='" + password + '\'' +
                 ", address='" + address + '\'' +
                 ", email='" + email + '\'' +
-                ", salary=" + salary +
                 ", age=" + age +
+                ", imagePath='" + imagePath + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", isDeleted=" + isDeleted +
                 '}';
     }
 }

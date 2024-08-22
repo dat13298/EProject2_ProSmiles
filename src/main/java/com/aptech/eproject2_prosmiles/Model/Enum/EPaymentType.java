@@ -1,9 +1,9 @@
 package com.aptech.eproject2_prosmiles.Model.Enum;
 
-public enum InventoryType {
-    MEDICINE("Medicine"), EQUIPMENT("Equipment");
+public enum EPaymentType {
+    CASH("Cash"), TRANSFER("Transfer");
     private String value;
-    InventoryType(String value) {
+    EPaymentType(String value) {
         this.value = value;
     }
     public String getValue() {

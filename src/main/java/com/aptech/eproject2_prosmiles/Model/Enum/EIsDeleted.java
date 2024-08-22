@@ -1,9 +1,9 @@
 package com.aptech.eproject2_prosmiles.Model.Enum;
 
-public enum IsDeleted {
+public enum EIsDeleted {
     ACTIVE(0), INACTIVE(1);
     private int value;
-    IsDeleted(int value) {
+    EIsDeleted(int value) {
         this.value = value;
     }
     public int getValue() {
