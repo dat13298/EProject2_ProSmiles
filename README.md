@@ -93,7 +93,7 @@ Giải Thích: Đẩy các commit từ nhánh <tên nhánh đang làm việc> l�
 - *Controller* -> *Service* -> *Repository* (nếu `cần` xử lý logic để tạo ra dữ liệu cuối).
 - *Controller* -> *Repository* (nếu `không cần` xử lý logic để tạo ra dữ liệu cuối).
 # resources folder
-- Images: Lưu trữ file hình ảnh
+- Media: Lưu trữ file hình ảnh
 - Style: _CSS_.
 - View: File _fxml_
 
