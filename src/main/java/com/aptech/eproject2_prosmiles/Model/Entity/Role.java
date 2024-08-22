@@ -1,23 +1,34 @@
 package com.aptech.eproject2_prosmiles.Model.Entity;
 
-import com.aptech.eproject2_prosmiles.Model.Enum.IsDeleted;
+import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Role {
     private int id;
-    private String name;
+    private String title;
+    private String slug;
+    private String description;
+    private EIsDeleted isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private IsDeleted isDeleted;
-    public Role() {;}
+    private List<Permission> permissions;
 
-    public Role(int id, String name, LocalDateTime createdAt, LocalDateTime updatedAt, IsDeleted isDeleted) {
+    public Role() {;}
+    public Role(int id, String title, String slug, String description, EIsDeleted isDeleted, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
-        this.name = name;
+        this.title = title;
+        this.slug = slug;
+        this.description = description;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.isDeleted = isDeleted;
+        this.permissions = new ArrayList<>();
+    }
+    public void addPermission(Permission permission) {
+        this.permissions.add(permission);
     }
 
     public int getId() {
@@ -28,12 +39,36 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public EIsDeleted getActive() {
+        return isDeleted;
+    }
+
+    public void setActive(EIsDeleted isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -52,22 +87,25 @@ public class Role {
         this.updatedAt = updatedAt;
     }
 
-    public IsDeleted getIsDeleted() {
-        return isDeleted;
+    public List<Permission> getPermissions() {
+        return permissions;
     }
 
-    public void setIsDeleted(IsDeleted isDeleted) {
-        this.isDeleted = isDeleted;
+    public void setPermissions(List<Permission> permissions) {
+        this.permissions = permissions;
     }
 
     @Override
     public String toString() {
         return "Role{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", slug='" + slug + '\'' +
+                ", description='" + description + '\'' +
+                ", isDeleted=" + isDeleted +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", isDeleted=" + isDeleted +
+                ", permissions=" + permissions +
                 '}';
     }
 }

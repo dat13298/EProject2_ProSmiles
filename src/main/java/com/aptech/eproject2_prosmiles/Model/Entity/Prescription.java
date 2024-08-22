@@ -1,32 +1,28 @@
 package com.aptech.eproject2_prosmiles.Model.Entity;
 
-import com.aptech.eproject2_prosmiles.Model.Enum.IsDeleted;
+import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
+import com.aptech.eproject2_prosmiles.Model.Enum.EStatus;
 
 import java.time.LocalDateTime;
 
-public class Expense {
+public class Prescription {
     private int id;
-    private Category category;
+    private Patient patient;
     private Staff staff;
     private String description;
-    private double total;
-    private Staff updatedBy;
-    private LocalDateTime completedAt;
+    private EStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private IsDeleted isDeleted;
+    private EIsDeleted isDeleted;
+    public Prescription() {;}
 
-    public Expense() {;}
-
-    public Expense(int id, Category category, Staff staff, String description, double total, Staff updatedBy
-            , LocalDateTime completedAt, LocalDateTime createdAt, LocalDateTime updatedAt, IsDeleted isDeleted) {
+    public Prescription(int id, Patient patient, Staff staff, String description, EStatus status
+            , LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted) {
         this.id = id;
-        this.category = category;
+        this.patient = patient;
         this.staff = staff;
         this.description = description;
-        this.total = total;
-        this.updatedBy = updatedBy;
-        this.completedAt = completedAt;
+        this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isDeleted = isDeleted;
@@ -40,12 +36,12 @@ public class Expense {
         this.id = id;
     }
 
-    public Category getCategory() {
-        return category;
+    public Patient getPatient() {
+        return patient;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 
     public Staff getStaff() {
@@ -64,28 +60,12 @@ public class Expense {
         this.description = description;
     }
 
-    public double getTotal() {
-        return total;
+    public EStatus getStatus() {
+        return status;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public Staff getUpdatedBy() {
-        return updatedBy;
-    }
-
-    public void setUpdatedBy(Staff updatedBy) {
-        this.updatedBy = updatedBy;
-    }
-
-    public LocalDateTime getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(LocalDateTime completedAt) {
-        this.completedAt = completedAt;
+    public void setStatus(EStatus status) {
+        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -104,24 +84,22 @@ public class Expense {
         this.updatedAt = updatedAt;
     }
 
-    public IsDeleted getIsDeleted() {
+    public EIsDeleted getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(IsDeleted isDeleted) {
+    public void setIsDeleted(EIsDeleted isDeleted) {
         this.isDeleted = isDeleted;
     }
 
     @Override
     public String toString() {
-        return "Expense{" +
+        return "Prescription{" +
                 "id=" + id +
-                ", category=" + category +
+                ", patient=" + patient +
                 ", staff=" + staff +
                 ", description='" + description + '\'' +
-                ", total=" + total +
-                ", updatedBy=" + updatedBy +
-                ", completedAt=" + completedAt +
+                ", status=" + status +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", isDeleted=" + isDeleted +
