@@ -79,3 +79,21 @@ Giải Thích: Đẩy các commit từ nhánh <tên nhánh đang làm việc> l�
 3. Chuyển lại nhánh làm việc `<tên nhánh>` và thực hiện rebase với `main` để đảm bảo nhánh của bạn cập nhật với những thay đổi mới nhất.
 4. Áp dụng lại các thay đổi đã lưu trữ bằng `git stash pop`.
 5. Thêm các thay đổi vào stage bằng `git add .`, tạo commit mới bằng `git commit -m <nội dung commit>` và push chúng lên remote repository với `git push origin <tên nhánh>`.
+
+# Hướng dẫn folder code
+## java folder
+- Connectivity: Chứa các file `connection DB`.
+- Controller: Chứa các `Controller` tương tác với giao diện khi có `action` từ `User`.
+- Global: Chứa các file như `format`, `validate form`, `AppProperties`.
+- IGeneric: `Interface` cho các class liên quan đến việc tương tác với `DB`.
+- Model: Các thực thể của dự án như `Entity` và `ENUM`.
+- Repository: Chứa các Class `DAO` của thực thể `Implement IGeneric`.
+- Service: Các Class liên quan đến xử lý logic như `Authenticate,vv...`
+## Luồng xử lý theo quy trình
+- *Controller* -> *Service* -> *Repository* (nếu `cần` xử lý logic để tạo ra dữ liệu cuối).
+- *Controller* -> *Repository* (nếu `không cần` xử lý logic để tạo ra dữ liệu cuối).
+# resources folder
+- Images: Lưu trữ file hình ảnh
+- Style: _CSS_.
+- View: File _fxml_
+
