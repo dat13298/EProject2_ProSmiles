@@ -1,27 +1,28 @@
 package com.aptech.eproject2_prosmiles.Model.Entity;
 
-import com.aptech.eproject2_prosmiles.Model.Enum.IsDeleted;
+import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 
 import java.time.LocalDateTime;
 
-public class Category {
+public class Permission {
     private int id;
-    private String name;
-    private int parentId;
+    private String title;
+    private String slug;
     private String description;
+    private EIsDeleted isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private IsDeleted isDeleted;
 
-    public Category() {;}
-    public Category(int id, String name, int parentId, String description, LocalDateTime createdAt, LocalDateTime updatedAt, IsDeleted isDeleted) {
+    public Permission() {;}
+
+    public Permission(int id, String title, String slug, String description, EIsDeleted isDeleted, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
-        this.name = name;
-        this.parentId = parentId;
+        this.title = title;
+        this.slug = slug;
         this.description = description;
+        this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.isDeleted = isDeleted;
     }
 
     public int getId() {
@@ -32,20 +33,20 @@ public class Category {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public int getParentId() {
-        return parentId;
+    public String getSlug() {
+        return slug;
     }
 
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     public String getDescription() {
@@ -54,6 +55,14 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public EIsDeleted getActive() {
+        return isDeleted;
+    }
+
+    public void setActive(EIsDeleted isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -72,24 +81,16 @@ public class Category {
         this.updatedAt = updatedAt;
     }
 
-    public IsDeleted getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(IsDeleted isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
     @Override
     public String toString() {
-        return "Category{" +
+        return "Permission{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", parentId=" + parentId +
+                ", title='" + title + '\'' +
+                ", slug='" + slug + '\'' +
                 ", description='" + description + '\'' +
+                ", isDeleted=" + isDeleted +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
-                ", isDeleted=" + isDeleted +
                 '}';
     }
 }

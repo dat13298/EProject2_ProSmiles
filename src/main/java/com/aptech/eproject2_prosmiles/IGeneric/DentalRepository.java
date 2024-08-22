@@ -8,5 +8,5 @@ public interface DentalRepository<T>{
     T findByName(String name);
     T save(T entity);
     T update(T entity);
-    void delete(int id);
+    boolean delete(T entity);
 }

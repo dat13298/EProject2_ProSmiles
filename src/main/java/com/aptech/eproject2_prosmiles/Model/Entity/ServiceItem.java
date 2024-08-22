@@ -4,24 +4,33 @@ import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 
 import java.time.LocalDateTime;
 
-public class Service {
+public class ServiceItem {
     private int id;
-    private int pId;
+    private Service service;
     private String name;
+    private double price;
+    private String unit;
+    private int quantity;
     private String description;
-    private String imagePath;
+    private String dosage;
+    private String usageInstruction;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private EIsDeleted isDeleted;
-    public Service() {;}
+    public ServiceItem() {;}
 
-    public Service(int id, int pId, String name, String description, String imagePath, LocalDateTime createdAt
+    public ServiceItem(int id, Service service, String name, double price, String unit, int quantity
+            , String description, String dosage, String usageInstruction, LocalDateTime createdAt
             , LocalDateTime updatedAt, EIsDeleted isDeleted) {
         this.id = id;
-        this.pId = pId;
+        this.service = service;
         this.name = name;
+        this.price = price;
+        this.unit = unit;
+        this.quantity = quantity;
         this.description = description;
-        this.imagePath = imagePath;
+        this.dosage = dosage;
+        this.usageInstruction = usageInstruction;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isDeleted = isDeleted;
@@ -35,12 +44,12 @@ public class Service {
         this.id = id;
     }
 
-    public int getpId() {
-        return pId;
+    public Service getService() {
+        return service;
     }
 
-    public void setpId(int pId) {
-        this.pId = pId;
+    public void setService(Service service) {
+        this.service = service;
     }
 
     public String getName() {
@@ -51,6 +60,30 @@ public class Service {
         this.name = name;
     }
 
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -59,12 +92,20 @@ public class Service {
         this.description = description;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public String getDosage() {
+        return dosage;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setDosage(String dosage) {
+        this.dosage = dosage;
+    }
+
+    public String getUsageInstruction() {
+        return usageInstruction;
+    }
+
+    public void setUsageInstruction(String usageInstruction) {
+        this.usageInstruction = usageInstruction;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -93,12 +134,16 @@ public class Service {
 
     @Override
     public String toString() {
-        return "Service{" +
+        return "ServiceItem{" +
                 "id=" + id +
-                ", pId=" + pId +
+                ", service=" + service +
                 ", name='" + name + '\'' +
+                ", price=" + price +
+                ", unit='" + unit + '\'' +
+                ", quantity=" + quantity +
                 ", description='" + description + '\'' +
-                ", imagePath='" + imagePath + '\'' +
+                ", dosage='" + dosage + '\'' +
+                ", usageInstruction='" + usageInstruction + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
                 ", isDeleted=" + isDeleted +
