@@ -87,7 +87,7 @@ Giải Thích: Đẩy các commit từ nhánh <tên nhánh đang làm việc> l�
 - Global: Chứa các file như `format`, `validate form`, `AppProperties`.
 - IGeneric: `Interface` cho các class liên quan đến việc tương tác với `DB`.
 - Model: Các thực thể của dự án như `Entity` và `ENUM`.
-- Repository: Chứa các Class `DAO` của thực thể `Implement IGeneric`.
+- Repository: Chứa các Class `DAO` của thực thể `Implement IGeneric` để thực hiện `CRUD` hoặc `đọc ghi file`.
 - Service: Các Class liên quan đến xử lý logic như `Authenticate,vv...`
 ## Luồng xử lý theo quy trình
 - *Controller* -> *Service* -> *Repository* (nếu `cần` xử lý logic để tạo ra dữ liệu cuối).
