@@ -1,14 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.aptech.eproject2_prosmiles.View.DashBoard"
-            prefHeight="400.0" prefWidth="600.0">
 
+<AnchorPane prefHeight="600.0" prefWidth="1000.0" styleClass="parent" stylesheets="@../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.View.DashBoard">
+   <children>
+      <BorderPane prefHeight="600.0" prefWidth="1000.0">
+         <center>
+            <StackPane prefHeight="600.0" prefWidth="772.0" BorderPane.alignment="CENTER" />
+         </center>
+         <left>
+            <VBox prefHeight="540.0" prefWidth="200.0" spacing="10.0" styleClass="dashboard" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Home">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Perscription" />
+                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Patient" />
+                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Service" />
+                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Payment" />
+                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Staff Manager" />
+                  <MenuButton mnemonicParsing="false" styleClass="dashboard-navbar" text="Report">
+                    <items>
+                      <MenuItem mnemonicParsing="false" style="-fx-min-width: 200; -fx-background-color: none;" text="Weekly Report" />
+                      <MenuItem mnemonicParsing="false" text="Monthly Report" />
+                        <MenuItem mnemonicParsing="false" text="Yearly Report" />
+                    </items>
+                  </MenuButton>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <padding>
+                  <Insets top="10.0" />
+               </padding>
+            </VBox>
+         </left>
+         <top>
+            <Pane prefHeight="60.0" prefWidth="1000.0" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../Media/Logo.png" />
+                     </image>
+                  </ImageView>
+                  <Label fx:id="lbl_welcome" layoutX="865.0" layoutY="20.0" text="Welcome back, " textAlignment="RIGHT" />
+               </children>
+            </Pane>
+         </top>
+      </BorderPane>
+   </children>
 </AnchorPane>
