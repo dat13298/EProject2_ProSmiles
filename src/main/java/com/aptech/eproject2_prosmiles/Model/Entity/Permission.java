@@ -81,6 +81,14 @@ public class Permission {
         this.updatedAt = updatedAt;
     }
 
+    public EIsDeleted getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(EIsDeleted isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @Override
     public String toString() {
         return "Permission{" +
