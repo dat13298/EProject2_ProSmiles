@@ -4,6 +4,7 @@ import com.aptech.eproject2_prosmiles.Model.Enum.EGender;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class Staff {
     private int id;
@@ -66,6 +67,9 @@ public class Staff {
     public void setRole(Role role) {
         this.role = role;
     }
+    public void setRole(Optional<Role> role) {
+        this.role = role.orElse(null);
+    }
 
     public String getFirstName() {
         return firstName;
@@ -79,11 +83,11 @@ public class Staff {
         return lastName;
     }
 
-    public EGender getGender() {
+    public EGender getEGender() {
         return gender;
     }
 
-    public void setGender(EGender gender) {
+    public void setEGender(EGender gender) {
         this.gender = gender;
     }
 
@@ -105,7 +109,7 @@ public class Staff {
 
     public void setPassword(String password) {
         this.password = password;
-    }
+        }
 
     public String getAddress() {
         return address;
