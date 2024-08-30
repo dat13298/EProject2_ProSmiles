@@ -64,13 +64,13 @@ public class LoginController implements Initializable {
 //                    load MainMenu if valid
                     if (username.equals("admin") && password.equals("admin")) {
 //                        write file properties
-                        AppProperties.setProperty("user.loggedin", "true");
-                        AppProperties.setProperty("user.username", username);
-                        AppProperties.setProperty("user.userrole", "admin");
-                        AppProperties.setProperty("user.userid", "1");
+                        AppProperties.setProperty("staff.loggedin", "true");
+                        AppProperties.setProperty("staff.username", username);
+                        AppProperties.setProperty("staff.userrole", "admin");
+                        AppProperties.setProperty("staff.userid", "1");
 
 //                        Is remember
-                        AppProperties.setProperty("user.isremember", cb_remember.isSelected() ? "true" : "false");
+                        AppProperties.setProperty("staff.isremember", cb_remember.isSelected() ? "true" : "false");
 
                         Node node = (Node) event.getSource();
                         Stage stage = (Stage) node.getScene().getWindow(); //get current scene
