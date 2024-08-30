@@ -1,4 +1,4 @@
-package com.aptech.eproject2_prosmiles.RepositoryKhanh;
+package com.aptech.eproject2_prosmiles.Repository;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
@@ -7,6 +7,8 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EStatus;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -18,12 +20,12 @@ import java.util.List;
 
 public class PrescriptionDAO implements DentalRepository<Prescription> {
     public static Connection conn = MySQLConnection.getConnection();
+    public static ObservableList<Prescription> prescriptions = FXCollections.observableArrayList();
     public static List<Patient> patients;
     public static List<Staff> staffs;
 
     @Override
-    public List<Prescription> getAll() {
-        List<Prescription> res = new ArrayList<Prescription>();
+    public ObservableList<Prescription> getAll() {
         try{
             String sql = "select id, patient_id, staff_id,description, status, created_at, updated_at, is_deleted  from prescription";
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -38,12 +40,12 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
                 p.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
                 p.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
                 p.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
-                res.add(p);
+                prescriptions.add(p);
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return res;
+        return prescriptions;
     }
 
     @Override
@@ -71,7 +73,7 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
     }
 
     @Override
-    public Prescription findByName(String name) {
+    public ObservableList<Prescription> findByName(String name) {
         String sql = "select * from prescription where name = ?";
         Prescription p = new Prescription();
         try{
@@ -87,11 +89,12 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
                 p.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
                 p.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
                 p.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+                prescriptions.add(p);
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return p;
+        return prescriptions;
     }
 
     @Override

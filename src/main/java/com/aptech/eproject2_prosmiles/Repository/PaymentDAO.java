@@ -1,4 +1,4 @@
-package com.aptech.eproject2_prosmiles.RepositoryKhanh;
+package com.aptech.eproject2_prosmiles.Repository;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
@@ -6,6 +6,8 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Payment;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EPaymentType;
+import javafx.beans.Observable;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -16,11 +18,11 @@ import java.util.List;
 
 public class PaymentDAO implements DentalRepository<Payment> {
     public static Connection conn = MySQLConnection.getConnection();
-    public static List<Payment> payments;
+    public static ObservableList<Payment> payments;
     public static List<Prescription> prescriptions;
 
     @Override
-    public List<Payment> getAll() {
+    public ObservableList<Payment> getAll() {
         String sql = "SELECT * FROM Payment";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -66,7 +68,7 @@ public class PaymentDAO implements DentalRepository<Payment> {
     }
 
     @Override
-    public Payment findByName(String name) {
+    public ObservableList<Payment> findByName(String name) {
         String sql = "SELECT * FROM payment WHERE name = ?";
         Payment payment = new Payment();
         try{
@@ -87,7 +89,7 @@ public class PaymentDAO implements DentalRepository<Payment> {
         }catch (SQLException e) {
             e.printStackTrace();
         }
-        return payment;
+        return payments;
     }
 
     @Override
