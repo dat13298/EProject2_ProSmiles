@@ -43,7 +43,7 @@
     -fx-min-width: 200px;
     -fx-background-color: transparent; /* Use 'transparent' instead of 'none' */
     -fx-font-weight: bold;
-    -fx-alignment: left;
+    -fx-alignment: CENTER_LEFT;
 }
 
 .dashboard-navbar:hover {
