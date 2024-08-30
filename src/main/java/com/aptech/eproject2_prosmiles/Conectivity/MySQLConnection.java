@@ -7,8 +7,7 @@ import java.sql.SQLException;
 public class MySQLConnection {
     private static String url = "jdbc:mysql://localhost:3306/prosmiles";
     private static String user = "root";
-    private static String password = "";
-    private static String port = "3306";
+    private static String password = "eProject2";
     public static Connection conn = null;
 
     public MySQLConnection(Connection conn) {
