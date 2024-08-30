@@ -38,3 +38,33 @@
     -fx-background-color: #717ED2;
     -fx-text-fill: #FFFFFF;
 }
+
+.dashboard-navbar {
+    -fx-min-width: 200px;
+    -fx-background-color: transparent; /* Use 'transparent' instead of 'none' */
+    -fx-font-weight: bold;
+    -fx-alignment: left;
+}
+
+.dashboard-navbar:hover {
+    -fx-background-color: #34495e; /* Background color on hover */
+    -fx-cursor: hand; /* Cursor on hover */
+    -fx-text-fill: white;
+}
+
+/* Style for the MenuButton's drop-down arrow */
+.dashboard-navbar .arrow {
+    -fx-background-color: #2980b9; /* Color of the arrow */
+}
+
+.dashboard-navbar .menu-item:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #34495e; /* Background color on hover */
+}
+
+/*!* Remove any focus outline from the MenuButton and MenuItems *!*/
+/*.dashboard-navbar:focused, .dashboard-navbar .menu-item:focused {*/
+/*    -fx-background-color: transparent; !* Transparent background on focus *!*/
+/*    -fx-border-color: none; !* Remove border on focus *!*/
+/*    -fx-outline: none; !* Remove outline on focus *!*/
+/*}*/
