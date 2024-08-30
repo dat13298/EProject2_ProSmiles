@@ -1,4 +1,4 @@
-package com.aptech.eproject2_prosmiles.Controller.Repository;
+package com.aptech.eproject2_prosmiles.RepositoryKhanh;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;

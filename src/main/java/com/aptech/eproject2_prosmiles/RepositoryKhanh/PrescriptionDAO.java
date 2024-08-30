@@ -1,4 +1,4 @@
-package com.aptech.eproject2_prosmiles.Controller.Repository;
+package com.aptech.eproject2_prosmiles.RepositoryKhanh;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
@@ -7,7 +7,6 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EStatus;
-import jdk.jshell.Snippet;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
