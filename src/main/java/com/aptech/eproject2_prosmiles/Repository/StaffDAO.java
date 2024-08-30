@@ -14,17 +14,26 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class StaffDAO implements DentalRepository<Staff> {
-    private final Connection conn = MySQLConnection.getConnection();
+    private static final Connection conn = MySQLConnection.getConnection();
     private ObservableList<Staff> staffs = FXCollections.observableArrayList();
 
     /*GET STAFF BY PHONE OR EMAIL*/
-    public static Staff validateLogin(Staff staff) {
-        String sql = "SELECT " +
-                "s.id, s.role_id, s.first_name, s.last_name, " +
-                "s.gender, s.phone, s.password, s.address, s.email, " +
-                "s.age, s.image_path, s.create_at, s.update_at, s.is_deleted " +
-                "FROM staff s " +
-                "WHERE s.id = ?";
+    public static Staff getStaffByPhoneOrEmail(Staff staff) {
+        try {
+            String sql = "SELECT " +
+                    "s.password " +
+                    "FROM staff s " +
+                    "WHERE s.phone = ? OR s.email = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, staff.getPhone());
+            pstmt.setString(2, staff.getEmail());
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                staff.setPassword(rs.getString("password"));
+            }
+        }catch (SQLException e){
+            throw new RuntimeException(e);
+        }
         return staff;
     }
 
