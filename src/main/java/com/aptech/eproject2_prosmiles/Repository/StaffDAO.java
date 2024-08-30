@@ -25,7 +25,7 @@ public class StaffDAO implements DentalRepository<Staff> {
                 "s.age, s.image_path, s.create_at, s.update_at, s.is_deleted " +
                 "FROM staff s " +
                 "WHERE s.id = ?";
-        
+        return staff;
     }
 
     /*GET ALL*/
