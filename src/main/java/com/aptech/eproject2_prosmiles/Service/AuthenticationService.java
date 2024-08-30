@@ -2,6 +2,7 @@ package com.aptech.eproject2_prosmiles.Service;
 
 import com.aptech.eproject2_prosmiles.Global.AppProperties;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
+import com.aptech.eproject2_prosmiles.Repository.StaffDAO;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -14,6 +15,7 @@ public class AuthenticationService {
     /*LOGIN*/
     public static boolean login(Staff staff) {
         //check valid
+        Staff staffLogged = StaffDAO.validateLogin(staff);
         return true;
     }
 
@@ -25,15 +27,15 @@ public class AuthenticationService {
 
     /*LOGOUT*/
     public static void logout() {
-        AppProperties.setProperty("user.loggedin", "false");
-        AppProperties.setProperty("user.username", "");
-        AppProperties.setProperty("user.userrole", "");
-        AppProperties.setProperty("user.userid", "");
+        AppProperties.setProperty("staff.loggedin", "false");
+        AppProperties.setProperty("staff.username", "");
+        AppProperties.setProperty("staff.userrole", "");
+        AppProperties.setProperty("staff.userid", "");
     }
 
     /*CHECK USER FROM FILE SAVED*/
     public static boolean authenticateFromFile(Properties properties) {
-        String userHome = System.getProperty("user.home");
+        String userHome = System.getProperty("staff.home");
         String filePath = userHome + "/application.properties";
         try {
             FileInputStream inputStream = new FileInputStream(filePath);
@@ -42,7 +44,7 @@ public class AuthenticationService {
             throw new RuntimeException(e);
         }
 //        authenticate account
-        if(Boolean.parseBoolean(properties.getProperty("user.isremember"))) {
+        if(Boolean.parseBoolean(properties.getProperty("staff.isremember"))) {
             return true;
         }
         return false;
