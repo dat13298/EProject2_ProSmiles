@@ -6,6 +6,7 @@ module com.aptech.eproject2_prosmiles {
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
     requires java.sql;
+    requires mysql.connector.java;
     requires jbcrypt;
     requires jdk.jshell;
 
