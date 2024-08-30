@@ -1,4 +1,4 @@
-package com.aptech.eproject2_prosmiles.RepositoryKhanh;
+package com.aptech.eproject2_prosmiles.Repository;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
@@ -6,6 +6,8 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Entity.PrescriptionDetail;
 import com.aptech.eproject2_prosmiles.Model.Entity.ServiceItem;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,12 +19,12 @@ import java.util.List;
 
 public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetail> {
     public static Connection conn = MySQLConnection.getConnection();
-    List<PrescriptionDetail> psd = new ArrayList<PrescriptionDetail>();
+    public static ObservableList<PrescriptionDetail> psd = FXCollections.observableArrayList();
     public static List<ServiceItem> serviceItems;
     public static List<Prescription> prescriptions;
 
     @Override
-    public List<PrescriptionDetail> getAll() {
+    public ObservableList<PrescriptionDetail> getAll() {
         String sql = "select * from prescription_detail";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -72,7 +74,7 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
     }
 
     @Override
-    public PrescriptionDetail findByName(String name) {
+    public ObservableList<PrescriptionDetail> findByName(String name) {
         String sql = "select * from prescription_detail where prescription_name = ?";
         PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
         try{
@@ -89,11 +91,12 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
                 prescriptionDetail.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
                 prescriptionDetail.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
                 prescriptionDetail.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+                psd.add(prescriptionDetail);
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
-        return prescriptionDetail;
+        return psd;
     }
 
     @Override
@@ -149,6 +152,5 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
         }
         return false;
     }
-
 
 }
