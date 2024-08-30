@@ -6,6 +6,7 @@ module com.aptech.eproject2_prosmiles {
     requires com.dlsc.formsfx;
     requires net.synedra.validatorfx;
     requires java.sql;
+    requires jbcrypt;
     requires jdk.jshell;
 
     opens com.aptech.eproject2_prosmiles to javafx.fxml;
