@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <AnchorPane prefHeight="600.0" prefWidth="1000.0" styleClass="parent" stylesheets="@../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.View.DashBoard">
    <children>
       <BorderPane prefHeight="600.0" prefWidth="1000.0">
@@ -23,21 +22,21 @@
          <left>
             <VBox prefHeight="540.0" prefWidth="200.0" spacing="10.0" styleClass="dashboard" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Home">
+                  <Button fx:id="btn_home" mnemonicParsing="false" styleClass="dashboard-navbar" text="Home">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Perscription" />
-                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Patient" />
-                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Service" />
-                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Payment" />
-                  <Button mnemonicParsing="false" styleClass="dashboard-navbar" text="Staff Manager" />
-                  <MenuButton mnemonicParsing="false" styleClass="dashboard-navbar" text="Report">
+                  <Button fx:id="btn_perscription" mnemonicParsing="false" styleClass="dashboard-navbar" text="Perscription" />
+                  <Button fx:id="btn_patient" mnemonicParsing="false" styleClass="dashboard-navbar" text="Patient" />
+                  <Button fx:id="btn_service" mnemonicParsing="false" styleClass="dashboard-navbar" text="Service" />
+                  <Button fx:id="btn_payment" mnemonicParsing="false" styleClass="dashboard-navbar" text="Payment" />
+                  <Button fx:id="btn_staff_manager" mnemonicParsing="false" styleClass="dashboard-navbar" text="Staff Manager" />
+                  <MenuButton fx:id="btn_report_overview" mnemonicParsing="false" styleClass="dashboard-navbar" text="Report">
                     <items>
-                      <MenuItem mnemonicParsing="false" style="-fx-min-width: 200; -fx-background-color: none;" text="Weekly Report" />
-                      <MenuItem mnemonicParsing="false" text="Monthly Report" />
-                        <MenuItem mnemonicParsing="false" text="Yearly Report" />
+                      <MenuItem fx:id="btn_report_weekly" mnemonicParsing="false" style="-fx-min-width: 200; -fx-background-color: none;" text="Weekly Report" />
+                      <MenuItem fx:id="btn_report_monthly" mnemonicParsing="false" text="Monthly Report" />
+                        <MenuItem fx:id="btn_report_yearly" mnemonicParsing="false" text="Yearly Report" />
                     </items>
                   </MenuButton>
                </children>
