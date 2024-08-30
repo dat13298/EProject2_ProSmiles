@@ -92,7 +92,7 @@ public class LoginController implements Initializable {
     /* LOAD MAIN MENU FXML */
     private void loadMainMenu() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass()
-                .getResource("/com/aptech/eproject2_prosmiles/View/Home.fxml"));
+                .getResource("/com/aptech/eproject2_prosmiles/View/DashBoard.fxml"));
         try {
             Scene scene = new Scene(fxmlLoader.load());
             Stage stage = new Stage();
