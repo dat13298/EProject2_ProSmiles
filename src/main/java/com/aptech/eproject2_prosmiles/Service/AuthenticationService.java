@@ -21,12 +21,17 @@ public class AuthenticationService {
     /*REGISTER*/
     public static boolean register(Staff staff) {
 //        insert DB
+
         return true;
     }
 
     /*LOGOUT*/
     public static void logout() {
         AppProperties.setProperty("staff.loggedin", "false");
+        AppProperties.setProperty("staff.userid", "");
+        AppProperties.setProperty("staff.roleid", "");
+        AppProperties.setProperty("staff.name", "");
+        AppProperties.setProperty("staff.phone", "");
         AppProperties.setProperty("staff.username", "");
         AppProperties.setProperty("staff.userrole", "");
         AppProperties.setProperty("staff.userid", "");
