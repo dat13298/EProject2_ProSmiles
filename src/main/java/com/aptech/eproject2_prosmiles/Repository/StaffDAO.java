@@ -21,7 +21,7 @@ public class StaffDAO implements DentalRepository<Staff> {
     public static Staff getStaffByPhoneOrEmail(Staff staff) {
         try {
             String sql = "SELECT " +
-                    "s.password " +
+                    "s.id, s.password " +
                     "FROM staff s " +
                     "WHERE s.phone = ? OR s.email = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -29,6 +29,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             pstmt.setString(2, staff.getEmail());
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
+                staff.setId(rs.getInt("id"));
                 staff.setPassword(rs.getString("password"));
             }
         }catch (SQLException e){
