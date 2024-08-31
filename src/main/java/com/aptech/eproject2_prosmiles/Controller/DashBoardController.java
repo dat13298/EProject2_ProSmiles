@@ -1,16 +1,25 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 
+import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class DashBoardController implements Initializable {
+    @FXML
+    private Button btn_log_out;
     @FXML
     private Button btn_home;
     @FXML
@@ -49,7 +58,7 @@ public class DashBoardController implements Initializable {
 
 
 
-    @FXML
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
         setupUnderlineEffect(btn_home, btn_home_underline);
         setupUnderlineEffect(btn_prescription, btn_prescription_underline);
@@ -58,6 +67,27 @@ public class DashBoardController implements Initializable {
         setupUnderlineEffect(btn_payment, btn_payment_underline);
         setupUnderlineEffect(btn_staff, btn_staff_underline);
 //        setupUnderlineEffect(btn_report, btn_report_underline);
+
+//        log out
+        btn_log_out.setOnAction((ActionEvent event) -> {
+            AuthenticationService.logout();
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/com/aptech/eproject2_prosmiles/View/LoginForm.fxml")
+            );
+            Platform.runLater(() -> {
+                Stage stage = (Stage) btn_log_out.getScene().getWindow(); // Get current stage
+                stage.close(); // Close current stage
+            });
+            try {
+                Scene scene = new Scene(loader.load());
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.setTitle("Login Form");
+                stage.show();
+            }catch (IOException e){
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 
