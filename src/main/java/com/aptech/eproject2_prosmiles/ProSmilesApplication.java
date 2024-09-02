@@ -1,5 +1,7 @@
 package com.aptech.eproject2_prosmiles;
 
+import com.aptech.eproject2_prosmiles.Model.Entity.PrescriptionDetail;
+import com.aptech.eproject2_prosmiles.Repository.PrescriptionDetailDAO;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;

@@ -3,11 +3,12 @@ package com.aptech.eproject2_prosmiles.Model.Entity;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class PrescriptionDetail {
     private int id;
-    private ServiceItem serviceItem;
-    private Prescription prescription;
+    private Optional<ServiceItem> serviceItem;
+    private Optional<Prescription> prescription;
     private String unit;
     private int quantity;
     private double price;
@@ -16,7 +17,7 @@ public class PrescriptionDetail {
     private EIsDeleted isDeleted;
     public PrescriptionDetail() {;}
 
-    public PrescriptionDetail(int id, ServiceItem serviceItem, Prescription prescription, String unit
+    public PrescriptionDetail(int id, Optional<ServiceItem> serviceItem, Optional<Prescription> prescription, String unit
             , int quantity, double price, LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted) {
         this.id = id;
         this.serviceItem = serviceItem;
@@ -37,19 +38,19 @@ public class PrescriptionDetail {
         this.id = id;
     }
 
-    public ServiceItem getServiceItem() {
+    public Optional<ServiceItem> getServiceItem() {
         return serviceItem;
     }
 
-    public void setServiceItem(ServiceItem serviceItem) {
+    public void setServiceItem(Optional<ServiceItem> serviceItem) {
         this.serviceItem = serviceItem;
     }
 
-    public Prescription getPrescription() {
+    public Optional<Prescription> getPrescription() {
         return prescription;
     }
 
-    public void setPrescription(Prescription prescription) {
+    public void setPrescription(Optional<Prescription> prescription) {
         this.prescription = prescription;
     }
 

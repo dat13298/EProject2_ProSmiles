@@ -6,36 +6,46 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Payment;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EPaymentType;
-import javafx.beans.Observable;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 public class PaymentDAO implements DentalRepository<Payment> {
     public static Connection conn = MySQLConnection.getConnection();
-    public static ObservableList<Payment> payments;
-    public static List<Prescription> prescriptions;
+    public static ObservableList<Payment> payments = FXCollections.observableArrayList();
 
     @Override
     public ObservableList<Payment> getAll() {
-        String sql = "SELECT * FROM Payment";
+        String sql = "select p.id, p.bill_number, p.prescription_id, " +
+                "p.payment_type, p.total_amount, p.created_at, p.updated_at,p.is_deleted " +
+                "from payment p where 1=1";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
+                Prescription prescription = new Prescription();
                 Payment payment = new Payment();
                 payment.setId(rs.getInt("id"));
                 payment.setBillNumber(rs.getString("bill_number"));
-                payment.setPrescription(prescriptions.get(rs.getInt("prescription_id")));
-                payment.setPaymentType(EPaymentType.valueOf(rs.getString("payment_type")));
+
+                prescription.setId(rs.getInt("prescription_id"));
+                payment.setPrescription(Optional.of(prescription));
+
+                payment.setPaymentType(EPaymentType.fromValue(rs.getString("payment_type")));
                 payment.setTotalAmount(rs.getDouble("total_amount"));
-                payment.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                payment.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
+
+                Timestamp timestamp = rs.getTimestamp("created_at");
+                LocalDateTime createAt = timestamp == null ? null : timestamp.toLocalDateTime();
+                payment.setCreatedAt(createAt);
+
+                Timestamp timestamp2 = rs.getTimestamp("updated_at");
+                LocalDateTime updateAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
+                payment.setUpdatedAt(updateAt);
+
+                payment.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
                 payments.add(payment);
             }
         }catch (SQLException e){
@@ -46,20 +56,32 @@ public class PaymentDAO implements DentalRepository<Payment> {
 
     @Override
     public Payment getById(int id) {
-        String sql = "SELECT * FROM payment WHERE id = ?";
+        String sql = "select p.id, p.bill_number, p.prescription_id" +
+                "p.payment_type, p.total_amount, p.created_at, p.updated_at,p.is_deleted from prescription p where id = ?";
         Payment payment = new Payment();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
+                Prescription prescription = new Prescription();
+
                 payment.setId(rs.getInt("id"));
                 payment.setBillNumber(rs.getString("bill_number"));
-                payment.setPrescription(prescriptions.get(rs.getInt("prescription_id")));
-                payment.setPaymentType(EPaymentType.valueOf(rs.getString("payment_type")));
+                prescription.setId(rs.getInt("prescription_id"));
+                payment.setPrescription(Optional.of(prescription));
+                payment.setPaymentType(EPaymentType.fromValue(rs.getString("payment_type")));
                 payment.setTotalAmount(rs.getDouble("total_amount"));
-                payment.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                payment.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
+
+                Timestamp timestamp = rs.getTimestamp("create_at");
+                LocalDateTime createAt = timestamp == null ? null : timestamp.toLocalDateTime();
+                payment.setCreatedAt(createAt);
+
+                Timestamp timestamp2 = rs.getTimestamp("update_at");
+                LocalDateTime updateAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
+                payment.setUpdatedAt(updateAt);
+
+                payment.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -69,21 +91,32 @@ public class PaymentDAO implements DentalRepository<Payment> {
 
     @Override
     public ObservableList<Payment> findByName(String name) {
-        String sql = "SELECT * FROM payment WHERE name = ?";
+        String sql = "select p.id, p.bill_number, p.prescription_id" +
+                "p.payment_type, p.total_amount, p. created_at, p.updated_at, p.is_deleted from payment p WHERE name = ?";
         Payment payment = new Payment();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
+                Prescription prescription = new Prescription();
                 payment.setId(rs.getInt("id"));
                 payment.setBillNumber(rs.getString("bill_number"));
-                payment.setPrescription(prescriptions.get(rs.getInt("prescription_id")));
+                prescription.setId(rs.getInt("prescription_id"));
+                payment.setPrescription(Optional.of(prescription));
                 payment.setPaymentType(EPaymentType.valueOf(rs.getString("payment_type")));
                 payment.setTotalAmount(rs.getDouble("total_amount"));
-                payment.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                payment.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
-                payment.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+
+                Timestamp timestamp = rs.getTimestamp("create_at");
+                LocalDateTime createAt = timestamp == null ? null : timestamp.toLocalDateTime();
+                payment.setCreatedAt(createAt);
+
+                Timestamp timestamp2 = rs.getTimestamp("update_at");
+                LocalDateTime updateAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
+                payment.setUpdatedAt(updateAt);
+
+                payment.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
+
                 payments.add(payment);
             }
         }catch (SQLException e) {
@@ -99,7 +132,7 @@ public class PaymentDAO implements DentalRepository<Payment> {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
             ps.setString(2, entity.getBillNumber());
-            ps.setInt(3, entity.getPrescription().getId());
+            ps.setInt(3, entity.getPrescription().get().getId());
             ps.setString(4, entity.getPaymentType().getValue());
             ps.setDouble(5, entity.getTotalAmount());
             ps.setString(6, entity.getCreatedAt().toString());
@@ -119,7 +152,7 @@ public class PaymentDAO implements DentalRepository<Payment> {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
             ps.setString(2, entity.getBillNumber());
-            ps.setInt(3, entity.getPrescription().getId());
+            ps.setInt(3, entity.getPrescription().get().getId());
             ps.setString(4, entity.getPaymentType().getValue());
             ps.setDouble(5, entity.getTotalAmount());
             ps.setString(6, entity.getCreatedAt().toString());

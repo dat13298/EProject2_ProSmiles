@@ -9,4 +9,14 @@ public enum EStatus {
     public String getStatus() {
         return status;
     }
+
+    public static EStatus fromString(String value) {
+        for (EStatus status : EStatus.values()) {
+            if (status.getStatus() == value) {
+                return status;
+            }
+        }
+        return null;
+    }
+
 }

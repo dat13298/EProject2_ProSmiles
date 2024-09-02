@@ -4,10 +4,11 @@ import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EPaymentType;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class Payment {
     private int id;
-    private Prescription prescription;
+    private Optional<Prescription> prescription;
     private String billNumber;
     private EPaymentType paymentType;
     private double totalAmount;
@@ -16,7 +17,7 @@ public class Payment {
     private EIsDeleted isDeleted;
     public Payment() {;}
 
-    public Payment(int id, Prescription prescription, String billNumber, EPaymentType paymentType
+    public Payment(int id, Optional<Prescription> prescription, String billNumber, EPaymentType paymentType
             , double totalAmount, LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted) {
         this.id = id;
         this.prescription = prescription;
@@ -36,11 +37,11 @@ public class Payment {
         this.id = id;
     }
 
-    public Prescription getPrescription() {
+    public Optional<Prescription> getPrescription() {
         return prescription;
     }
 
-    public void setPrescription(Prescription prescription) {
+    public void setPrescription(Optional<Prescription> prescription) {
         this.prescription = prescription;
     }
 
