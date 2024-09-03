@@ -39,8 +39,8 @@ public class AuthenticationService {
 
     /*CHECK USER FROM FILE SAVED*/
     public static boolean authenticateFromFile(Properties properties) {
-        String userHome = System.getProperty("user.home");
-        String filePath = userHome + "/application.properties";
+        String userHome = System.getProperty("user.dir");
+        String filePath = userHome + "/src/main/resources/application.properties";
         try {
             FileInputStream inputStream = new FileInputStream(filePath);
             properties.load(inputStream);
