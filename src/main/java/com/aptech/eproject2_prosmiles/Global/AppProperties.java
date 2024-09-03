@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class AppProperties {
     private static final Properties properties = new Properties();
-    private static final String PROPERTIES_FILE_PATH = System.getProperty("user.home") + "/application.properties";
+    private static final String PROPERTIES_FILE_PATH = System.getProperty("user.dir") + "/src/main/resources/application.properties";
 
     static {
         try {
@@ -26,8 +26,8 @@ public class AppProperties {
 
     public static void setProperty(String key, String value) {
         properties.setProperty(key, value);
-        String userHome = System.getProperty("user.home");
-        String filePath = userHome + "/application.properties";
+        String userHome = System.getProperty("user.dir");
+        String filePath = userHome + "/src/main/resources/application.properties";
         try {
             FileOutputStream outputStream = new FileOutputStream(filePath);
             properties.store(outputStream, null);

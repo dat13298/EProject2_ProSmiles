@@ -44,11 +44,12 @@ public class AuthenticationService {
         try {
             FileInputStream inputStream = new FileInputStream(filePath);
             properties.load(inputStream);
-        }catch (IOException e){
+            System.out.println(properties.getProperty("staff.isremember"));
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 //        authenticate account
-        if(Boolean.parseBoolean(properties.getProperty("staff.isremember"))) {
+        if (Boolean.parseBoolean(properties.getProperty("staff.isremember"))) {
             return true;
         }
         return false;
