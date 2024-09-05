@@ -1,14 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.aptech.eproject2_prosmiles.View.StaffManager.StaffDetail"
-            prefHeight="400.0" prefWidth="600.0">
-
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import java.lang.String?>
+<AnchorPane prefHeight="540.0" prefWidth="800.0" styleClass="parent" stylesheets="@../../Style/Style.css"
+            xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.aptech.eproject2_prosmiles.Controller.StaffDetailController">
+    <BorderPane prefHeight="540.0" prefWidth="800.0">
+        <left>
+            <!--Staff Detail-->
+            <VBox alignment="CENTER_LEFT" prefHeight="327.0" prefWidth="300.0" spacing="10.0"
+                  BorderPane.alignment="CENTER">
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Label fx:id="lbl_title_staff_name" layoutX="107.0" layoutY="25.0" styleClass="title"
+                               text="Staff name: "/>
+                        <Label fx:id="lbl_staff_name" layoutX="193.0" layoutY="25.0" prefHeight="21.0" prefWidth="13.0"
+                               styleClass="title"/>
+                        <ImageView fx:id="ava_staff" fitHeight="100.0" fitWidth="100.0" preserveRatio="true">
+                            <image>
+                                <Image url="@../../Media/default_ava.png"/>
+                            </image>
+                            <clip>
+                                <Circle fx:id="ava_clip" centerX="50" centerY="50" radius="50"/>
+                            </clip>
+                        </ImageView>
+                        <Label fx:id="lbl_title_staff_position" layoutX="107.0" layoutY="47.0" styleClass="title"
+                               text="Position:"/>
+                        <Label fx:id="lbl_staff_position" layoutX="180.0" layoutY="47.0" prefHeight="21.0"
+                               prefWidth="13.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Label fx:id="lbl_title_staff_gender" styleClass="title" text="Gender:"/>
+                        <Label fx:id="lbl_staff_gender" layoutX="64.0" prefHeight="21.0" prefWidth="13.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Label fx:id="lbl_title_staff_email" styleClass="title" text="Email:"/>
+                        <Label fx:id="lbl_staff_email" layoutX="50.0" prefHeight="21.0" prefWidth="13.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Label fx:id="lbl_title_staff_phone_number" styleClass="title" text="Phone number:"/>
+                        <Label fx:id="lbl_staff_phone_number" layoutX="118.0" prefHeight="21.0" prefWidth="13.0"/>
+                    </children>
+                </AnchorPane>
+                <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                    <children>
+                        <Label fx:id="lbl_title_staff_address" styleClass="title" text="Address:"/>
+                        <Label fx:id="lbl_staff_address" layoutX="71.0" prefHeight="21.0" prefWidth="13.0"/>
+                    </children>
+                </AnchorPane>
+                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="2.0" stroke="BLACK"
+                           strokeType="INSIDE" width="300.0"/>
+                <Label fx:id="lbl_title_change_password" styleClass="title" text="Change password"/>
+                <Label fx:id="lbl_password_current" styleClass="title" text="Current password:"/>
+                <TextField fx:id="txt_password_current" styleClass="input-field"/>
+                <Label fx:id="lbl_password_new" styleClass="title" text="Enter new password:"/>
+                <TextField fx:id="txt_password_new" styleClass="input-field"/>
+                <Button fx:id="btn_change_password" mnemonicParsing="false" prefHeight="31.0" prefWidth="303.0" text="Change password">
+                    <styleClass>
+                        <String fx:value="input-field"/>
+                        <String fx:value="master_button"/>
+                        <String fx:value="title"/>
+                    </styleClass>
+                </Button>
+                <Label fx:id="lbl_notification" styleClass="title-warning"/>
+                <BorderPane.margin>
+                    <Insets/>
+                </BorderPane.margin>
+                <padding>
+                    <Insets left="10.0" top="10.0"/>
+                </padding>
+            </VBox>
+        </left>
+        <center>
+            <AnchorPane prefHeight="500.0" prefWidth="540.0" BorderPane.alignment="CENTER">
+                <TableView fx:id="tbl_patient_history" prefHeight="540.0" prefWidth="540.0"
+                           BorderPane.alignment="CENTER">
+                    <columns>
+                        <TableColumn fx:id="col_patient_name" prefWidth="100.0" text="Patient Name"/>
+                        <TableColumn fx:id="col_appointment_date" prefWidth="132.0" text="Appointment Date"/>
+                        <TableColumn fx:id="col_doctor_name" prefWidth="100.0" text="Doctor"/>
+                        <TableColumn fx:id="col_diagnosis" prefWidth="100.0" text="Diagnosis"/>
+                        <TableColumn fx:id="col_treatment" prefWidth="90.0" text="Treatment"/>
+                    </columns>
+                </TableView>
+            </AnchorPane>
+        </center>
+    </BorderPane>
 </AnchorPane>
