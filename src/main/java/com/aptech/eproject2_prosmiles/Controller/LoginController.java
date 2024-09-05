@@ -24,6 +24,10 @@ public class LoginController implements Initializable {
     @FXML
     private PasswordField pwd_password;
     @FXML
+    private TextField txt_password_visible;
+    @FXML
+    private Button btn_toggle_password;
+    @FXML
     private Button btn_sign_in;
     @FXML
     private Label hl_forgot_password;
@@ -32,8 +36,13 @@ public class LoginController implements Initializable {
     @FXML
     private Label lbl_authenticate;
 
+    private boolean isPasswordVisible = false;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Bind the text properties so they always hold the same value
+        txt_password_visible.textProperty().bindBidirectional(pwd_password.textProperty());
+
         Properties prop = new Properties();
         if(AuthenticationService.authenticateFromFile(prop)){
             Platform.runLater(() -> {
@@ -101,6 +110,25 @@ public class LoginController implements Initializable {
             stage.show(); // Display the stage
         } catch (IOException e) {
             throw new RuntimeException("Failed to load Main Menu: " + e.getMessage());
+        }
+    }
+    /* METHOD FOR VISIBLE PASSWORD */
+    @FXML
+    private void togglePasswordVisibility() {
+        isPasswordVisible = !isPasswordVisible;
+
+        if (isPasswordVisible) {
+            txt_password_visible.setVisible(true);
+            txt_password_visible.setManaged(true);
+            pwd_password.setVisible(false);
+            pwd_password.setManaged(false);
+            btn_toggle_password.setText("Hide");
+        } else {
+            txt_password_visible.setVisible(false);
+            txt_password_visible.setManaged(false);
+            pwd_password.setVisible(true);
+            pwd_password.setManaged(true);
+            btn_toggle_password.setText("Show");
         }
     }
 }

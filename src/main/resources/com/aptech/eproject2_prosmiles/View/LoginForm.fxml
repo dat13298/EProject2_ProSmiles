@@ -9,13 +9,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="600.0" prefWidth="1000.0"
-            styleClass="parent" stylesheets="@../Style/Style.css"
-            xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.aptech.eproject2_prosmiles.Controller.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" styleClass="parent" stylesheets="@../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.LoginController">
    <ImageView fitHeight="600.0" fitWidth="675.0" layoutX="330.0" pickOnBounds="true" preserveRatio="true">
       <Image url="@../Media/Slogan.png" />
    </ImageView>
@@ -35,12 +32,26 @@
          <Label fx:id="lbl_username" styleClass="title" text="Email or phone number" />
          <TextField fx:id="txt_username" promptText="Enter your email or phone number" styleClass="input-field" />
          <Label fx:id="lbl_password" layoutX="10.0" layoutY="10.0" styleClass="title" text="Password" />
-         <PasswordField fx:id="pwd_password" promptText="Enter your password">
-            <styleClass>
-               <String fx:value="parent" />
-               <String fx:value="input-field" />
-            </styleClass>
-         </PasswordField>
+         <HBox alignment="CENTER_RIGHT" spacing="5.0">
+            <PasswordField fx:id="pwd_password" promptText="Enter your password" HBox.hgrow="ALWAYS">
+               <styleClass>
+                  <String fx:value="parent" />
+                  <String fx:value="input-field" />
+               </styleClass>
+            </PasswordField>
+            <TextField fx:id="txt_password_visible" managed="false" promptText="Enter your password" visible="false" HBox.hgrow="ALWAYS">
+               <styleClass>
+                  <String fx:value="parent" />
+                  <String fx:value="input-field" />
+               </styleClass>
+            </TextField>
+            <Button fx:id="btn_toggle_password" onAction="#togglePasswordVisibility" text="Show">
+               <styleClass>
+                  <String fx:value="master_button" />
+                  <String fx:value="title" />
+                  <String fx:value="input-field" />
+               </styleClass></Button>
+         </HBox>
          <CheckBox fx:id="cb_remember" mnemonicParsing="false" text="Remember me" />
          <Label fx:id="hl_forgot_password" text="Forgot password?" textFill="#717ed2">
             <styleClass>
