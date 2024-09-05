@@ -88,3 +88,81 @@
     -fx-background-color: #34495e;
     -fx-text-fill: #FFFFFF;
 }
+
+/* General TableView Styling */
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 10, 0, 0, 5);
+    -fx-padding: 10;
+    -fx-selection-bar: #4caf50;
+    -fx-selection-bar-non-focused: #a5d6a7;
+}
+
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, #42a5f5, #2196f3);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+    -fx-border-radius: 10 10 0 0;
+    -fx-padding: 10;
+    -fx-alignment: CENTER;
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent transparent #eeeeee transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 10 20;
+    -fx-background-insets: 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.05), 3, 0, 0, 3);
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: #f9f9f9;
+}
+
+.table-view .table-cell {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+}
+
+/* Hover and Selection Effects */
+.table-view .table-row-cell:hover {
+    -fx-background-color: #e3f2fd;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.15), 5, 0, 0, 5);
+}
+
+.table-view .table-row-cell:selected,
+.table-view .table-row-cell:selected .table-cell {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.25), 10, 0, 0, 5);
+    -fx-background-insets: 0;
+}
+
+/* Customize Scrollbar */
+.scroll-bar:vertical .thumb,
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #2196f3;
+    -fx-background-radius: 5;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-padding: 5;
+}
+
+/* Smooth Transition for Hover and Selection */
+.table-view .table-row-cell {
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.table-view .column-header {
+    -fx-transition: background-color 0.3s ease-in-out, -fx-text-fill 0.3s ease-in-out;
+}
+
