@@ -9,4 +9,15 @@ public enum EPaymentType {
     public String getValue() {
         return value;
     }
+
+
+    public static EPaymentType fromValue(String value) {
+        for (EPaymentType e : EPaymentType.values()) {
+            if (e.value.equals(value)) {
+                return e;
+            }
+        }
+        return null;
+    }
+
 }

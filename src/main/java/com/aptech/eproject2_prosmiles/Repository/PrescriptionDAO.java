@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Repository;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
+import com.aptech.eproject2_prosmiles.Global.Format;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
 import com.aptech.eproject2_prosmiles.Model.Entity.Patient;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
@@ -10,36 +11,48 @@ import com.aptech.eproject2_prosmiles.Model.Enum.EStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PrescriptionDAO implements DentalRepository<Prescription> {
     public static Connection conn = MySQLConnection.getConnection();
     public static ObservableList<Prescription> prescriptions = FXCollections.observableArrayList();
-    public static List<Patient> patients;
-    public static List<Staff> staffs;
+
 
     @Override
     public ObservableList<Prescription> getAll() {
         try{
-            String sql = "select id, patient_id, staff_id,description, status, created_at, updated_at, is_deleted  from prescription";
+            String sql = "select p.id, p.patient_id, p.staff_id, " +
+                    "p.description, p.status, p.created_at, " +
+                    "p.updated_at, p.is_deleted " +
+                    "from prescription p where 1=1";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Prescription p = new Prescription();
+                Patient pt = new Patient();
+                Staff st = new Staff();
+
                 p.setId(rs.getInt("id"));
-                p.setPatient(findPatientById(rs.getInt("patient_id")));
-                p.setStaff(findStaffById(rs.getInt("staff_id")));
-                p.setDescription(rs.getString("description"));
-                p.setStatus(EStatus.valueOf(rs.getString("status")));
-                p.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                p.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
-                p.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+                pt.setId(rs.getInt("patient_id"));
+                p.setPatient(Optional.of(pt));
+                st.setId(rs.getInt("staff_id"));
+                p.setStaff(Optional.of(st));
+
+                p.setStatus(EStatus.fromString(rs.getString("status")));
+
+                Timestamp createTime = rs.getTimestamp("created_at");
+                LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
+                p.setCreatedAt(createAt);
+
+                Timestamp updateTime = rs.getTimestamp("created_at");
+                LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
+                p.setUpdatedAt(updateAt);
+
+                p.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
                 prescriptions.add(p);
             }
         }catch (SQLException e){
@@ -50,21 +63,37 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
 
     @Override
     public Prescription getById(int id) {
-        String sql = "select * from prescription where id = ?";
+        String sql = "select p.id, p.patient_id, p.staff_id, " +
+                "p.description, p.status, p.created_at, " +
+                "p.updated_at, p.is_deleted" +
+                " from prescription p where p.id = ?";
         Prescription p = new Prescription();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                Patient pt = new Patient();
+                Staff st = new Staff();
+
                 p.setId(rs.getInt("id"));
-                p.setPatient(findPatientById(rs.getInt("patient_id")));
-                p.setStaff(findStaffById(rs.getInt("staff_id")));
+                pt.setId(rs.getInt("patient_id"));
+                p.setPatient(Optional.of(pt));
+                st.setId(rs.getInt("staff_id"));
+                p.setStaff(Optional.of(st));
+
                 p.setDescription(rs.getString("description"));
                 p.setStatus(EStatus.valueOf(rs.getString("status")));
-                p.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                p.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
-                p.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+
+                Timestamp createTime = rs.getTimestamp("created_at");
+                LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
+                p.setCreatedAt(createAt);
+
+                Timestamp updateTime = rs.getTimestamp("updated_at");
+                LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
+                p.setUpdatedAt(updateAt);
+
+                p.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -74,21 +103,35 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
 
     @Override
     public ObservableList<Prescription> findByName(String name) {
-        String sql = "select * from prescription where name = ?";
+        String sql = "select p.id, p.patient_id, p.staff_id, " +
+                "p.description, p.status, p.created_at, p.updated_at" +
+                " from prescription p where p.name = ?";
         Prescription p = new Prescription();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, name);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
+                Patient pt = new Patient();
+                Staff st = new Staff();
+
                 p.setId(rs.getInt("id"));
-                p.setPatient(findPatientById(rs.getInt("patient_id")));
-                p.setStaff(findStaffById(rs.getInt("staff_id")));
+                pt.setId(rs.getInt("patient_id"));
+                p.setPatient(Optional.of(pt));
+                st.setId(rs.getInt("staff_id"));
+                p.setStaff(Optional.of(st));
+
                 p.setDescription(rs.getString("description"));
                 p.setStatus(EStatus.valueOf(rs.getString("status")));
-                p.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                p.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
-                p.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+                Timestamp createTime = rs.getTimestamp("created_at");
+                LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
+                p.setCreatedAt(createAt);
+
+                Timestamp updateTime = rs.getTimestamp("updated_at");
+                LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
+                p.setUpdatedAt(updateAt);
+
+                p.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
                 prescriptions.add(p);
             }
         }catch (SQLException e){
@@ -103,8 +146,8 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
-            ps.setInt(2, entity.getPatient().getId());
-            ps.setInt(3, entity.getStaff().getId());
+            ps.setInt(2, entity.getPatient().get().getId());
+            ps.setInt(3, entity.getStaff().get().getId());
             ps.setString(4, entity.getDescription());
             ps.setString(5, entity.getStatus().toString());
             ps.setString(6, entity.getCreatedAt().toString());
@@ -123,8 +166,8 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
-            ps.setInt(2, entity.getPatient().getId());
-            ps.setInt(3, entity.getStaff().getId());
+            ps.setInt(2, entity.getPatient().get().getId());
+            ps.setInt(3, entity.getStaff().get().getId());
             ps.setString(4, entity.getDescription());
             ps.setString(5, entity.getStatus().toString());
             ps.setString(6, entity.getCreatedAt().toString());
@@ -152,15 +195,4 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
         return false;
     }
 
-    public Staff findStaffById(int id) {
-        return staffs.stream()
-                .filter(s -> s.getId() == id)
-                .findFirst().orElse(null);
-    }
-
-    public Patient findPatientById(int id) {
-        return patients.stream()
-                .filter(p -> p.getId() == id)
-                .findFirst().orElse(null);
-    }
 }

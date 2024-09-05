@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Repository;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
+import com.aptech.eproject2_prosmiles.Global.Format;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Entity.PrescriptionDetail;
@@ -9,37 +10,50 @@ import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetail> {
     public static Connection conn = MySQLConnection.getConnection();
     public static ObservableList<PrescriptionDetail> psd = FXCollections.observableArrayList();
-    public static List<ServiceItem> serviceItems;
-    public static List<Prescription> prescriptions;
 
     @Override
     public ObservableList<PrescriptionDetail> getAll() {
-        String sql = "select * from prescription_detail";
+        String sql = "select pd.id, pd.service_item_id, pd.prescription_id,pd.unit," +
+                "pd.quantity,pd.price,pd.created_at," +
+                "pd.updated_at,pd.is_deleted " +
+                "from prescription_detail pd where 1=1";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                Prescription prescription = new Prescription();
+                ServiceItem serviceItem = new ServiceItem();
                 PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
                 prescriptionDetail.setId(rs.getInt("id"));
-                prescriptionDetail.setServiceItem(serviceItems.get(rs.getInt("service_item_id")));
-                prescriptionDetail.setPrescription(prescriptions.get(rs.getInt("prescription_id")));
+
+                serviceItem.setId(rs.getInt("service_item_id"));
+                prescriptionDetail.setServiceItem(Optional.of(serviceItem));
+
+                prescription.setId(rs.getInt("prescription_id"));
+                prescriptionDetail.setPrescription(Optional.of(prescription));
+
                 prescriptionDetail.setUnit(rs.getString("unit"));
                 prescriptionDetail.setQuantity(rs.getInt("quantity"));
                 prescriptionDetail.setPrice(rs.getDouble("price"));
-                prescriptionDetail.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                prescriptionDetail.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
-                prescriptionDetail.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+
+                Timestamp createTime = rs.getTimestamp("created_at");
+                LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
+                prescriptionDetail.setCreatedAt(createAt);
+
+                Timestamp updateTime = rs.getTimestamp("created_at");
+                LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
+                prescriptionDetail.setUpdatedAt(updateAt);
+
+                prescriptionDetail.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
                 psd.add(prescriptionDetail);
             }
         }catch (SQLException e){
@@ -50,22 +64,39 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
 
     @Override
     public PrescriptionDetail getById(int id) {
-        String sql = "select * from prescription_detail where id = ?";
+        String sql = "select pd.service_item_id, pd.prescription_id,pd.unit," +
+                "pd.quantity,pd.price,pd.created_at," +
+                "pd.updated_at,pd.is_deleted from prescription_detail pd where pd.prescription_id = ?";
         PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                prescriptionDetail.setId(psd.size() + 1);
-                prescriptionDetail.setServiceItem(serviceItems.get(rs.getInt("service_item_id")));
-                prescriptionDetail.setPrescription(prescriptions.get(rs.getInt("prescription_id")));
+                Prescription prescription = new Prescription();
+                ServiceItem serviceItem = new ServiceItem();
+
+                prescriptionDetail.setId(rs.getInt("id"));
+
+                serviceItem.setId(rs.getInt("service_item_id"));
+                prescriptionDetail.setServiceItem(Optional.of(serviceItem));
+
+                prescription.setId(rs.getInt("prescription_id"));
+                prescriptionDetail.setPrescription(Optional.of(prescription));
+
                 prescriptionDetail.setUnit(rs.getString("unit"));
                 prescriptionDetail.setQuantity(rs.getInt("quantity"));
                 prescriptionDetail.setPrice(rs.getDouble("price"));
-                prescriptionDetail.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                prescriptionDetail.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
-                prescriptionDetail.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+
+                Timestamp createTime = rs.getTimestamp("created_at");
+                LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
+                prescriptionDetail.setCreatedAt(createAt);
+
+                Timestamp updateTime = rs.getTimestamp("created_at");
+                LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
+                prescriptionDetail.setUpdatedAt(updateAt);
+
+                prescriptionDetail.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -75,28 +106,7 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
 
     @Override
     public ObservableList<PrescriptionDetail> findByName(String name) {
-        String sql = "select * from prescription_detail where prescription_name = ?";
-        PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
-        try{
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, name);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                prescriptionDetail.setId(psd.size() + 1);
-                prescriptionDetail.setServiceItem(serviceItems.get(rs.getInt("service_item_id")));
-                prescriptionDetail.setPrescription(prescriptions.get(rs.getInt("prescription_id")));
-                prescriptionDetail.setUnit(rs.getString("unit"));
-                prescriptionDetail.setQuantity(rs.getInt("quantity"));
-                prescriptionDetail.setPrice(rs.getDouble("price"));
-                prescriptionDetail.setCreatedAt(LocalDateTime.parse(rs.getString("created_at")));
-                prescriptionDetail.setUpdatedAt(LocalDateTime.parse(rs.getString("updated_at")));
-                prescriptionDetail.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
-                psd.add(prescriptionDetail);
-            }
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-        return psd;
+        return null;
     }
 
     @Override
@@ -104,8 +114,8 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
         String sql = "insert into prescription_detail values (?,?,?,?,?,?,?,?)";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, entity.getServiceItem().getId());
-            ps.setInt(2, entity.getPrescription().getId());
+            ps.setInt(1, entity.getServiceItem().get().getId());
+            ps.setInt(2, entity.getPrescription().get().getId());
             ps.setString(3, entity.getUnit());
             ps.setInt(4, entity.getQuantity());
             ps.setDouble(5, entity.getPrice());
@@ -124,8 +134,8 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
         String sql = "update prescription_detail set service_item_id=?,prescription_id=?,unit=?,quantity=?,price=?,created_at=? where id=?";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, entity.getServiceItem().getId());
-            ps.setInt(2, entity.getPrescription().getId());
+            ps.setInt(1, entity.getServiceItem().get().getId());
+            ps.setInt(2, entity.getPrescription().get().getId());
             ps.setString(3, entity.getUnit());
             ps.setInt(4, entity.getQuantity());
             ps.setDouble(5, entity.getPrice());

@@ -146,9 +146,11 @@ public class PermissionDAO implements DentalRepository<Permission> {
         Timestamp timestamp = rs.getTimestamp("create_at");
         LocalDateTime createAt = timestamp == null ? null : timestamp.toLocalDateTime();
         permission.setCreatedAt(createAt);
+
         Timestamp timestamp2 = rs.getTimestamp("update_at");
         LocalDateTime updateAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
         permission.setUpdatedAt(updateAt);
+
         return permission;
     }
 
