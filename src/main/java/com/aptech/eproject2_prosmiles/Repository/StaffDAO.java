@@ -25,8 +25,8 @@ public class StaffDAO implements DentalRepository<Staff> {
                     "FROM staff s " +
                     "WHERE s.phone = ? OR s.email = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, staff.getPhone());
-            pstmt.setString(2, staff.getEmail());
+            pstmt.setString(1, ((staff.getPhone() != null) ? staff.getPhone() : ""));
+            pstmt.setString(2, ((staff.getEmail())!= null) ? staff.getEmail() : "");
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 staff.setId(rs.getInt("id"));
@@ -108,7 +108,7 @@ public class StaffDAO implements DentalRepository<Staff> {
     public Staff save(Staff entity) {
         try {
             String sql = "INSERT INTO staff (role_id, first_name, last_name, gender, phone, password, address, email, " +
-                    "age, image_path, create_at) " +
+                    "age, image_path, created_at) " +
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, entity.getRole().getId());

@@ -16,6 +16,7 @@ public class AppProperties {
                 properties.load(inputStream);
             }
         }catch (IOException e) {
+            System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -32,6 +33,7 @@ public class AppProperties {
             FileOutputStream outputStream = new FileOutputStream(filePath);
             properties.store(outputStream, null);
         }catch (IOException e){
+            System.out.println(e.getMessage());
             throw new RuntimeException(e);
         }
 

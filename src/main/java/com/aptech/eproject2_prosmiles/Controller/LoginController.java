@@ -1,6 +1,8 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Global.AppProperties;
+import com.aptech.eproject2_prosmiles.Global.Validation;
+import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
 import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -44,6 +46,7 @@ public class LoginController implements Initializable {
         }
 
         btn_sign_in.setOnAction(new EventHandler<ActionEvent>() {
+            private Staff staff = new Staff();
 
             /*EVENT LOGIN BUTTON*/
             @Override
@@ -51,18 +54,28 @@ public class LoginController implements Initializable {
                 String username = txt_username.getText();
                 String password = pwd_password.getText();
 
+//                check is phoneNumber or email
+                if(Validation.isPhoneNumberValid(username)){
+                    staff.setPhone(username);
+                }
+                if(Validation.isEmailValid(username)){
+                    staff.setEmail(username);
+                }
+                staff.setPassword(password);
+
                 try {
                     lbl_authenticate.setText("");//Make sure the string is empty
 //                    alert if it empties
                     if (username.isEmpty()) throw new Exception("Username cannot be empty");
                     if (password.isEmpty()) throw new Exception("Password cannot be empty");
-//                    alert if it does not match
-                    if (!username.equals("admin") && lbl_authenticate.getText().isEmpty())
-                        throw new Exception("Username does not exist");
-                    if (!password.equals("admin") && lbl_authenticate.getText().isEmpty())
-                        throw new Exception("Password does not match");
-//                    load MainMenu if valid
-                    if (username.equals("admin") && password.equals("admin")) {
+
+//                    check login success
+                    if(AuthenticationService.login(staff)){
+                        System.out.println("login success");
+                    }
+
+
+                    if ((username.equals("admin") && password.equals("admin"))) {
 //                        write file properties
                         AppProperties.setProperty("staff.loggedin", "true");
                         AppProperties.setProperty("staff.username", username);
@@ -81,7 +94,7 @@ public class LoginController implements Initializable {
                 } catch (Exception e) {
                     lbl_authenticate.visibleProperty().set(true);//set visible true
                     lbl_authenticate.setStyle("-fx-text-fill: #f63838");
-                    lbl_authenticate.setText(e.getMessage());//Notification
+                    lbl_authenticate.setText("Login" + e.getMessage());//Notification
                 }
             }
             /*END EVENT LOGIN BUTTON*/

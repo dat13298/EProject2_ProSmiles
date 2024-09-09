@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MySQLConnection {
-    private static String url = "jdbc:mysql://localhost:3306/prosmiles";
+    private static String url = "jdbc:mysql://localhost:3306/ProSmiles";
     private static String user = "root";
     private static String password = "eProject2";
     public static Connection conn = null;
