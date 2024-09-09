@@ -25,16 +25,7 @@ public class AuthenticationService {
     /*REGISTER*/
     public static boolean register(Staff staff) {
 //        insert DB
-        System.out.println("Attempting to register with: " + staff.getPassword());//password register
         String hashedPassword = BCrypt.hashpw(staff.getPassword(), BCrypt.gensalt());// string hashPassword
-        System.out.println("Password hashed after register: " + hashedPassword);// print hash
-
-        System.out.println();
-        System.out.println("======test bcrypt checkpw======");
-//        check is match password and hashed String
-        System.out.println("Password is match after register: " + BCrypt.checkpw(staff.getPassword(), hashedPassword));//true
-        System.out.println();
-
         staff.setPassword(hashedPassword);//set hash to password property
         staffDAO.save(staff);
         return true;
