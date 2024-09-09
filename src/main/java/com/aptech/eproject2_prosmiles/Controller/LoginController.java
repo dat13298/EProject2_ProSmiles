@@ -90,12 +90,6 @@ public class LoginController implements Initializable {
 
 //                    load MainMenu if valid
                     if (AuthenticationService.login(staffLogin)) {
-//                        write file properties
-                        AppProperties.setProperty("staff.loggedin", "true");
-                        AppProperties.setProperty("staff.username", username);
-                        AppProperties.setProperty("staff.userrole", "admin");
-                        AppProperties.setProperty("staff.userid", "1");
-
 //                        Is remember
                         AppProperties.setProperty("staff.isremember", cb_remember.isSelected() ? "true" : "false");
 
@@ -104,7 +98,7 @@ public class LoginController implements Initializable {
                         stage.close(); //close login scene
 //                        load main menu
                         loadMainMenu();
-                    }
+                    } else throw new Exception("Invalid username or password");
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                     lbl_authenticate.visibleProperty().set(true);//set visible true
