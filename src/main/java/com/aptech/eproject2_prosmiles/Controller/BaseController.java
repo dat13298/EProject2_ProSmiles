@@ -45,7 +45,7 @@ public abstract class BaseController implements Initializable {
     }
 
     /*CHECK ACCESS METHOD*/
-    private void checkAccessMethod(Method method) {
+    protected void checkMethodAccess(Method method) {
         RolePermissionRequired annotationRole = method.getAnnotation(RolePermissionRequired.class);
 
         if(annotationRole != null){
