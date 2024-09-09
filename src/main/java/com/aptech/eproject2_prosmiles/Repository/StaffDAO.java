@@ -46,7 +46,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             String sql = "SELECT " +
                     "s.id, s.role_id, s.first_name, s.last_name, " +
                     "s.gender, s.phone, s.password, s.address, s.email, " +
-                    "s.age, s.image_path, s.create_at, s.update_at, s.is_deleted " +
+                    "s.age, s.image_path, s.created_at, s.updated_at, s.is_deleted " +
                     "FROM staff s " +
                     "WHERE 1=1 LIMIT 100";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -70,7 +70,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             String sql = "SELECT " +
                     "s.id, s.role_id, s.first_name, s.last_name, " +
                     "s.gender, s.phone, s.password, s.address, s.email, " +
-                    "s.age, s.image_path, s.create_at, s.update_at, s.is_deleted " +
+                    "s.age, s.image_path, s.created_at, s.updated_at, s.is_deleted " +
                     "FROM staff s " +
                     "WHERE s.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -108,7 +108,7 @@ public class StaffDAO implements DentalRepository<Staff> {
     public Staff save(Staff entity) {
         try {
             String sql = "INSERT INTO staff (role_id, first_name, last_name, gender, phone, password, address, email, " +
-                    "age, image_path, create_at) " +
+                    "age, image_path, created_at) " +
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, entity.getRole().getId());

@@ -1,6 +1,11 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Global.AppProperties;
+import com.aptech.eproject2_prosmiles.Global.Format;
+import com.aptech.eproject2_prosmiles.Global.Validation;
+import com.aptech.eproject2_prosmiles.Model.Entity.Role;
+import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
+import com.aptech.eproject2_prosmiles.Model.Enum.EGender;
 import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -15,6 +20,8 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -61,17 +68,28 @@ public class LoginController implements Initializable {
                 String password = pwd_password.getText();
 
                 try {
+
+//                    cloneRegister();
+
+                    Staff staffLogin = new Staff();
+                    if(Validation.isEmailValid(username)){
+                        System.out.println("mail ok");
+                        staffLogin.setEmail(username);
+                        staffLogin.setPassword(password);
+                    }
+                    if (Validation.isPhoneNumberValid(username)) {
+                        System.out.println("phone number ok");
+                        staffLogin.setPhone(username);
+                        staffLogin.setPassword(password);
+                    }
+
                     lbl_authenticate.setText("");//Make sure the string is empty
 //                    alert if it empties
                     if (username.isEmpty()) throw new Exception("Username cannot be empty");
                     if (password.isEmpty()) throw new Exception("Password cannot be empty");
-//                    alert if it does not match
-                    if (!username.equals("admin") && lbl_authenticate.getText().isEmpty())
-                        throw new Exception("Username does not exist");
-                    if (!password.equals("admin") && lbl_authenticate.getText().isEmpty())
-                        throw new Exception("Password does not match");
+
 //                    load MainMenu if valid
-                    if (username.equals("admin") && password.equals("admin")) {
+                    if (AuthenticationService.login(staffLogin)) {
 //                        write file properties
                         AppProperties.setProperty("staff.loggedin", "true");
                         AppProperties.setProperty("staff.username", username);
@@ -88,6 +106,7 @@ public class LoginController implements Initializable {
                         loadMainMenu();
                     }
                 } catch (Exception e) {
+                    System.out.println(e.getMessage());
                     lbl_authenticate.visibleProperty().set(true);//set visible true
                     lbl_authenticate.setStyle("-fx-text-fill: #f63838");
                     lbl_authenticate.setText(e.getMessage());//Notification
@@ -130,5 +149,25 @@ public class LoginController implements Initializable {
             pwd_password.setManaged(true);
             btn_toggle_password.setText("Show");
         }
+    }
+
+    public static void cloneRegister() {
+        Staff staffRegister = new Staff();
+        Role roleRegister = new Role();
+        roleRegister.setId(1);
+        staffRegister.setRole(Optional.of(roleRegister));
+        staffRegister.setFirstName("asd");
+        staffRegister.setLastName("asd");
+        staffRegister.setEGender(EGender.MALE);
+        staffRegister.setPhone("0123456789");
+        staffRegister.setAddress("285 Doi can");
+        staffRegister.setPassword("admin");
+        staffRegister.setEmail("admin@aptech.com");
+        staffRegister.setAge(20);
+        staffRegister.setImagePath("imagePath");
+        staffRegister.setCreatedAt(LocalDateTime.now());
+
+        AuthenticationService.register(staffRegister);
+
     }
 }
