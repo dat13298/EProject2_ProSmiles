@@ -193,21 +193,21 @@ public class StaffDAO implements DentalRepository<Staff> {
         staff.setRole(Optional.of(role));// Wrap the Role in an Optional and set it to the Staff object
         staff.setFirstName(rs.getString("first_name"));
         staff.setLastName(rs.getString("last_name"));
-        staff.setEGender(EGender.valueOf(rs.getString("gender")));
+        staff.setEGender(EGender.fromValue(rs.getString("gender")));
         staff.setPhone(rs.getString("phone"));
         staff.setPassword(rs.getString("password"));
         staff.setAddress(rs.getString("address"));
         staff.setEmail(rs.getString("email"));
         staff.setAge(rs.getInt("age"));
         staff.setImagePath(rs.getString("image_path"));
-        staff.setIsDeleted(EIsDeleted.valueOf(rs.getString("is_deleted")));
+        staff.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
 //        convert datetime
-        Timestamp timestamp = rs.getTimestamp("create_at");
-        LocalDateTime create_at = timestamp == null ? null : timestamp.toLocalDateTime();
-        staff.setCreatedAt(create_at);
-        Timestamp timestamp2 = rs.getTimestamp("update_at");
-        LocalDateTime updateAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
-        staff.setUpdatedAt(updateAt);
+        Timestamp timestamp = rs.getTimestamp("created_at");
+        LocalDateTime created_at = timestamp == null ? null : timestamp.toLocalDateTime();
+        staff.setCreatedAt(created_at);
+        Timestamp timestamp2 = rs.getTimestamp("updated_at");
+        LocalDateTime updatedAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
+        staff.setUpdatedAt(updatedAt);
         return staff;
     }
 }

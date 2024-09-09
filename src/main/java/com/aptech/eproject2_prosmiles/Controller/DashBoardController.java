@@ -4,12 +4,15 @@ package com.aptech.eproject2_prosmiles.Controller;
 import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
@@ -54,8 +57,25 @@ public class DashBoardController implements Initializable {
     private MenuButton btn_report_overview;
     @FXML
     private Rectangle btn_report_overview_underline;
+    @FXML private StackPane stackPaneContent;
 
 
+    public void setContent(Parent newContentPane){
+        stackPaneContent.getChildren().clear();
+        stackPaneContent.getChildren().add(newContentPane);
+    }
+
+    public void getContentPane(String fileFXML) {
+        Parent newContentPane;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource(fileFXML));
+            newContentPane = loader.load();
+            setContent(newContentPane);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
@@ -88,6 +108,14 @@ public class DashBoardController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
+
+//        Service
+        btn_service.setOnAction((new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                getContentPane("/com/aptech/eproject2_prosmiles/View/Service/ServiceList.fxml");
+            }
+        }));
 
     }
 

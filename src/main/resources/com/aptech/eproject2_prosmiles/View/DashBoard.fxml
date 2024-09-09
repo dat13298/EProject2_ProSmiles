@@ -19,7 +19,9 @@
     <children>
         <BorderPane prefHeight="600.0" prefWidth="1000.0">
             <center>
-                <StackPane prefHeight="600.0" prefWidth="772.0" BorderPane.alignment="CENTER" />
+                <StackPane fx:id="stackPaneContent" prefHeight="600.0" prefWidth="772.0" BorderPane.alignment="CENTER" >
+
+                </StackPane>
             </center>
             <left>
                 <VBox prefHeight="540.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
