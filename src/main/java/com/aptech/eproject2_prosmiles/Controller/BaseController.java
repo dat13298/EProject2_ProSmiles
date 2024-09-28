@@ -15,7 +15,12 @@ public abstract class BaseController implements Initializable {
     protected Staff currentStaff;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        loadCurrentStaff();
 
+        RolePermissionRequired annotation = getClass().getAnnotation(RolePermissionRequired.class);
+        if (annotation != null) {
+            checkAccess(annotation);
+        }
     }
 
     /*LOAD CURRENT STAFF*/
