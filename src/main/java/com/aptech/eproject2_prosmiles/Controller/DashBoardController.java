@@ -109,6 +109,22 @@ public class DashBoardController implements Initializable {
             }
         });
 
+//        Prescription
+        btn_prescription.setOnAction((new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                getContentPane("/com/aptech/eproject2_prosmiles/View/Prescription/PrescriptionList.fxml");
+            }
+        }));
+
+//        Patient
+        btn_patient.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                getContentPane("/com/aptech/eproject2_prosmiles/View/Patient/PatientList.fxml");
+            }
+        });
+
 //        Service
         btn_service.setOnAction((new EventHandler<ActionEvent>() {
             @Override
@@ -117,6 +133,21 @@ public class DashBoardController implements Initializable {
             }
         }));
 
+//        Payment
+        btn_payment.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                getContentPane("/com/aptech/eproject2_prosmiles/View/Payment/PaymentList.fxml");
+            }
+        });
+
+//        Staff Manager
+        btn_staff.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                getContentPane("/com/aptech/eproject2_prosmiles/View/StaffManager/StaffList.fxml");
+            }
+        });
     }
 
     private void setupUnderlineEffect(Button button, Rectangle underline) {
