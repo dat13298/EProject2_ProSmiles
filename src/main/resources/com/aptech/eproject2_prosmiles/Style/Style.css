@@ -43,6 +43,11 @@
     -fx-background-color: #E7E5DF;
 }
 
+.button-delete{
+    -fx-background-color: red;
+    -fx-text-fill: white;
+}
+
 .dashboard-top{
     -fx-border-width: 0 0 2px 0;
     -fx-border-color: #000000;
