@@ -13,10 +13,10 @@
             <columns>
                 <TableColumn prefWidth="40.0" text="ID" />
                 <TableColumn prefWidth="175.0" text="Patient's Name" />
-                <TableColumn prefWidth="185.0" text="Prescription" />
-                <TableColumn prefWidth="141.0" text="Service's Name" />
-                <TableColumn prefWidth="142.0" text="Created Time" />
-                <TableColumn prefWidth="72.0" text="Status" />
+                <TableColumn prefWidth="183.0" text="Payment Number" />
+                <TableColumn prefWidth="110.0" text="Amount" />
+                <TableColumn prefWidth="152.0" text="Payment type" />
+                <TableColumn prefWidth="95.0" text="Status" />
             </columns>
         </TableView>
         <Button layoutX="611.0" layoutY="14.0" mnemonicParsing="false" text="Add New Payment">
@@ -25,10 +25,10 @@
                 <String fx:value="title" />
             </styleClass>
         </Button>
-        <Label layoutX="14.0" layoutY="19.0" styleClass="title" text="Prescription's List" />
+        <Label layoutX="14.0" layoutY="19.0" styleClass="title" text="Payment's List" />
       <Button layoutX="468.0" layoutY="14.0" mnemonicParsing="false" text="Delete Payment">
          <styleClass>
-            <String fx:value="master_button" />
+            <String fx:value="button-delete" />
             <String fx:value="title" />
          </styleClass>
       </Button>
