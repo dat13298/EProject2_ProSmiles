@@ -105,8 +105,6 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-border-color: transparent;
-    -fx-border-radius: 10 10 0 0;
-    -fx-padding: 10;
     -fx-alignment: CENTER;
 }
 
