@@ -32,6 +32,7 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+
                 Prescription p = new Prescription();
                 Patient pt = new Patient();
                 Staff st = new Staff();
@@ -41,8 +42,8 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
                 p.setPatient(Optional.of(pt));
                 st.setId(rs.getInt("staff_id"));
                 p.setStaff(Optional.of(st));
-
-                p.setStatus(EStatus.fromString(rs.getString("status")));
+                String status = rs.getString("status");
+                p.setStatus(EStatus.fromString(status));
 
                 Timestamp createTime = rs.getTimestamp("created_at");
                 LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
@@ -83,7 +84,7 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
                 p.setStaff(Optional.of(st));
 
                 p.setDescription(rs.getString("description"));
-                p.setStatus(EStatus.valueOf(rs.getString("status")));
+                p.setStatus(EStatus.fromString(rs.getString("status")));
 
                 Timestamp createTime = rs.getTimestamp("created_at");
                 LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();

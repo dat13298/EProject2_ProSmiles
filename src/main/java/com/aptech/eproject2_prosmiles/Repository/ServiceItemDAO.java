@@ -23,7 +23,7 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
         ObservableList<ServiceItem> serviceItemsList = FXCollections.observableArrayList();
         try{
             String sql = "SELECT si.id, si.service_id, si.name, si.price, si.unit, si.quantity, si.description" +
-                    ",si.dosage, si.usage_instruction, si.created_at, si.update_at, si.is_deleted FROM service_item si " +
+                    ",si.dosage, si.usage_instruction, si.created_at, si.updated_at, si.is_deleted FROM service_item si " +
                     "WHERE 1=1 LIMIT 100";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
@@ -41,8 +41,8 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
     @Override
     public ServiceItem getById(int id) {
         try{
-            String sql = "SELECT si.service_id, si.name, si.price, si.unit, si.quantity, si.description" +
-                    ",si.dosage, si.usage_instruction, si.created_at, si.update_at, si.is_deleted " +
+            String sql = "SELECT si.id, si.service_id, si.name, si.price, si.unit, si.quantity, si.description" +
+                    ",si.dosage, si.usage_instruction, si.created_at, si.updated_at, si.is_deleted " +
                     "FROM service_item si " +
                     "WHERE si.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -155,7 +155,7 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
         LocalDateTime create_at = timestamp == null ? null : timestamp.toLocalDateTime();
         serviceItem.setCreatedAt(create_at);
 
-        Timestamp timestamp2 = rs.getTimestamp("update_at");
+        Timestamp timestamp2 = rs.getTimestamp("updated_at");
         LocalDateTime updateAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
         serviceItem.setUpdatedAt(updateAt);
 
