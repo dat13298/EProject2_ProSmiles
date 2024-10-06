@@ -22,7 +22,7 @@
             <String fx:value="title" />
          </styleClass>
       </Button>
-      <Button layoutX="240.0" layoutY="308.0" mnemonicParsing="false" text="Delete">
+      <Button layoutX="240.0" layoutY="308.0" mnemonicParsing="false" text="Cancel">
          <styleClass>
             <String fx:value="button-delete" />
             <String fx:value="title" />
@@ -45,5 +45,13 @@
             <String fx:value="master-dashboard" />
          </styleClass>
       </ComboBox>
+      <Label layoutX="325.0" layoutY="251.0" styleClass="title" text="Image" />
+      <Button layoutX="461.0" layoutY="246.0" mnemonicParsing="false" text="Upload here">
+         <styleClass>
+            <String fx:value="master_button" />
+            <String fx:value="title" />
+         </styleClass>
+      </Button>
+      <Label layoutX="391.0" layoutY="247.0" styleClass="input-field" text="File path" />
    </children>
 </AnchorPane>
