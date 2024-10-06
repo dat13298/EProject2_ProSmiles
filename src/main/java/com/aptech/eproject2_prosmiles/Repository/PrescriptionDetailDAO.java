@@ -64,7 +64,7 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
 
     @Override
     public PrescriptionDetail getById(int id) {
-        String sql = "select pd.service_item_id, pd.prescription_id,pd.unit," +
+        String sql = "select pd.id, pd.service_item_id, pd.prescription_id,pd.unit," +
                 "pd.quantity,pd.price,pd.created_at," +
                 "pd.updated_at,pd.is_deleted from prescription_detail pd where pd.prescription_id = ?";
         PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
