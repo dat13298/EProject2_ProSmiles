@@ -14,4 +14,6 @@ module com.aptech.eproject2_prosmiles {
     exports com.aptech.eproject2_prosmiles;
     exports com.aptech.eproject2_prosmiles.Controller;
     opens com.aptech.eproject2_prosmiles.Controller to javafx.fxml;
+
+    opens com.aptech.eproject2_prosmiles.Model.Entity to javafx.base;
 }

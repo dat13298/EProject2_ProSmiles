@@ -8,7 +8,7 @@ import java.util.OptionalInt;
 
 public class ServiceItem {
     private int id;
-    private Optional<Service> service;
+    private Service service;
     private String name;
     private double price;
     private String unit;
@@ -21,7 +21,7 @@ public class ServiceItem {
     private EIsDeleted isDeleted;
     public ServiceItem() {;}
 
-    public ServiceItem(int id, Optional<Service> service, String name, double price
+    public ServiceItem(int id, Service service, String name, double price
             , String unit, int quantity, String description, String dosage, String usageInstruction
             , LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted) {
         this.id = id;
@@ -46,13 +46,15 @@ public class ServiceItem {
         this.id = id;
     }
 
-    public Optional<Service> getService() {
-        return service;
+    public Service getService() {
+        return service ;
     }
 
     public void setService(Optional<Service> service) {
-        this.service = service;
+        this.service = service.orElse(null);
     }
+
+    public void setService(Service service) {this.service = service;}
 
     public String getName() {
         return name;

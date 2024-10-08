@@ -57,6 +57,7 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
         return null;
     }
 
+
     @Override
     public ObservableList<ServiceItem> findByName(String name) {
         String[] keywords = name.split("");
@@ -80,7 +81,7 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
             String sql = "INSERT INTO service_item (service_id, name, price, unit, quantity, description, dosage, usage_instruction, created_at) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, entity.getService().get().getId());
+            pstmt.setInt(1, entity.getService().getId());
             pstmt.setString(2, entity.getName());
             pstmt.setDouble(3, entity.getPrice());
             pstmt.setString(4, entity.getUnit());
@@ -102,10 +103,10 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
         try{
             String sql = "UPDATE service_item si " +
                     "SET si.service_id = ?, si.name = ?, si.price = ?, si.unit = ?, si.quantity = ?" +
-                    ", si.description = ?, si.dosage = ?, si.usage_instruction = ?, si.update_at = ? " +
+                    ", si.description = ?, si.dosage = ?, si.usage_instruction = ?, si.updated_at = ? " +
                     "WHERE si.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, entity.getService().get().getId());
+            pstmt.setInt(1, entity.getService().getId());
             pstmt.setString(2, entity.getName());
             pstmt.setDouble(3, entity.getPrice());
             pstmt.setString(4, entity.getUnit());

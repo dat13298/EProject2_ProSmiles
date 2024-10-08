@@ -7,8 +7,8 @@ import java.util.Optional;
 
 public class PrescriptionDetail {
     private int id;
-    private Optional<ServiceItem> serviceItem;
-    private Optional<Prescription> prescription;
+    private Service service;
+    private Prescription prescription;
     private String unit;
     private int quantity;
     private double price;
@@ -17,10 +17,10 @@ public class PrescriptionDetail {
     private EIsDeleted isDeleted;
     public PrescriptionDetail() {;}
 
-    public PrescriptionDetail(int id, Optional<ServiceItem> serviceItem, Optional<Prescription> prescription, String unit
+    public PrescriptionDetail(int id, Service service, Prescription prescription, String unit
             , int quantity, double price, LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted) {
         this.id = id;
-        this.serviceItem = serviceItem;
+        this.service = service;
         this.prescription = prescription;
         this.unit = unit;
         this.quantity = quantity;
@@ -38,20 +38,20 @@ public class PrescriptionDetail {
         this.id = id;
     }
 
-    public Optional<ServiceItem> getServiceItem() {
-        return serviceItem;
+    public Service getService() {
+        return service;
     }
 
-    public void setServiceItem(Optional<ServiceItem> serviceItem) {
-        this.serviceItem = serviceItem;
+    public void setService(Optional<Service> service) {
+        this.service = service.orElse(null);
     }
 
-    public Optional<Prescription> getPrescription() {
+    public Prescription getPrescription() {
         return prescription;
     }
 
     public void setPrescription(Optional<Prescription> prescription) {
-        this.prescription = prescription;
+        this.prescription = prescription.orElse(null);
     }
 
     public String getUnit() {
@@ -106,7 +106,7 @@ public class PrescriptionDetail {
     public String toString() {
         return "PrescriptionDetail{" +
                 "id=" + id +
-                ", serviceItem=" + serviceItem +
+                ", serviceItem=" + service +
                 ", prescription=" + prescription +
                 ", unit='" + unit + '\'' +
                 ", quantity=" + quantity +

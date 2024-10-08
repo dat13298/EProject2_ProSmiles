@@ -45,11 +45,13 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
                 String status = rs.getString("status");
                 p.setStatus(EStatus.fromString(status));
 
+                p.setDescription(rs.getString("description"));
+
                 Timestamp createTime = rs.getTimestamp("created_at");
                 LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
                 p.setCreatedAt(createAt);
 
-                Timestamp updateTime = rs.getTimestamp("created_at");
+                Timestamp updateTime = rs.getTimestamp("updated_at");
                 LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
                 p.setUpdatedAt(updateAt);
 
@@ -147,13 +149,13 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
-            ps.setInt(2, entity.getPatient().get().getId());
-            ps.setInt(3, entity.getStaff().get().getId());
+            ps.setInt(2, entity.getPatient().getId());
+            ps.setInt(3, entity.getStaff().getId());
             ps.setString(4, entity.getDescription());
-            ps.setString(5, entity.getStatus().toString());
+            ps.setString(5, entity.getStatus().getStatus());
             ps.setString(6, entity.getCreatedAt().toString());
             ps.setString(7, entity.getUpdatedAt().toString());
-            ps.setString(8, entity.getIsDeleted().toString());
+            ps.setInt(8, entity.getIsDeleted().getValue());
             ps.executeUpdate();
         }catch (SQLException e){
             e.printStackTrace();
@@ -167,10 +169,10 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
-            ps.setInt(2, entity.getPatient().get().getId());
-            ps.setInt(3, entity.getStaff().get().getId());
+            ps.setInt(2, entity.getPatient().getId());
+            ps.setInt(3, entity.getStaff().getId());
             ps.setString(4, entity.getDescription());
-            ps.setString(5, entity.getStatus().toString());
+            ps.setString(5, entity.getStatus().getStatus());
             ps.setString(6, entity.getCreatedAt().toString());
             ps.setString(7, entity.getUpdatedAt().toString());
             ps.setInt(8, entity.getId());
