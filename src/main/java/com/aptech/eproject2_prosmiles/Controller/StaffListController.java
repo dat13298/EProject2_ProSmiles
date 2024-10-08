@@ -104,11 +104,14 @@ public class StaffListController extends BaseController {
 
             StaffDetailController detailController = loader.getController();
             detailController.setStaffDetails(staffClicked);
+            detailController.setDialogStage(dialogStage);
 
             dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.show();
+            dialogStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 }
