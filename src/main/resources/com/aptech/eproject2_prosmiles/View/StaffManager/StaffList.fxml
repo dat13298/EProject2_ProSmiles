@@ -7,17 +7,20 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="540.0" prefWidth="777.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.View.StaffManager.StaffList">
+<AnchorPane prefHeight="540.0" prefWidth="777.0"
+            styleClass="parent" stylesheets="@../../Style/Style.css"
+            xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.aptech.eproject2_prosmiles.Controller.StaffListController">
 <children>
-        <TableView layoutY="52.0" prefHeight="488.0" prefWidth="777.0">
+        <TableView fx:id="tblStaff" layoutY="52.0" prefHeight="488.0" prefWidth="777.0">
             <columns>
-                <TableColumn prefWidth="40.0" text="ID" />
-                <TableColumn prefWidth="175.0" text="Staff Name" />
-                <TableColumn prefWidth="107.0" text="Gender" />
-                <TableColumn prefWidth="93.0" text="Position" />
-                <TableColumn prefWidth="131.0" text="Phone Number" />
-                <TableColumn prefWidth="101.0" text="Email" />
-            <TableColumn prefWidth="108.0" text="Age" />
+                <TableColumn fx:id="c_id" prefWidth="40.0" text="ID" />
+                <TableColumn fx:id="c_name" prefWidth="175.0" text="Staff Name" />
+                <TableColumn fx:id="c_gender" prefWidth="107.0" text="Gender" />
+                <TableColumn fx:id="c_role" prefWidth="93.0" text="Position" />
+                <TableColumn fx:id="c_phone" prefWidth="131.0" text="Phone Number" />
+                <TableColumn fx:id="c_email" prefWidth="101.0" text="Email" />
+                <TableColumn fx:id="c_age" prefWidth="108.0" text="Age" />
             </columns>
         </TableView>
         <Button layoutX="639.0" layoutY="14.0" mnemonicParsing="false" text="Add New Staff">
