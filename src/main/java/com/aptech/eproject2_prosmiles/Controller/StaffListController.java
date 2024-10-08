@@ -8,10 +8,13 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -34,6 +37,7 @@ public class StaffListController extends BaseController {
     @FXML private TableColumn<Staff, String> c_phone;
     @FXML private TableColumn<Staff, String> c_email;
     @FXML private TableColumn<Staff, Integer> c_age;
+    @FXML private Button btn_add_staff;
 
     private ObservableList<Staff> staffList;
 
@@ -83,6 +87,15 @@ public class StaffListController extends BaseController {
             });
             return row;
         });
+
+        btn_add_staff.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Staff newStaff = new Staff();
+                boolean isEditMode = false;
+                showAddEditForm(newStaff, isEditMode);
+            }
+        });
     }
 
     private void showStaffDetail(Staff staffClicked) {
@@ -113,5 +126,24 @@ public class StaffListController extends BaseController {
         }
     }
 
+    private void showAddEditForm(Staff staff, boolean isEditMode) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/StaffManager/AddEditStaff.fxml"));
+            Stage dialogStage = new Stage();
+            StaffDAO staffDAO = new StaffDAO();
+            dialogStage.setTitle(isEditMode ? "Edit Staff" : "Add Staff");
 
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(tblStaff.getScene().getWindow());
+            dialogStage.setScene(new Scene(loader.load()));
+            AddEditStaffController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setEditMode(isEditMode);
+            controller.setStaff(staff);
+            dialogStage.showAndWait();
+
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
 }
