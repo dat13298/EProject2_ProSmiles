@@ -141,6 +141,16 @@ public class StaffListController extends BaseController {
             controller.setEditMode(isEditMode);
             controller.setStaff(staff);
             dialogStage.showAndWait();
+            if (controller.getIsSaved()) {
+                if (isEditMode) {
+                    staffDAO.update(staff);
+                } else {
+                    staffList = staffDAO.getAll();
+                }
+                tblStaff.setItems(staffList);
+                tblStaff.refresh();
+            }
+
 
         }catch (IOException e){
             e.printStackTrace();
