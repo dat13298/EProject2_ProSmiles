@@ -67,9 +67,7 @@ public class AddEditStaffController extends BaseController {
         ObservableList<Role> roles = roleDAO.getAll();
         cmb_role.getItems().clear();
         cmb_role.getItems().addAll(roles);
-//        for (Role role : roles) {
-//            cmb_role.getItems().add(role.getTitle());
-//        }
+
         cmb_gender.getItems().clear();
         for (EGender gender : EGender.values()) {
             cmb_gender.getItems().add(gender);
