@@ -12,31 +12,13 @@ import java.util.ResourceBundle;
 
 public class StaffDetailController extends BaseController{
     @FXML
-    private Label lbl_title_staff_name;
-    @FXML
     private Label lbl_staff_name;
-    @FXML
-    private ImageView ava_staff;
-    @FXML
-    private Circle ava_clip;
-    @FXML
-    private Label lbl_title_staff_position;
-    @FXML
-    private Label lbl_staff_position;
-    @FXML
-    private Label lbl_title_staff_gender;
     @FXML
     private Label lbl_staff_gender;
     @FXML
-    private Label lbl_title_staff_email;
-    @FXML
     private Label lbl_staff_email;
     @FXML
-    private Label lbl_title_staff_phone_number;
-    @FXML
     private Label lbl_staff_phone_number;
-    @FXML
-    private Label lbl_title_staff_address;
     @FXML
     private Label lbl_staff_address;
     @FXML
@@ -52,7 +34,9 @@ public class StaffDetailController extends BaseController{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        btn_edit.setOnAction(event -> {
 
+        });
         btn_cancel.setOnAction(event -> dialogStage.close());
     }
 

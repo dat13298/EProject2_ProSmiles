@@ -97,15 +97,6 @@ public class Role {
 
     @Override
     public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", slug='" + slug + '\'' +
-                ", description='" + description + '\'' +
-                ", isDeleted=" + isDeleted +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", permissions=" + permissions +
-                '}';
+        return title;
     }
 }
