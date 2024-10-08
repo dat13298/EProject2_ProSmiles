@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.View.AppointmentDetail">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.PrescriptionDetailController">
     <children>
         <Label layoutX="14.0" layoutY="14.0" styleClass="title" text="Prescription Detail" />
         <Label layoutX="14.0" layoutY="50.0" styleClass="title" text="Patient Name" />
@@ -19,18 +19,18 @@
                 <String fx:value="title" />
             </styleClass>
         </Button>
-        <Button layoutX="235.0" layoutY="355.0" mnemonicParsing="false" text="Cancel">
+        <Button fx:id="btnCancel" layoutX="235.0" layoutY="355.0" mnemonicParsing="false" text="Cancel">
             <styleClass>
                 <String fx:value="button-delete" />
                 <String fx:value="title" />
             </styleClass>
         </Button>
-        <Label layoutX="133.0" layoutY="95.0" text="Bệnh :) detect = AI" />
-        <Label layoutX="133.0" layoutY="50.0" text="Patient's Name" />
-        <Label layoutX="414.0" layoutY="95.0" text="Status" />
+        <Label fx:id="lblDescription" layoutX="133.0" layoutY="95.0" text="Bệnh :) detect = AI" />
+        <Label fx:id="lblPatientName" layoutX="133.0" layoutY="50.0" text="Patient's Name" />
+        <Label fx:id="lblStatus" layoutX="414.0" layoutY="95.0" text="StatusTTT" />
       <Label layoutX="294.0" layoutY="50.0" styleClass="title" text="Staff Name" />
-      <Label layoutX="413.0" layoutY="50.0" text="Staff's Name" />
-      <TableView layoutY="124.0" prefHeight="223.0" prefWidth="600.0">
+      <Label fx:id="lblStaffName" layoutX="413.0" layoutY="50.0" text="Staff's Name" />
+      <TableView fx:id="tblServiceItems" layoutY="124.0" prefHeight="223.0" prefWidth="600.0">
         <columns>
           <TableColumn prefWidth="75.0" text="ID" />
           <TableColumn prefWidth="158.0" text="Service Name" />
