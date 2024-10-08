@@ -2,6 +2,7 @@ package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Model.Entity.Role;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
+import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.RoleDAO;
 import com.aptech.eproject2_prosmiles.Repository.StaffDAO;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -14,10 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableRow;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -26,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class StaffListController extends BaseController {
@@ -38,6 +37,7 @@ public class StaffListController extends BaseController {
     @FXML private TableColumn<Staff, String> c_email;
     @FXML private TableColumn<Staff, Integer> c_age;
     @FXML private Button btn_add_staff;
+    @FXML private Button btn_delete_staff;
 
     private ObservableList<Staff> staffList;
 
@@ -96,11 +96,36 @@ public class StaffListController extends BaseController {
                 showAddEditForm(newStaff, isEditMode);
             }
         });
+
+        btn_delete_staff.setOnAction(event -> {
+            Staff selectedStaff = tblStaff.getSelectionModel().getSelectedItem();
+            if (selectedStaff != null) {
+                boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
+                if (confirmed) {
+                    selectedStaff.setIsDeleted(EIsDeleted.INACTIVE);
+                    staffDAO.delete(selectedStaff);//remove from the DB
+                    tblStaff.getItems().remove(selectedStaff);//remove from the list
+                    tblStaff.refresh();
+                }
+            }
+        });
     }
+
+    private boolean showConfirmationDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
 
     private void showStaffDetail(Staff staffClicked) {
         try {
-            InputStream fxmlStream = getClass().getResourceAsStream("/com/aptech/eproject2_prosmiles/View/StaffManager/StaffDetail.fxml");
+            InputStream fxmlStream = getClass()
+                    .getResourceAsStream("/com/aptech/eproject2_prosmiles/View/StaffManager/StaffDetail.fxml");
             if (fxmlStream == null) {
                 System.err.println("FXML file not found");
                 return;
@@ -112,7 +137,8 @@ public class StaffListController extends BaseController {
             dialogStage.setTitle("Staff Detail");
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/aptech/eproject2_prosmiles/Style/Style.css")).toExternalForm());
+            scene.getStylesheets().add(Objects.requireNonNull(getClass()
+                    .getResource("/com/aptech/eproject2_prosmiles/Style/Style.css")).toExternalForm());
             dialogStage.setScene(scene);
 
             StaffDetailController detailController = loader.getController();
@@ -128,7 +154,8 @@ public class StaffListController extends BaseController {
 
     private void showAddEditForm(Staff staff, boolean isEditMode) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/StaffManager/AddEditStaff.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/com/aptech/eproject2_prosmiles/View/StaffManager/AddEditStaff.fxml"));
             Stage dialogStage = new Stage();
             StaffDAO staffDAO = new StaffDAO();
             dialogStage.setTitle(isEditMode ? "Edit Staff" : "Add Staff");
@@ -150,8 +177,6 @@ public class StaffListController extends BaseController {
                 tblStaff.setItems(staffList);
                 tblStaff.refresh();
             }
-
-
         }catch (IOException e){
             e.printStackTrace();
         }
