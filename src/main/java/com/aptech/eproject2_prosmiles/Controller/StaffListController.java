@@ -5,7 +5,6 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.RoleDAO;
 import com.aptech.eproject2_prosmiles.Repository.StaffDAO;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -16,7 +15,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -121,7 +119,6 @@ public class StaffListController extends BaseController {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-
     private void showStaffDetail(Staff staffClicked) {
         try {
             InputStream fxmlStream = getClass()
@@ -144,6 +141,7 @@ public class StaffListController extends BaseController {
             StaffDetailController detailController = loader.getController();
             detailController.setStaffDetails(staffClicked);
             detailController.setDialogStage(dialogStage);
+            detailController.setStaffListController(this);
 
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.showAndWait();
@@ -152,33 +150,46 @@ public class StaffListController extends BaseController {
         }
     }
 
-    private void showAddEditForm(Staff staff, boolean isEditMode) {
+    public void showAddEditForm(Staff staff, boolean isEditMode) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("/com/aptech/eproject2_prosmiles/View/StaffManager/AddEditStaff.fxml"));
             Stage dialogStage = new Stage();
             StaffDAO staffDAO = new StaffDAO();
+
+            // Set the title based on the mode (edit or add)
             dialogStage.setTitle(isEditMode ? "Edit Staff" : "Add Staff");
 
+            // Set the modality and owner for the dialog
             dialogStage.initModality(Modality.WINDOW_MODAL);
             dialogStage.initOwner(tblStaff.getScene().getWindow());
+
+            // Load the FXML and get the controller
             dialogStage.setScene(new Scene(loader.load()));
             AddEditStaffController controller = loader.getController();
+
+            // Set the necessary parameters in the controller
             controller.setDialogStage(dialogStage);
-            controller.setEditMode(isEditMode);
             controller.setStaff(staff);
+            controller.setEditMode(isEditMode);
+
+            controller.initializeForm();
+
             dialogStage.showAndWait();
+
             if (controller.getIsSaved()) {
                 if (isEditMode) {
                     staffDAO.update(staff);
-                } else {
-                    staffList = staffDAO.getAll();
                 }
+                staffList.clear();
+                staffList = staffDAO.getAll();
                 tblStaff.setItems(staffList);
                 tblStaff.refresh();
             }
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+
 }
