@@ -36,7 +36,7 @@
         <Label fx:id="lbl_staff_address" layoutX="175.0" layoutY="194.0" />
         <Label fx:id="lbl_age" layoutX="175.0" layoutY="244.0" />
         <Label fx:id="lbl_staff_email" layoutX="175.0" layoutY="294.0" />
-        <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="325.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" />
+        <ImageView fx:id="imv_staff_image" fitHeight="150.0" fitWidth="200.0" layoutX="325.0" layoutY="50.0" pickOnBounds="true" preserveRatio="true" />
         <Label layoutX="325.0" layoutY="14.0" styleClass="title" text="Staff's Picture" />
     </children>
 </AnchorPane>
