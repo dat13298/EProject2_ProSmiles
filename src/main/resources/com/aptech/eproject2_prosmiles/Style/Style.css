@@ -169,3 +169,47 @@
     -fx-transition: background-color 0.3s ease-in-out, -fx-text-fill 0.3s ease-in-out;
 }
 
+.service-box {
+    -fx-border-color: #CCCCCC;   /* Màu viền */
+    -fx-border-width: 2px;       /* Độ rộng viền */
+    -fx-background-color: #FFFFFF; /* Màu nền bên trong VBox */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 5); /* Bóng đổ */
+    -fx-background-radius: 10px; /* Bo góc nhẹ */
+    -fx-border-radius: 10px;     /* Bo góc cho viền */
+    -fx-padding: 10px;           /* Khoảng cách bên trong */
+}
+
+.image-box {
+    -fx-border-color: #CCCCCC;   /* Màu viền xám nhạt */
+    -fx-border-width: 2px;       /* Độ rộng viền */
+    -fx-border-radius: 10px;     /* Bo góc cho viền */
+    -fx-background-radius: 10px; /* Bo góc cho nền ảnh */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 5); /* Bóng đổ */
+    -fx-padding: 5px;            /* Khoảng cách giữa ảnh và viền */
+}
+
+/* Style cho VBox khi bình thường */
+.service-box {
+    -fx-background-color: #f0f0f0; /* Màu nền bình thường */
+    -fx-padding: 10px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, transparent, 0, 0, 0, 0);
+    -fx-transition: all 0.3s ease; /* Thêm hiệu ứng transition */
+}
+
+/* Hiệu ứng hover khi người dùng di chuột qua */
+.service-box:hover {
+    -fx-background-color: #e0e0e0; /* Thay đổi màu nền khi hover */
+    -fx-scale-x: 1.05; /* Phóng to nhẹ */
+    -fx-scale-y: 1.05; /* Phóng to nhẹ */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 2); /* Đổ bóng */
+}
+
+/* Hiệu ứng khi người dùng click vào */
+.selected-service {
+    -fx-background-color: rgba(0, 0, 0, 0.1); /* Màu nền mờ hơn */
+}
+
+
+
