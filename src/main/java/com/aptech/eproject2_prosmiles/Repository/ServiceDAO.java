@@ -21,7 +21,7 @@ public class ServiceDAO implements DentalRepository<Service> {
                     "sv.id, sv.p_id, sv.name, sv.description" +
                     ", sv.image_path" +
                     ", sv.created_at, sv.deleted_at, sv.is_deleted" +
-                    " FROM service sv WHERE 1 = 1 LIMIT 100";
+                    " FROM service sv WHERE is_deleted = 0 LIMIT 100";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -118,10 +118,9 @@ public class ServiceDAO implements DentalRepository<Service> {
     @Override
     public boolean delete(Service entity) {
         try{
-            String sql = "UPDATE service sv SET sv.is_deleted = ? WHERE sv.id = ?";
+            String sql = "UPDATE service sv SET sv.is_deleted = 1 WHERE sv.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, entity.getIsDeleted().getValue());
-            pstmt.setInt(2, entity.getId());
+            pstmt.setInt(1, entity.getId());
             pstmt.executeUpdate();
         }catch (SQLException e){
             throw new RuntimeException(e);
