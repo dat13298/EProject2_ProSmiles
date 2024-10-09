@@ -19,6 +19,8 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -61,23 +63,6 @@ public class AddEditStaffController extends BaseController {
     private Staff staff;
     private File selectedFile;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        RoleDAO roleDAO = new RoleDAO();
-        ObservableList<Role> roles = roleDAO.getAll();
-        cmb_role.getItems().clear();
-        cmb_role.getItems().addAll(roles);
-
-        cmb_gender.getItems().clear();
-        for (EGender gender : EGender.values()) {
-            cmb_gender.getItems().add(gender);
-        }
-        btn_add_picture.setOnAction(this::handleSelectFile);
-        btn_save.setOnAction(this::handleSave);
-        btn_add_picture.setText(isEditMode ? "Change Picture" : "Add Picture");
-        btn_cancel.setOnAction(event -> dialogStage.close());
-    }
-
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
@@ -91,15 +76,63 @@ public class AddEditStaffController extends BaseController {
         return saved;
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        RoleDAO roleDAO = new RoleDAO();
+        ObservableList<Role> roles = roleDAO.getAll();
+        cmb_role.getItems().clear();
+        cmb_role.getItems().addAll(roles);
+
+        cmb_gender.getItems().clear();
+        for (EGender gender : EGender.values()) {
+            cmb_gender.getItems().add(gender);
+        }
+
+        btn_add_picture.setOnAction(this::handleSelectFile);
+        btn_save.setOnAction(this::handleSave);
+        btn_cancel.setOnAction(event -> dialogStage.close());
+    }
+
+    public void initializeForm() {
+        if (staff != null) {
+            txt_first_name.setText(staff.getFirstName());
+            txt_last_name.setText(staff.getLastName());
+            txt_email.setText(staff.getEmail());
+            txt_phone.setText(staff.getPhone());
+            txt_address.setText(staff.getAddress());
+            txt_age.setText(String.valueOf(staff.getAge()));
+            cmb_gender.setValue(staff.getEGender());
+            cmb_role.setValue(staff.getRole());
+
+            if (staff.getImagePath() != null) {
+                Image image = new Image(new File(staff.getImagePath()).toURI().toString());
+                imv_staff_picture.setImage(image);
+            }
+        }
+
+        btn_add_picture.setText(isEditMode ? "Change Picture" : "Add Picture");
+    }
+
     public void handleSelectFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Hình ảnh", "*.png", "*.jpg"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image", "*.png", "*.jpg"));
         selectedFile = fileChooser.showOpenDialog(null);
+
         if (selectedFile != null) {
-            Image image = new Image(selectedFile.toURI().toString());
-            imv_staff_picture.setImage(image);
+            try {
+                BufferedImage bufferedImage = ImageIO.read(selectedFile);
+                if (bufferedImage != null) {
+                    Image image = new Image(selectedFile.toURI().toString());
+                    imv_staff_picture.setImage(image);
+                } else {
+                    System.out.println("Invalid file type");
+                }
+            } catch (IOException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
         }
     }
+
 
 
     private void handleSave(ActionEvent event) {
@@ -141,7 +174,7 @@ public class AddEditStaffController extends BaseController {
                 staff.setRole(selectedRole);
             }
             File savedFile = saveImageToDirectory(selectedFile); // move file to folder src
-            String imagePath = "com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
+            String imagePath = "/com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
             staff.setImagePath(imagePath);
             // insert staff here
             AuthenticationService.register(staff);
