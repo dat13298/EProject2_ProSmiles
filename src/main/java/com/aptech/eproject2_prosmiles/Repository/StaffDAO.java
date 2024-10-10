@@ -162,6 +162,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             pstmt.setTimestamp(11, Timestamp.valueOf(now));
             pstmt.setInt(12, entity.getId());
             pstmt.executeUpdate();
+            DialogHelper.showNotificationDialog("Notification", "Updated staff");
         }catch (SQLException e){
             System.out.println(e.getMessage());
             DialogHelper.showNotificationDialog("Error", "Failed to update staff");
