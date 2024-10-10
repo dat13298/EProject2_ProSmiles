@@ -10,10 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -55,6 +52,8 @@ public class AddEditStaffController extends BaseController {
     @FXML
     private ComboBox<EGender> cmb_gender;
     @FXML
+    private Label lb_notify;
+    @FXML
     private ComboBox<Role> cmb_role;
 
     private Stage dialogStage;
@@ -66,12 +65,15 @@ public class AddEditStaffController extends BaseController {
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
+
     public void setStaff(Staff staff) {
         this.staff = staff;
     }
+
     public void setEditMode(boolean editMode) {
         this.isEditMode = editMode;
     }
+
     public boolean getIsSaved() {
         return saved;
     }
@@ -124,64 +126,87 @@ public class AddEditStaffController extends BaseController {
                 if (bufferedImage != null) {
                     Image image = new Image(selectedFile.toURI().toString());
                     imv_staff_picture.setImage(image);
-                } else {
-                    System.out.println("Invalid file type");
-                }
+                } else throw new IOException("File not found");
             } catch (IOException e) {
-                System.out.println("Error: " + e.getMessage());
+                lb_notify.setText("File not found");
             }
         }
     }
-
 
 
     private void handleSave(ActionEvent event) {
-        if (selectedFile != null) {
+        try {
+            if (selectedFile == null) {
+                throw new Exception("No file selected. Please choose an image.");
+            }
             String firstName = txt_first_name.getText();
-            if (firstName != null && !firstName.isEmpty()) {
-                staff.setFirstName(firstName);
+            if (firstName == null || firstName.isEmpty()) {
+                throw new Exception("First name cannot be empty");
             }
+            staff.setFirstName(firstName);
+
             String lastName = txt_last_name.getText();
-            if (lastName != null && !lastName.isEmpty()) {
-                staff.setLastName(lastName);
+            if (lastName == null || lastName.isEmpty()) {
+                throw new Exception("Last name cannot be empty");
             }
+            staff.setLastName(lastName);
+
             String email = txt_email.getText();
-            if (Validation.isEmailValid(email)) {
-                staff.setEmail(email);
+            if (!Validation.isEmailValid(email)) {
+                throw new Exception("Email invalid");
             }
+            staff.setEmail(email);
+
             String phone = txt_phone.getText();
-            if (Validation.isPhoneNumberValid(phone)) {
-                staff.setPhone(phone);
+            if (!Validation.isPhoneNumberValid(phone)) {
+                throw new Exception("Phone number invalid");
             }
+            staff.setPhone(phone);
+
             String address = txt_address.getText();
-            if (address != null && !address.isEmpty()) {
-                staff.setAddress(address);
+            if (address == null || address.isEmpty()) {
+                throw new Exception("Address cannot be empty");
             }
+            staff.setAddress(address);
+
             String age = txt_age.getText();
-            if (age != null && !age.isEmpty()) {
-                staff.setAge(Integer.parseInt(age));
+            if (age == null || age.isEmpty()) {
+                throw new Exception("Age cannot be empty");
             }
+            staff.setAge(Integer.parseInt(age));
+
             String password = txt_password.getText();
-            if (password != null && password.length() > 8) {
-                staff.setPassword(password);
+            if (password == null || password.length() < 8) {
+                throw new Exception("Password must be at least 8 characters");
             }
-            if (cmb_gender.getSelectionModel().getSelectedItem() != null) {
-                EGender gender = cmb_gender.getSelectionModel().getSelectedItem();
-                staff.setEGender(gender);
+            staff.setPassword(password);
+
+            if (cmb_gender.getSelectionModel().getSelectedItem() == null) {
+                throw new Exception("Gender cannot be empty");
             }
-            if (cmb_role.getSelectionModel().getSelectedItem() != null) {
-                Role selectedRole = cmb_role.getSelectionModel().getSelectedItem();
-                staff.setRole(selectedRole);
+            staff.setEGender(cmb_gender.getSelectionModel().getSelectedItem());
+
+            if (cmb_role.getSelectionModel().getSelectedItem() == null) {
+                throw new Exception("Role cannot be empty");
             }
-            File savedFile = saveImageToDirectory(selectedFile); // move file to folder src
+            staff.setRole(cmb_role.getSelectionModel().getSelectedItem());
+
+            File savedFile = saveImageToDirectory(selectedFile);
+            if (savedFile == null) {
+                throw new Exception("Failed to save image");
+            }
             String imagePath = "/com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
             staff.setImagePath(imagePath);
-            // insert staff here
+
             AuthenticationService.register(staff);
             saved = true;
             dialogStage.close();
+
+        } catch (Exception e) {
+            lb_notify.setText(e.getMessage());
         }
     }
+
 
     private File saveImageToDirectory(File selectedFile) {
         String destinationPath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/StaffImage/";
@@ -191,7 +216,7 @@ public class AddEditStaffController extends BaseController {
         try {
             Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            e.printStackTrace();
+            lb_notify.setText("Failed to save image");
         }
         return destinationFile;
     }
