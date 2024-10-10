@@ -6,16 +6,19 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane minHeight="150.0" minWidth="200.0" prefHeight="150.0" prefWidth="350.0" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.View.Notification.ConfirmNotification">
+<AnchorPane minHeight="150.0" minWidth="200.0" prefHeight="150.0" prefWidth="350.0"
+            stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.aptech.eproject2_prosmiles.Controller.ConfirmNotificationController">
    <children>
-      <Label layoutX="42.0" layoutY="18.0" styleClass="title" text="Text label" />
-      <Button layoutX="264.0" layoutY="105.0" mnemonicParsing="false" text="Confirm">
+      <Label fx:id="lbl_message" layoutX="42.0" layoutY="18.0" styleClass="title" text="Text label" />
+      <Button fx:id="btn_confirm" layoutX="264.0" layoutY="105.0" mnemonicParsing="false" text="Confirm">
          <styleClass>
             <String fx:value="master_button" />
             <String fx:value="title" />
          </styleClass>
       </Button>
-      <Button layoutX="195.0" layoutY="105.0" mnemonicParsing="false" text="Cancel">
+      <Button fx:id="btn_cancel" layoutX="195.0" layoutY="105.0" mnemonicParsing="false" text="Cancel">
          <styleClass>
             <String fx:value="button-delete" />
             <String fx:value="title" />

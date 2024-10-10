@@ -9,7 +9,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="462.0" prefWidth="613.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.AddEditStaffController">
+<AnchorPane prefHeight="481.0" prefWidth="613.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.AddEditStaffController">
     <children>
         <Label layoutX="14.0" layoutY="14.0" styleClass="title" text="Staff Information" />
         <Label layoutX="14.0" layoutY="51.0" styleClass="title" text="First Name" />
@@ -23,13 +23,13 @@
         <TextField fx:id="txt_address" layoutX="139.0" layoutY="242.0" prefHeight="34.0" prefWidth="177.0" styleClass="input-field" />
         <Label layoutX="14.0" layoutY="301.0" styleClass="title" text="Age" />
         <TextField fx:id="txt_age" layoutX="139.0" layoutY="292.0" prefHeight="34.0" prefWidth="177.0" styleClass="input-field" />
-        <Button fx:id="btn_save" layoutX="309.0" layoutY="406.0" mnemonicParsing="false" text="Save">
+        <Button fx:id="btn_save" layoutX="307.0" layoutY="435.0" mnemonicParsing="false" text="Save">
             <styleClass>
                 <String fx:value="master_button" />
                 <String fx:value="title" />
             </styleClass>
         </Button>
-        <Button fx:id="btn_cancel" layoutX="236.0" layoutY="406.0" mnemonicParsing="false" text="Cancel">
+        <Button fx:id="btn_cancel" layoutX="236.0" layoutY="435.0" mnemonicParsing="false" text="Cancel">
             <styleClass>
                 <String fx:value="button-delete" />
                 <String fx:value="title" />
@@ -41,7 +41,7 @@
 
         <Label layoutX="344.0" layoutY="14.0" styleClass="title" text="Staff Picture" />
       <ImageView fx:id="imv_staff_picture" fitHeight="180.0" fitWidth="180.0" layoutX="344.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" />
-      <Button fx:id="btn_add_picture" onAction="#handleSelectFile" layoutX="343.0" layoutY="246.0" mnemonicParsing="false" text="Change Picture">
+      <Button fx:id="btn_add_picture" layoutX="343.0" layoutY="246.0" mnemonicParsing="false" onAction="#handleSelectFile" text="Change Picture">
          <styleClass>
             <String fx:value="master_button" />
             <String fx:value="title" />
@@ -51,5 +51,6 @@
       <ComboBox fx:id="cmb_role" layoutX="419.0" layoutY="342.0" prefHeight="34.0" prefWidth="177.0" styleClass="input-field" />
       <Label layoutX="344.0" layoutY="301.0" prefHeight="19.0" prefWidth="64.0" styleClass="title" text="Password" />
       <PasswordField fx:id="txt_password" layoutX="419.0" layoutY="292.0" prefHeight="34.0" prefWidth="177.0" styleClass="input-field" />
+      <Label fx:id="lb_notify" layoutX="16.0" layoutY="389.0" textFill="#eb5858" />
     </children>
 </AnchorPane>
