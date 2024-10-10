@@ -38,6 +38,7 @@ public class StaffListController extends BaseController {
     @FXML private Button btn_delete_staff;
 
     private ObservableList<Staff> staffList;
+    private StaffDetailController staffDetailController;
 
 
     @Override
@@ -129,6 +130,7 @@ public class StaffListController extends BaseController {
             dialogStage.setScene(scene);
 
             StaffDetailController detailController = loader.getController();
+            staffDetailController = detailController;
             detailController.setStaffDetails(staffClicked);
             detailController.setDialogStage(dialogStage);
             detailController.setStaffListController(this);
@@ -152,7 +154,7 @@ public class StaffListController extends BaseController {
 
             // Set the modality and owner for the dialog
             dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(tblStaff.getScene().getWindow());
+//            dialogStage.initOwner(tblStaff.getScene().getWindow());
 
             // Load the FXML and get the controller
             dialogStage.setScene(new Scene(loader.load()));
@@ -170,6 +172,7 @@ public class StaffListController extends BaseController {
             if (controller.getIsSaved()) {
                 if (isEditMode) {
                     staffDAO.update(staff);
+                    staffDetailController.setStaffDetails(staff);
                 }
                 staffList.clear();
                 staffList = staffDAO.getAll();

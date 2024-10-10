@@ -135,17 +135,17 @@ public class StaffDAO implements DentalRepository<Staff> {
     public Staff update(Staff entity) {
         try {
             String sql = "UPDATE staff s " +
-                    "SET s.role_id = ? " +
-                    "s.first_name = ? " +
-                    "s.last_name = ? " +
-                    "s.gender = ? " +
-                    "s.phone = ? " +
-                    "s.password = ? " +
-                    "s.address = ? " +
-                    "s.email = ? " +
-                    "s.age = ? " +
-                    "s.image_path = ? " +
-                    "s.update_at = ? " +
+                    "SET s.role_id = ?, " +
+                    "s.first_name = ?, " +
+                    "s.last_name = ?, " +
+                    "s.gender = ?, " +
+                    "s.phone = ?, " +
+                    "s.password = ?, " +
+                    "s.address = ?, " +
+                    "s.email = ?, " +
+                    "s.age = ?, " +
+                    "s.image_path = ?, " +
+                    "s.updated_at = ? " +
                     "WHERE s.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, entity.getRole().getId());
@@ -162,7 +162,9 @@ public class StaffDAO implements DentalRepository<Staff> {
             pstmt.setTimestamp(11, Timestamp.valueOf(now));
             pstmt.setInt(12, entity.getId());
             pstmt.executeUpdate();
+            DialogHelper.showNotificationDialog("Notification", "Updated staff");
         }catch (SQLException e){
+            System.out.println(e.getMessage());
             DialogHelper.showNotificationDialog("Error", "Failed to update staff");
         }
         return null;

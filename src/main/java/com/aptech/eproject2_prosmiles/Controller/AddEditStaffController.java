@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -96,7 +97,7 @@ public class AddEditStaffController extends BaseController {
     }
 
     public void initializeForm() {
-        if (staff != null) {
+        if (isEditMode) {
             txt_first_name.setText(staff.getFirstName());
             txt_last_name.setText(staff.getLastName());
             txt_email.setText(staff.getEmail());
@@ -106,9 +107,12 @@ public class AddEditStaffController extends BaseController {
             cmb_gender.setValue(staff.getEGender());
             cmb_role.setValue(staff.getRole());
 
-            if (staff.getImagePath() != null) {
-                Image image = new Image(new File(staff.getImagePath()).toURI().toString());
+            File file = new File("src/main/resources" + staff.getImagePath());
+            if (file.exists()) {
+                Image image = new Image(file.toURI().toString());
                 imv_staff_picture.setImage(image);
+            } else {
+                System.out.println("Image file not found.");
             }
         }
 
@@ -136,7 +140,7 @@ public class AddEditStaffController extends BaseController {
 
     private void handleSave(ActionEvent event) {
         try {
-            if (selectedFile == null) {
+            if (selectedFile == null && !isEditMode) {
                 throw new Exception("No file selected. Please choose an image.");
             }
             String firstName = txt_first_name.getText();
@@ -176,10 +180,22 @@ public class AddEditStaffController extends BaseController {
             staff.setAge(Integer.parseInt(age));
 
             String password = txt_password.getText();
-            if (password == null || password.length() < 8) {
+
+            if (!isEditMode && password.length() > 8) {
+                staff.setPassword(password);
+            }
+            if (!isEditMode && password.length() < 8) {
                 throw new Exception("Password must be at least 8 characters");
             }
-            staff.setPassword(password);
+
+            if (isEditMode && password.length() > 8) {
+                String pwHash = BCrypt.hashpw(password, BCrypt.gensalt());
+                staff.setPassword(pwHash);
+            }
+
+            if (isEditMode && !password.isEmpty() && password.length() < 8) {
+                throw new Exception("Password must be at least 8 characters");
+            }
 
             if (cmb_gender.getSelectionModel().getSelectedItem() == null) {
                 throw new Exception("Gender cannot be empty");
@@ -191,22 +207,23 @@ public class AddEditStaffController extends BaseController {
             }
             staff.setRole(cmb_role.getSelectionModel().getSelectedItem());
 
-            File savedFile = saveImageToDirectory(selectedFile);
-            if (savedFile == null) {
-                throw new Exception("Failed to save image");
+            if (!isEditMode) {
+                File savedFile = saveImageToDirectory(selectedFile);
+                if (savedFile == null) {
+                    throw new Exception("Failed to save image");
+                }
+                String imagePath = "/com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
+                staff.setImagePath(imagePath);
+
+                boolean registerSuccess = AuthenticationService.register(staff);
+
+                DialogHelper.showNotificationDialog(
+                        registerSuccess ? "Notification" : "Error",
+                        registerSuccess ? "Create new staff successfully" : "Failed to create new staff"
+                );
             }
-            String imagePath = "/com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
-            staff.setImagePath(imagePath);
-
-            boolean registerSuccess = AuthenticationService.register(staff);
-
-            DialogHelper.showNotificationDialog(
-                    registerSuccess ? "Notification" : "Error",
-                    registerSuccess ? "Create new staff successfully" : "Failed to create new staff"
-            );
             saved = true;
             dialogStage.close();
-
         } catch (Exception e) {
             lb_notify.setText(e.getMessage());
         }
