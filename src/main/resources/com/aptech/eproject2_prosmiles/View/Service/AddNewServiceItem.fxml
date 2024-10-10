@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="332.0" prefWidth="625.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.AddNewServiceItemController">
+    <children>
+        <Label fx:id="lb_title" layoutX="14.0" layoutY="14.0" styleClass="title" text="Add Service Item " />
+        <Button fx:id="btn_add_save" layoutX="319.0" layoutY="285.0" mnemonicParsing="false" text="Save">
+            <styleClass>
+                <String fx:value="master_button" />
+                <String fx:value="title" />
+            </styleClass>
+        </Button>
+        <Button fx:id="btn_add_cancel" layoutX="238.0" layoutY="285.0" mnemonicParsing="false" text="Cancel">
+            <styleClass>
+                <String fx:value="button-delete" />
+                <String fx:value="title" />
+            </styleClass>
+        </Button>
+        <Label fx:id="lb_title_service_item_name" layoutX="25.0" layoutY="90.0" styleClass="title" text="Name" />
+        <Label fx:id="lb_title_service_item_unit" layoutX="31.0" layoutY="145.0" styleClass="title" text="Unit" />
+        <Label fx:id="lb_title_service_item_price" layoutX="328.0" layoutY="90.0" styleClass="title" text="Price" />
+        <Label fx:id="lb_title_service_item_quantity" layoutX="15.0" layoutY="204.0" styleClass="title" text="Quantity" />
+        <Label fx:id="lb_title_service_item_description" layoutX="305.0" layoutY="145.0" styleClass="title" text="Description" />
+        <TextField fx:id="txt_add_service_item_name" layoutX="92.0" layoutY="85.0" />
+        <TextField fx:id="txt_add_service_item_unit" layoutX="92.0" layoutY="140.0" />
+        <TextField fx:id="txt_add_service_item_quantity" layoutX="92.0" layoutY="199.0" />
+        <TextField fx:id="txt_add_service_item_price" layoutX="408.0" layoutY="85.0" />
+        <TextArea fx:id="txt_add_service_item_description" layoutX="402.0" layoutY="139.0" prefHeight="93.0" prefWidth="192.0" />
+    </children>
+</AnchorPane>

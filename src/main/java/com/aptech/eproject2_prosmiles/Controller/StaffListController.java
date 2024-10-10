@@ -40,7 +40,6 @@ public class StaffListController extends BaseController {
     private ObservableList<Staff> staffList;
     private StaffDetailController staffDetailController;
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         StaffDAO staffDAO = new StaffDAO();

@@ -93,15 +93,6 @@ public class Service {
 
     @Override
     public String toString() {
-        return "Service{" +
-                "id=" + id +
-                ", pId=" + pId +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", imagePath='" + imagePath + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", isDeleted=" + isDeleted +
-                '}';
+        return name;
     }
 }
