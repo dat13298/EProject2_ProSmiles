@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,7 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
         try{
             String sql = "SELECT si.id, si.service_id, si.name, si.price, si.unit, si.quantity, si.description" +
                     ",si.dosage, si.usage_instruction, si.created_at, si.updated_at, si.is_deleted FROM service_item si " +
-                    "WHERE 1=1 LIMIT 100";
+                    "WHERE is_deleted = 0 LIMIT 100";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -123,14 +124,43 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
         }
         return entity;
     }
+    public List<ServiceItem> getServiceItemsByServiceId(int serviceId) {
+        List<ServiceItem> serviceItems = new ArrayList<>();
+
+        try {
+            String sql = "SELECT * FROM service_item WHERE service_id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, serviceId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                ServiceItem item = new ServiceItem();
+                item.setId(rs.getInt("id"));
+                // Lấy thông tin của các cột từ database
+                item.setName(rs.getString("name"));
+                item.setPrice(rs.getDouble("price"));
+                item.setUnit(rs.getString("unit"));
+                item.setQuantity(rs.getInt("quantity"));
+                item.setDescription(rs.getString("description"));
+                item.setDosage(rs.getString("dosage"));
+                item.setUsageInstruction(rs.getString("usage_instruction"));
+                // Thêm vào danh sách
+                serviceItems.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return serviceItems;
+    }
+
 
     @Override
     public boolean delete(ServiceItem entity) {
         try{
-            String sql = "UPDATE service_item si SET si.is_deleted=? WHERE si.id=?";
+            String sql = "UPDATE service_item si SET si.is_deleted=1 WHERE si.id=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, entity.getIsDeleted().getValue());
-            pstmt.setInt(2, entity.getId());
+            pstmt.setInt(1, entity.getId());
             pstmt.executeUpdate();
         }catch (SQLException e){
             throw new RuntimeException(e);
