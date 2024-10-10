@@ -25,6 +25,8 @@ public class StaffDetailController extends BaseController {
     @FXML
     private Label lbl_age;
     @FXML
+    private Label lbl_staff_position;
+    @FXML
     private Button btn_edit;
     @FXML
     private Button btn_cancel;
@@ -59,6 +61,7 @@ public class StaffDetailController extends BaseController {
         lbl_staff_phone_number.setText(staffClicked.getPhone());
         lbl_staff_address.setText(staffClicked.getAddress());
         lbl_age.setText(String.valueOf(staffClicked.getAge()));
+        lbl_staff_position.setText(staffClicked.getRole().getTitle());
 
         File file = new File("src/main/resources" + staffClicked.getImagePath());
         if (file.exists()) {
