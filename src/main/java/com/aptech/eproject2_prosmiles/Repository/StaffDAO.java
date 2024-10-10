@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Repository;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
 import com.aptech.eproject2_prosmiles.Model.Entity.Role;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
@@ -33,7 +34,7 @@ public class StaffDAO implements DentalRepository<Staff> {
                 staff.setPassword(rs.getString("password"));
             }
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            DialogHelper.showNotificationDialog("Error", "Server connection failed");
         }
         return staff;
     }
@@ -56,7 +57,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             }
 
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            DialogHelper.showNotificationDialog("Error", "Server connection failed");
         }
         staffs.clear();
         staffs.addAll(staffList);
@@ -80,7 +81,7 @@ public class StaffDAO implements DentalRepository<Staff> {
                 return setPropertiesStaff(rs);
             }
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            DialogHelper.showNotificationDialog("Error", "Server connection failed");
         }
         return null;
     }
@@ -125,7 +126,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             pstmt.setTimestamp(11, Timestamp.valueOf(now));
             pstmt.executeUpdate();
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            DialogHelper.showConfirmationDialog("Error", "Failed to create staff");
         }
         return entity;
     }
@@ -162,7 +163,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             pstmt.setInt(12, entity.getId());
             pstmt.executeUpdate();
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            DialogHelper.showNotificationDialog("Error", "Failed to update staff");
         }
         return null;
     }
@@ -178,7 +179,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             pstmt.setInt(2, entity.getId());
             pstmt.executeUpdate();
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            DialogHelper.showNotificationDialog("Error", "Failed to delete staff");
         }
         return false;
     }

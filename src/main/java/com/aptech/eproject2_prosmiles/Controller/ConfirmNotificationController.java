@@ -32,6 +32,9 @@ public class ConfirmNotificationController implements Initializable {
         this.lbl_message.setText(message);
     }
 
+    public void hideCancelButton() {
+        btn_cancel.setVisible(false);
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
