@@ -5,6 +5,7 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.RoleDAO;
 import com.aptech.eproject2_prosmiles.Repository.StaffDAO;
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class StaffListController extends BaseController {
@@ -98,7 +98,7 @@ public class StaffListController extends BaseController {
         btn_delete_staff.setOnAction(event -> {
             Staff selectedStaff = tblStaff.getSelectionModel().getSelectedItem();
             if (selectedStaff != null) {
-                boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
+                boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
                 if (confirmed) {
                     selectedStaff.setIsDeleted(EIsDeleted.INACTIVE);
                     staffDAO.delete(selectedStaff);//remove from the DB
@@ -107,16 +107,6 @@ public class StaffListController extends BaseController {
                 }
             }
         });
-    }
-
-    private boolean showConfirmationDialog(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.OK;
     }
 
     private void showStaffDetail(Staff staffClicked) {
