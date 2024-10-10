@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.Global.Validation;
 import com.aptech.eproject2_prosmiles.Model.Entity.Role;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
@@ -8,7 +9,6 @@ import com.aptech.eproject2_prosmiles.Repository.RoleDAO;
 import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -198,7 +198,12 @@ public class AddEditStaffController extends BaseController {
             String imagePath = "/com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
             staff.setImagePath(imagePath);
 
-            AuthenticationService.register(staff);
+            boolean registerSuccess = AuthenticationService.register(staff);
+
+            DialogHelper.showNotificationDialog(
+                    registerSuccess ? "Notification" : "Error",
+                    registerSuccess ? "Create new staff successfully" : "Failed to create new staff"
+            );
             saved = true;
             dialogStage.close();
 
