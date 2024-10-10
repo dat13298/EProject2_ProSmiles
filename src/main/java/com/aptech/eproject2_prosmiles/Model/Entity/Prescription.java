@@ -57,6 +57,10 @@ public class Prescription {
         this.staff = staff.orElse(null);
     }
 
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+
     public String getDescription() {
         return description;
     }

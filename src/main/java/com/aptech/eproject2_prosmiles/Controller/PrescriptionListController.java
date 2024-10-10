@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Model.Entity.*;
+import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -9,15 +10,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
 
-public class PrescriptionListController {
+public class PrescriptionListController extends BaseController{
 
     @FXML
     private TableView<Prescription> tablePrescription;
@@ -38,39 +41,94 @@ public class PrescriptionListController {
     @FXML
     private Button btnAddNew;
 
-    private static ObservableList<Prescription> prescriptions = FXCollections.observableArrayList();
-    private static ObservableList<PrescriptionDetail> prescriptionDetails = FXCollections.observableArrayList();
+    @FXML
+    private Button btnDelete;
 
+
+    //ObservableList declaration
+    private ObservableList<Prescription> prescriptions = FXCollections.observableArrayList();
+    private ObservableList<PrescriptionDetail> prescriptionDetails = FXCollections.observableArrayList();
+    private ObservableList<Patient> patients = FXCollections.observableArrayList();
+    private ObservableList<Service> services = FXCollections.observableArrayList();
+    private ObservableList<Staff> staff = FXCollections.observableArrayList();
+    private ObservableList<ServiceItem> serviceItems = FXCollections.observableArrayList();
+
+    //DAO Declaration
     private final PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
     private final PatientDAO patientDAO = new PatientDAO();
-    private final ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
     private final PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
     private final ServiceDAO serviceDAO = new ServiceDAO();
+    private final StaffDAO staffDAO = new StaffDAO();
+    private final ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
 
-    @FXML
-    public void initialize() {
-        // Load the data only if the list is empty
-        if (prescriptions.isEmpty()) {
-            loadPrescriptionData();
-        }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        prescriptions = prescriptionDAO.getAll();
+        prescriptionDetails = prescriptionDetailDAO.getAll();
+        patients = patientDAO.getAll();
+        services = serviceDAO.getAll();
+        staff = staffDAO.getAll();
+        serviceItems = serviceItemDAO.getAll();
+
         setupTableColumns();
+
+        tablePrescription.setEditable(true);
         tablePrescription.setItems(prescriptions);
 
-        // Add a listener to handle row clicks
-        tablePrescription.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                showPrescriptionDetail(newValue);
+        tablePrescription.setRowFactory(tv -> {
+            TableRow<Prescription> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                    Prescription prescriptionClicked = row.getItem();
+                    showPrescriptionDetail(prescriptionClicked);
+                }
+            });
+            return row;
+        });
+
+        btnDelete.setOnAction(event -> {
+            Prescription selectedPrescription = tablePrescription.getSelectionModel().getSelectedItem();
+            PrescriptionDetail selectedPrescriptionDetail = findPrescriptionDetailByPrescriptionId(selectedPrescription.getId());
+            System.out.println(selectedPrescriptionDetail);
+            if (selectedPrescription != null) {
+                boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
+                if (confirmed) {
+                    selectedPrescription.setIsDeleted(EIsDeleted.INACTIVE);
+                    prescriptionDAO.delete(selectedPrescription);//remove from the DB
+                    prescriptionDetailDAO.delete(selectedPrescriptionDetail);
+                    tablePrescription.getItems().remove(selectedPrescription);//remove from the list
+                    tablePrescription.refresh();
+                }
             }
         });
 
-        btnAddNew.setOnAction(event -> openAddNewPrescriptionForm());
+        btnAddNew.setOnAction(event -> {
+            Prescription prescription = new Prescription();
+            addEditPrescriptionForm(prescription, false);
+        });
+
     }
 
-    private void loadPrescriptionData() {
-        prescriptions.clear();
-        prescriptionDetails.clear();
-        prescriptions.addAll(prescriptionDAO.getAll());
-        prescriptionDetails.addAll(prescriptionDetailDAO.getAll());
+
+    private boolean showConfirmationDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        Optional<ButtonType> result = alert.showAndWait();
+        return result.isPresent() && result.get() == ButtonType.OK;
+    }
+
+
+    public void refreshTable() {
+        tablePrescription.getItems().clear();
+        prescriptions = prescriptionDAO.getAll();
+        System.out.println("==== refreshing ===");
+        prescriptions.forEach(System.out::println);
+        tablePrescription.setItems(prescriptions);
+        tablePrescription.refresh();
     }
 
     private void setupTableColumns() {
@@ -100,48 +158,101 @@ public class PrescriptionListController {
         });
     }
 
-    public void refreshPrescriptionList() {
-        prescriptions.clear();
-        prescriptionDetails.clear();
-        loadPrescriptionData();
-        tablePrescription.refresh();
-    }
 
     private void showPrescriptionDetail(Prescription selectedPrescription) {
         try {
             // Load the prescription detail view
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/Prescription/PrescriptionDetail.fxml"));
-            Parent prescriptionDetailView = loader.load();
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle("Prescription Detail");
+            // Get the controller for the add form and pass a reference of this PrescriptionListController
+
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(tablePrescription.getScene().getWindow());
+            dialogStage.setScene(new Scene(loader.load()));
+
 
             // Get the controller for the detail view and pass the selected prescription to it
             PrescriptionDetailController detailController = loader.getController();
+
+            detailController.setPrescriptionListController(this);
             detailController.setPrescriptionDetail(selectedPrescription);
+            detailController.setPrescription(selectedPrescription);
+
+            //ObservationList
+            detailController.setPrescriptions(prescriptions);
+            detailController.setPrescriptionDetails(prescriptionDetails);
+            detailController.setPatients(patients);
+            detailController.setServices(services);
+            detailController.setStaff(staff);
+            detailController.setServiceItems(serviceItems);
+
+            //DAO
+            detailController.setPrescriptionDetailDAO(prescriptionDetailDAO);
+            detailController.setPatientDAO(patientDAO);
+            detailController.setPrescriptionDAO(prescriptionDAO);
+            detailController.setServiceDAO(serviceDAO);
+            detailController.setStaffDAO(staffDAO);
+            detailController.setServiceItemDAO(serviceItemDAO);
+
+            detailController.setPrescriptionDetails(prescriptionDetails);
 
             // Display the prescription detail view in a new window or in a dialog
-            Stage detailStage = new Stage();
-            detailStage.setTitle("Prescription Detail");
-            detailStage.setScene(new Scene(prescriptionDetailView));
-            detailStage.show();
+            detailController.setDialogStage(dialogStage);
+            dialogStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void openAddNewPrescriptionForm() {
+    private PrescriptionDetail findPrescriptionDetailByPrescriptionId(int id) {
+        return prescriptionDetails.stream()
+                .filter(p -> p.getPrescription().getId() == id)
+                .findFirst().orElse(null);
+    }
+
+
+    public void addEditPrescriptionForm(Prescription prescription,boolean isEditMode) {
         try {
             // Load the Add New Prescription form
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/Prescription/AddEditPrescription.fxml"));
-            Parent addNewPrescriptionView = loader.load();
-
+            Stage dialogStage = new Stage();
+            dialogStage.setTitle(isEditMode ? "Add New Prescription" : "Edit Prescription");
             // Get the controller for the add form and pass a reference of this PrescriptionListController
-            AddEditPrescriptionController addEditPrescriptionController = loader.getController();
-            addEditPrescriptionController.setPrescriptionListController(this);
 
-            // Create a new stage for the form
-            Stage addNewStage = new Stage();
-            addNewStage.setTitle("Add New Prescription");
-            addNewStage.setScene(new Scene(addNewPrescriptionView));
-            addNewStage.show();
+            dialogStage.initModality(Modality.WINDOW_MODAL);
+            dialogStage.initOwner(tablePrescription.getScene().getWindow());
+            dialogStage.setScene(new Scene(loader.load()));
+            AddEditPrescriptionController addEditPrescriptionController = loader.getController();
+
+            //Set DAO
+            addEditPrescriptionController.setPrescriptionDAO(prescriptionDAO);
+            addEditPrescriptionController.setServiceDAO(serviceDAO);
+            addEditPrescriptionController.setPrescriptionDetailDAO(prescriptionDetailDAO);
+            addEditPrescriptionController.setStaffDAO(staffDAO);
+            addEditPrescriptionController.setPatientDAO(patientDAO);
+            addEditPrescriptionController.setServiceItemDAO(serviceItemDAO);
+
+            //Set ObservableList
+            addEditPrescriptionController.setPrescriptions(prescriptions);
+            addEditPrescriptionController.setPrescriptionDetails(prescriptionDetails);
+            addEditPrescriptionController.setStaffs(staff);
+            addEditPrescriptionController.setPatients(patients);
+            addEditPrescriptionController.setServices(services);
+            addEditPrescriptionController.setAllServiceItems(serviceItems);
+
+
+            addEditPrescriptionController.initializeCombo();
+            if(isEditMode) {
+                addEditPrescriptionController.initializeForm(prescription);
+            }
+            addEditPrescriptionController.setDialogStage(dialogStage);
+            addEditPrescriptionController.setEditMode(isEditMode);
+            dialogStage.showAndWait();
+
+            if(addEditPrescriptionController.isSaved()){
+                refreshTable();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

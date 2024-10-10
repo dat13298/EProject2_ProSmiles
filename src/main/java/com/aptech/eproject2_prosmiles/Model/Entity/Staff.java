@@ -169,21 +169,6 @@ public class Staff {
 
     @Override
     public String toString() {
-        return "Staff{" +
-                "id=" + id +
-                ", role=" + role +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", gender=" + gender +
-                ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
-                ", address='" + address + '\'' +
-                ", email='" + email + '\'' +
-                ", age=" + age +
-                ", imagePath='" + imagePath + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", isDeleted=" + isDeleted +
-                '}';
+        return firstName + " " + lastName;
     }
 }
