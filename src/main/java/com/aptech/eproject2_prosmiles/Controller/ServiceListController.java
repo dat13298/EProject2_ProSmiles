@@ -33,7 +33,7 @@ public class ServiceListController extends BaseController {
     @FXML
     private Button btnDelete;
 
-    private Service selectedService; // Dịch vụ được chọn để xóa
+    public static Service selectedService; // Dịch vụ được chọn để xóa
     private ObservableList<Service> services;
 
     @FXML
@@ -73,8 +73,12 @@ public class ServiceListController extends BaseController {
 
             // Sự kiện chọn dịch vụ khi nhấp vào VBox
             vBox.setOnMouseClicked(event -> {
-                selectedService = service; // Lưu dịch vụ được chọn
-                highlightSelectedService(vBox); // Đánh dấu dịch vụ đang chọn
+                if (event.getClickCount() == 2) { // Kiểm tra nếu click chuột 2 lần
+                    openServiceDetail(service); // Mở chi tiết dịch vụ
+                } else {
+                    selectedService = service; // Lưu dịch vụ được chọn
+                    highlightSelectedService(vBox); // Đánh dấu dịch vụ đang chọn
+                }
             });
 
             column++;
@@ -103,6 +107,32 @@ public class ServiceListController extends BaseController {
             showAddEditServiceForm(newService, isEditMode); // Gọi hàm để hiển thị biểu mẫu thêm
         });
     }
+
+    // Hàm mở file ServiceDetail.fxml khi nhấp chuột đôi vào dịch vụ
+    // Hàm mở file ServiceDetail.fxml khi nhấp chuột đôi vào dịch vụ
+    private void openServiceDetail(Service service) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("/com/aptech/eproject2_prosmiles/View/Service/ServiceDetail.fxml"));
+            Stage detailStage = new Stage();
+            detailStage.setTitle("Service Detail");
+
+            detailStage.initModality(Modality.WINDOW_MODAL);
+            detailStage.initOwner(serviceGrid.getScene().getWindow());
+            Scene scene = new Scene(loader.load());
+            detailStage.setScene(scene);
+
+            // Lấy controller và truyền đối tượng service vào
+            ServiceDetailController controller = loader.getController();
+            controller.setDialogStage(detailStage); // Truyền dialogStage vào controller
+            controller.setService(service); // Truyền đối tượng service vào controller
+
+            detailStage.showAndWait(); // Hiển thị dialog và chờ
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Hàm chuyển sang trang AddEditService.fxml
     private void showAddEditServiceForm(Service service, boolean isEditMode) {
