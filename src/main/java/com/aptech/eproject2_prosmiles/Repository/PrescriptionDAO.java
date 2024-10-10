@@ -24,11 +24,12 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
 
     @Override
     public ObservableList<Prescription> getAll() {
+        ObservableList<Prescription> newPrescriptions = FXCollections.observableArrayList();
         try{
             String sql = "select p.id, p.patient_id, p.staff_id, " +
                     "p.description, p.status, p.created_at, " +
                     "p.updated_at, p.is_deleted " +
-                    "from prescription p where 1=1";
+                    "from prescription p where is_deleted = 0";
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -56,11 +57,14 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
                 p.setUpdatedAt(updateAt);
 
                 p.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
-                prescriptions.add(p);
+                newPrescriptions.add(p);
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
+        prescriptions.clear();
+        prescriptions.addAll(newPrescriptions);
+
         return prescriptions;
     }
 
@@ -69,7 +73,7 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
         String sql = "select p.id, p.patient_id, p.staff_id, " +
                 "p.description, p.status, p.created_at, " +
                 "p.updated_at, p.is_deleted" +
-                " from prescription p where p.id = ?";
+                " from prescription p where p.id = ? and is_deleted = 0";
         Prescription p = new Prescription();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -108,7 +112,7 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
     public ObservableList<Prescription> findByName(String name) {
         String sql = "select p.id, p.patient_id, p.staff_id, " +
                 "p.description, p.status, p.created_at, p.updated_at" +
-                " from prescription p where p.name = ?";
+                " from prescription p where p.name = ? and is_deleted=0";
         Prescription p = new Prescription();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -145,19 +149,24 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
 
     @Override
     public Prescription save(Prescription entity) {
-        String sql = "insert into prescription values (?,?,?,?,?,?,?,?)";
-        try{
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, entity.getId());
-            ps.setInt(2, entity.getPatient().getId());
-            ps.setInt(3, entity.getStaff().getId());
-            ps.setString(4, entity.getDescription());
-            ps.setString(5, entity.getStatus().getStatus());
-            ps.setString(6, entity.getCreatedAt().toString());
-            ps.setString(7, entity.getUpdatedAt().toString());
-            ps.setInt(8, entity.getIsDeleted().getValue());
+        String sql = "INSERT INTO prescription (patient_id, staff_id, description, status, created_at, updated_at, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, entity.getPatient().getId());
+            ps.setInt(2, entity.getStaff().getId());
+            ps.setString(3, entity.getDescription());
+            ps.setString(4, entity.getStatus().getStatus());
+            ps.setTimestamp(5, Timestamp.valueOf(entity.getCreatedAt()));
+            ps.setTimestamp(6, Timestamp.valueOf(entity.getUpdatedAt()));
+            ps.setInt(7, entity.getIsDeleted().getValue());
             ps.executeUpdate();
-        }catch (SQLException e){
+
+            // Retrieve the auto-generated ID
+            ResultSet rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                entity.setId(rs.getInt(1)); // Set the newly generated ID to the entity
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return entity;
