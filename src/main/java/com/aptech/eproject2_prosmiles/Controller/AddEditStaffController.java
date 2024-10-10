@@ -97,7 +97,7 @@ public class AddEditStaffController extends BaseController {
     }
 
     public void initializeForm() {
-        if (staff != null) {
+        if (isEditMode) {
             txt_first_name.setText(staff.getFirstName());
             txt_last_name.setText(staff.getLastName());
             txt_email.setText(staff.getEmail());
