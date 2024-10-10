@@ -17,13 +17,13 @@
         <TextField fx:id="txtAmount" layoutX="173.0" layoutY="135.0" prefHeight="34.0" prefWidth="177.0" styleClass="input-field" />
         <Label layoutX="16.0" layoutY="194.0" styleClass="title" text="Payment's Type" />
         <Label layoutX="14.0" layoutY="244.0" styleClass="title" text="Status" />
-        <Button layoutX="175.0" layoutY="335.0" mnemonicParsing="false" text="Save">
+        <Button fx:id="btnSave" layoutX="175.0" layoutY="335.0" mnemonicParsing="false" text="Save">
             <styleClass>
                 <String fx:value="master_button" />
                 <String fx:value="title" />
             </styleClass>
         </Button>
-        <Button layoutX="105.0" layoutY="335.0" mnemonicParsing="false" text="Cancel">
+        <Button fx:id="btnCancel" layoutX="105.0" layoutY="335.0" mnemonicParsing="false" text="Cancel">
             <styleClass>
                 <String fx:value="button-delete" />
                 <String fx:value="title" />

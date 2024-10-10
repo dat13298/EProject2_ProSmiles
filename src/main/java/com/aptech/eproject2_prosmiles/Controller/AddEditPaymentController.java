@@ -6,8 +6,16 @@ import com.aptech.eproject2_prosmiles.Repository.PatientDAO;
 import com.aptech.eproject2_prosmiles.Repository.PaymentDAO;
 import com.aptech.eproject2_prosmiles.Repository.PrescriptionDAO;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
-public class AddEditPaymentController {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class AddEditPaymentController extends BaseController{
     private ObservableList<Payment> paymentList;
     private ObservableList<Prescription> prescriptionList;
 
@@ -40,5 +48,51 @@ public class AddEditPaymentController {
     public void setPayment(Payment payment) {
         this.payment = payment;
     }
+
+    private Stage dialogStage;
+
+    public void setDialogStage(Stage dialogStage) {
+        this.dialogStage = dialogStage;
+    }
+
+    private boolean isEditMode;
+    public void setEditMode(boolean isEditMode) {
+        this.isEditMode = isEditMode;
+    }
+
+    private boolean save;
+
+    public boolean isSaveMode() {
+        return save;
+    }
+
+
+    @FXML
+    private Button btnCancel;
+
+    @FXML
+    private Button btnSave;
+
+    @FXML
+    private ComboBox<?> comboPaymentType;
+
+    @FXML
+    private ComboBox<?> comboStatus;
+
+    @FXML
+    private TextField txtAmount;
+
+    @FXML
+    private TextField txtPatientName;
+
+    @FXML
+    private TextField txtPaymentNumber;
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
 
 }

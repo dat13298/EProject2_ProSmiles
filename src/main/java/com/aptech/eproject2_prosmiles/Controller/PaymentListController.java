@@ -172,6 +172,16 @@ public class PaymentListController extends BaseController{
             controller.setPrescriptionDAO(prescriptionDAO);
             controller.setPatientDAO(patientDAO);
 
+            controller.setPayment(payment);
+
+            controller.setDialogStage(dialogStage);
+            controller.setEditMode(isEditMode);
+
+            dialogStage.showAndWait();
+
+            if(controller.isSaveMode()){
+                refreshTable();
+            }
 
         }catch (Exception e){
             e.printStackTrace();

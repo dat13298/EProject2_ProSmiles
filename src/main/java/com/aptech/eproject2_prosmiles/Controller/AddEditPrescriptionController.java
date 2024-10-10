@@ -350,13 +350,7 @@ public class AddEditPrescriptionController extends BaseController implements Ini
         return services.stream().filter(s -> s.getName().equals(name)).findFirst();
     }
 
-//    public void setPrescriptionListController(PrescriptionListController controller) {
-//        this.prescriptionListController = controller;
-//    }
-//
-//    public void setPrescriptionDetailController(PrescriptionDetailController controller) {
-//        this.prescriptionDetailController = controller;
-//    }
+
 
     public double caculateTotalPrice(PrescriptionDetail prescriptionDetail){
         double totalPrice = allServiceItems.stream()

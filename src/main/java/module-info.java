@@ -9,6 +9,7 @@ module com.aptech.eproject2_prosmiles {
     requires mysql.connector.java;
     requires jbcrypt;
     requires jdk.jshell;
+    requires java.desktop;
 
     opens com.aptech.eproject2_prosmiles to javafx.fxml;
     exports com.aptech.eproject2_prosmiles;
