@@ -51,12 +51,16 @@ public class LoginController implements Initializable {
         txt_password_visible.textProperty().bindBidirectional(pwd_password.textProperty());
 
         Properties prop = new Properties();
-        if(AuthenticationService.authenticateFromFile(prop)){
-            Platform.runLater(() -> {
-                Stage stage = (Stage) btn_sign_in.getScene().getWindow(); // Get current stage
-                stage.close(); // Close current stage
-            });
-            loadMainMenu();
+        try {
+            if(AuthenticationService.authenticateFromFile(prop)){
+                Platform.runLater(() -> {
+                    Stage stage = (Stage) btn_sign_in.getScene().getWindow(); // Get current stage
+                    stage.close(); // Close current stage
+                });
+                loadMainMenu();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         btn_sign_in.setOnAction(new EventHandler<ActionEvent>() {
@@ -73,12 +77,10 @@ public class LoginController implements Initializable {
 
                     Staff staffLogin = new Staff();
                     if(Validation.isEmailValid(username)){
-                        System.out.println("mail ok");
                         staffLogin.setEmail(username);
                         staffLogin.setPassword(password);
                     }
                     if (Validation.isPhoneNumberValid(username)) {
-                        System.out.println("phone number ok");
                         staffLogin.setPhone(username);
                         staffLogin.setPassword(password);
                     }
