@@ -18,14 +18,8 @@
                 <TableColumn fx:id="colPaymentType" prefWidth="152.0" text="Payment type" />
             </columns>
         </TableView>
-        <Button fx:id="btnAddNew" layoutX="611.0" layoutY="14.0" mnemonicParsing="false" text="Add New Payment">
-            <styleClass>
-                <String fx:value="master_button" />
-                <String fx:value="title" />
-            </styleClass>
-        </Button>
         <Label layoutX="14.0" layoutY="19.0" styleClass="title" text="Payment's List" />
-      <Button fx:id="btnDelete" layoutX="468.0" layoutY="14.0" mnemonicParsing="false" text="Delete Payment">
+      <Button fx:id="btnDelete" layoutX="601.0" layoutY="14.0" mnemonicParsing="false" text="Delete Payment">
          <styleClass>
             <String fx:value="button-delete" />
             <String fx:value="title" />

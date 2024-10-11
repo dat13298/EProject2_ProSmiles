@@ -6,6 +6,7 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Payment;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EPaymentType;
+import com.aptech.eproject2_prosmiles.Model.Enum.EStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -20,8 +21,10 @@ public class PaymentDAO implements DentalRepository<Payment> {
     @Override
     public ObservableList<Payment> getAll() {
         String sql = "select p.id, p.bill_number, p.prescription_id, " +
-                "p.payment_type, p.total_amount, p.created_at, p.updated_at,p.is_deleted " +
-                "from payment p where 1=1";
+                "p.payment_type, p.total_amount,p.created_at, p.updated_at, p.is_deleted " +
+                "from payment p where is_deleted = 0";
+
+        ObservableList<Payment> newPayments = FXCollections.observableArrayList();
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -46,11 +49,15 @@ public class PaymentDAO implements DentalRepository<Payment> {
                 payment.setUpdatedAt(updateAt);
 
                 payment.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
-                payments.add(payment);
+                newPayments.add(payment);
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
+
+        payments.clear();
+        payments.addAll(newPayments);
+
         return payments;
     }
 
@@ -127,17 +134,15 @@ public class PaymentDAO implements DentalRepository<Payment> {
 
     @Override
     public Payment save(Payment entity) {
-        String sql = "insert into payment values (?,?,?,?,?,?,?,?)";
+        String sql = "insert into payment (bill_number, prescription_id, payment_type, total_amount, created_at , updated_at) values (?,?,?,?,?, ?)";
         try{
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, entity.getId());
-            ps.setString(2, entity.getBillNumber());
-            ps.setInt(3, entity.getPrescription().get().getId());
-            ps.setString(4, entity.getPaymentType().getValue());
-            ps.setDouble(5, entity.getTotalAmount());
-            ps.setString(6, entity.getCreatedAt().toString());
-            ps.setString(7, entity.getUpdatedAt().toString());
-            ps.setString(8, entity.getIsDeleted().toString());
+            PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, entity.getBillNumber());
+            ps.setInt(2, entity.getPrescription().getId());
+            ps.setString(3, entity.getPaymentType().getValue());
+            ps.setDouble(4, entity.getTotalAmount());
+            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             ps.executeUpdate();
         }catch (SQLException e){
             e.printStackTrace();
@@ -147,17 +152,16 @@ public class PaymentDAO implements DentalRepository<Payment> {
 
     @Override
     public Payment update(Payment entity) {
-        String sql = "update payment set id=?,bill_number=?,prescription_id=?,payment_type=?,total_amount=?,created_at=?,updated_at=? where id=?";
+        String sql = "update payment set id=?,bill_number=?,prescription_id=?,payment_type=?,total_amount=?,cre, updated_at=? where id=?";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
             ps.setString(2, entity.getBillNumber());
-            ps.setInt(3, entity.getPrescription().get().getId());
+            ps.setInt(3, entity.getPrescription().getId());
             ps.setString(4, entity.getPaymentType().getValue());
             ps.setDouble(5, entity.getTotalAmount());
-            ps.setString(6, entity.getCreatedAt().toString());
-            ps.setString(7, entity.getUpdatedAt().toString());
-            ps.setInt(8, entity.getId());
+            ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setInt(7, entity.getId());
             ps.executeUpdate();
         }catch (SQLException e){
             e.printStackTrace();

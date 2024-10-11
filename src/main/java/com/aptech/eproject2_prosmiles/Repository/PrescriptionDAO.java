@@ -149,16 +149,14 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
 
     @Override
     public Prescription save(Prescription entity) {
-        String sql = "INSERT INTO prescription (patient_id, staff_id, description, status, created_at, updated_at, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO prescription (patient_id, staff_id, description, status, created_at) VALUES (?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, entity.getPatient().getId());
             ps.setInt(2, entity.getStaff().getId());
             ps.setString(3, entity.getDescription());
             ps.setString(4, entity.getStatus().getStatus());
-            ps.setTimestamp(5, Timestamp.valueOf(entity.getCreatedAt()));
-            ps.setTimestamp(6, Timestamp.valueOf(entity.getUpdatedAt()));
-            ps.setInt(7, entity.getIsDeleted().getValue());
+            ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
             ps.executeUpdate();
 
             // Retrieve the auto-generated ID
@@ -174,7 +172,7 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
 
     @Override
     public Prescription update(Prescription entity) {
-        String sql = "update prescription set id=?, patient_id=?,staff_id=?,description=?,status=?,created_at=?,updated_at=? where id=?";
+        String sql = "update prescription set id=?, patient_id=?,staff_id=?,description=?,status=?,updated_at=? where id=?";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());
@@ -182,9 +180,8 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
             ps.setInt(3, entity.getStaff().getId());
             ps.setString(4, entity.getDescription());
             ps.setString(5, entity.getStatus().getStatus());
-            ps.setString(6, entity.getCreatedAt().toString());
-            ps.setString(7, entity.getUpdatedAt().toString());
-            ps.setInt(8, entity.getId());
+            ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
+            ps.setInt(7, entity.getId());
             ps.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
