@@ -112,7 +112,7 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
     @Override
     public PrescriptionDetail save(PrescriptionDetail entity) {
         // Assuming 'id' is auto-incremented, remove it from the SQL statement
-        String sql = "INSERT INTO prescription_detail (service_id, prescription_id, unit, quantity, price, created_at, updated_at, is_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO prescription_detail (service_id, prescription_id, unit, quantity, price, created_at) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);  // Use RETURN_GENERATED_KEYS to get the generated ID
             ps.setInt(1, entity.getService().getId());
@@ -120,9 +120,7 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
             ps.setString(3, entity.getUnit());
             ps.setInt(4, entity.getQuantity());
             ps.setDouble(5, entity.getPrice());
-            ps.setTimestamp(6, Timestamp.valueOf(entity.getCreatedAt()));
-            ps.setTimestamp(7, Timestamp.valueOf(entity.getUpdatedAt()));
-            ps.setInt(8, entity.getIsDeleted().getValue());
+            ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             ps.executeUpdate();
 
             // Retrieve the generated ID
@@ -169,6 +167,51 @@ public class PrescriptionDetailDAO implements DentalRepository<PrescriptionDetai
             e.printStackTrace();
         }
         return false;
+    }
+
+
+    public ObservableList<PrescriptionDetail> getPresDetailByPresId(int presId) {
+        String sql = "select pd.id, pd.service_id, pd.prescription_id, pd.unit, pd.quantity,pd.price,pd.created_at,pd.updated_at,pd.is_deleted from prescription_detail pd where pd.prescription_id = ?";
+        ObservableList<PrescriptionDetail> newPrescriptionDetails = FXCollections.observableArrayList();
+        try{
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, presId);
+            ResultSet rs = ps.executeQuery();
+                while (rs.next())
+                {
+                    Prescription prescription = new Prescription();
+                    Service service = new Service();
+                    PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
+                    prescriptionDetail.setId(rs.getInt("id"));
+
+                    service.setId(rs.getInt("service_id"));
+                    prescriptionDetail.setService(Optional.of(service));
+
+                    prescription.setId(rs.getInt("prescription_id"));
+                    prescriptionDetail.setPrescription(Optional.of(prescription));
+
+                    prescriptionDetail.setUnit(rs.getString("unit"));
+                    prescriptionDetail.setQuantity(rs.getInt("quantity"));
+                    prescriptionDetail.setPrice(rs.getDouble("price"));
+
+                    Timestamp createTime = rs.getTimestamp("created_at");
+                    LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
+                    prescriptionDetail.setCreatedAt(createAt);
+
+                    Timestamp updateTime = rs.getTimestamp("updated_at");
+                    LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
+                    prescriptionDetail.setUpdatedAt(updateAt);
+
+                    prescriptionDetail.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
+                    newPrescriptionDetails.add(prescriptionDetail);
+                }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        psd.clear();
+        psd.addAll(newPrescriptionDetails);
+        return psd;
     }
 
 }

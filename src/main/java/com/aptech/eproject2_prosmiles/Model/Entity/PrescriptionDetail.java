@@ -46,12 +46,20 @@ public class PrescriptionDetail {
         this.service = service.orElse(null);
     }
 
+    public void setService(Service service) {
+        this.service = service;
+    }
+
     public Prescription getPrescription() {
         return prescription;
     }
 
     public void setPrescription(Optional<Prescription> prescription) {
         this.prescription = prescription.orElse(null);
+    }
+
+    public void setPrescription(Prescription prescription) {
+        this.prescription = prescription;
     }
 
     public String getUnit() {

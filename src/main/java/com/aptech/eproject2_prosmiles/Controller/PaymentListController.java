@@ -1,184 +1,198 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.Model.Entity.Patient;
 import com.aptech.eproject2_prosmiles.Model.Entity.Payment;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
+import com.aptech.eproject2_prosmiles.Model.Entity.PrescriptionDetail;
+import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.PatientDAO;
 import com.aptech.eproject2_prosmiles.Repository.PaymentDAO;
 import com.aptech.eproject2_prosmiles.Repository.PrescriptionDAO;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PaymentListController extends BaseController{
-
     @FXML
-    private TableColumn<Payment, String> colAmount;
-
+    private TableColumn<Payment, Double> colAmount;
     @FXML
     private TableColumn<Payment, Integer> colId;
-
     @FXML
     private TableColumn<Payment, String> colPatientName;
-
     @FXML
     private TableColumn<Payment, String> colPaymentNumber;
-
     @FXML
     private TableColumn<Payment, String> colPaymentType;
-
     @FXML
     private TableView<Payment> tblPayment;
+    @FXML
+    private Button btnDelete;
 
-    //Observation Lists
-    private ObservableList<Payment> payments = FXCollections.observableArrayList();
-    private ObservableList<Prescription> prescriptions = FXCollections.observableArrayList();
+    private ObservableList<Payment> paymentList;
+    private PaymentDetailController paymentDetailController;
+    private boolean isListView = true;
 
-    //DAO
-    private PaymentDAO paymentDAO;
-    private PrescriptionDAO prescriptionDAO;
-    private PatientDAO patientDAO;
+
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        paymentDAO = new PaymentDAO();
-        prescriptionDAO = new PrescriptionDAO();
-        patientDAO = new PatientDAO();
+        PaymentDAO paymentDAO = new PaymentDAO();
+        PatientDAO patientDAO = new PatientDAO();
+        PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
 
-        payments = paymentDAO.getAll();
-        prescriptions = prescriptionDAO.getAll();
-
-        setupTableColumns();
+        paymentList = paymentDAO.getAll();
         tblPayment.setEditable(true);
-        tblPayment.setItems(payments);
 
+        colId.setCellValueFactory(cellData -> {
+            int id = cellData.getValue().getId();
+            return new SimpleObjectProperty<>(id);
+        });
+
+        colPatientName.setCellValueFactory(cellData -> {
+            Payment payment = cellData.getValue();
+            Prescription prescription = prescriptionDAO.getById(payment.getPrescription().getId());
+            Patient patient = patientDAO.getById(prescription.getPatient().getId());
+            prescription.setPatient(patient);
+            payment.setPrescription(prescription);
+
+            return new SimpleStringProperty(patient.getName());
+        });
+
+        colPaymentNumber.setCellValueFactory(cellData -> {
+            Payment payment = cellData.getValue();
+            return new SimpleStringProperty(payment.getBillNumber());
+        });
+
+        colAmount.setCellValueFactory(cellData -> {
+            Payment payment = cellData.getValue();
+            return new SimpleObjectProperty<Double>(payment.getTotalAmount());
+        });
+
+        colPaymentType.setCellValueFactory(cellData -> {
+            Payment payment = cellData.getValue();
+            return new SimpleStringProperty(payment.getPaymentType().getValue());
+        });
+
+        tblPayment.setItems(paymentList);
 
         tblPayment.setRowFactory(tv -> {
             TableRow<Payment> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2 && (!row.isEmpty())) {
+                if(event.getClickCount() == 2) {
                     Payment paymentClicked = row.getItem();
-                    showPaymentDetails(paymentClicked);
+                    showPaymentDetail(paymentClicked, isListView);
                 }
             });
             return row;
         });
 
-    }
-
-    private boolean showConfirmationDialog(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-
-        Optional<ButtonType> result = alert.showAndWait();
-        return result.isPresent() && result.get() == ButtonType.OK;
-    }
-
-    private void setupTableColumns(){
-        colId.setCellValueFactory(new PropertyValueFactory<Payment, Integer>("id"));
-
-        colPatientName.setCellValueFactory(cellData -> {
-            Payment payment = cellData.getValue();
-            Prescription prescription = prescriptionDAO.getById(payment.getPrescription().get().getId());
-            Patient patient = patientDAO.getById(prescription.getPatient().getId());
-            return new SimpleStringProperty(String.valueOf(patient.getName()));
+        btnDelete.setOnAction(event -> {
+            Payment selectedPayment = tblPayment.getSelectionModel().getSelectedItem();
+            if(selectedPayment != null) {
+                boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this payment?");
+                if(confirmed) {
+                    selectedPayment.setIsDeleted(EIsDeleted.INACTIVE);
+                    paymentDAO.delete(selectedPayment);
+                    tblPayment.getItems().remove(selectedPayment);
+                    tblPayment.refresh();
+                }
+            }
         });
 
-        colPaymentNumber.setCellValueFactory(cellData -> {
-            Payment payment = cellData.getValue();
-            return new SimpleStringProperty(String.valueOf(payment.getBillNumber()));
-        });
-
-        colAmount.setCellValueFactory(cellData -> {
-            Payment payment = cellData.getValue();
-            return new SimpleStringProperty(String.valueOf(payment.getTotalAmount()));
-        });
-
-        colPaymentType.setCellValueFactory(new PropertyValueFactory<>("paymentType"));
     }
 
-    public void refreshTable() {
-        tblPayment.getItems().clear();
-        payments = paymentDAO.getAll();
-        System.out.println("==== refreshing ===");
-        payments.forEach(System.out::println);
-        tblPayment.setItems(payments);
-        tblPayment.refresh();
-    }
-
-    private void showPaymentDetails(Payment selectedPayment){
+    public void showPaymentDetail(Payment payment, boolean isView){
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/Payment/PaymentDetail.fxml"));
+            InputStream fxmlStream = getClass()
+                    .getResourceAsStream("/com/aptech/eproject2_prosmiles/View/Payment/PaymentDetail.fxml");
+            if(fxmlStream == null) {
+                System.err.println("FXML file is not found");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader();
+            Parent root = loader.load(fxmlStream);
             Stage dialogStage = new Stage();
-            dialogStage.setTitle("Payment Details");
+            dialogStage.setTitle("Payment Detail");
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass()
+                    .getResource("/com/aptech/eproject2_prosmiles/Style/Style.css")).toExternalForm());
+            dialogStage.setScene(scene);
+            PaymentDetailController controller = loader.getController();
+            paymentDetailController = controller;
+            controller.setPaymentDetail(payment);
+            controller.setDialogStage(dialogStage);
+            isListView = isView;
+            controller.setPaymentListController(this);
 
             dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(tblPayment.getScene().getWindow());
-            dialogStage.setScene(new Scene(loader.load()));
-
-            PaymentDetailController controller = loader.getController();
-
-            controller.setPaymentListControllerr(this);
-            controller.setPayment(selectedPayment);
-            controller.setUpDetail(selectedPayment);
-
-            //Observable List
-            controller.setPaymentList(payments);
-            controller.setPrescriptionList(prescriptions);
-
-            //DAO
-            controller.setPaymentDAO(paymentDAO);
-            controller.setPrescriptionDAO(prescriptionDAO);
-            controller.setPatientDAO(patientDAO);
-
-            controller.setDialogStage(dialogStage);
             dialogStage.showAndWait();
-        }catch (Exception e){
+        }catch(IOException e){
             e.printStackTrace();
         }
+
     }
 
-    private void addEditPaymentForm(Payment payment, boolean isEditMode){
+    public void showAddEditPayment(Payment payment){
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/Payment/AddEditPayment.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/aptech/eproject2_prosmiles/View/Payment/AddEditPayment.fxml")
+            );
             Stage dialogStage = new Stage();
-            dialogStage.setTitle(isEditMode ? "Add Payment Form" : "Edit Payment Form");
+            PaymentDAO paymentDAO = new PaymentDAO();
+            PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
+
+            dialogStage.setTitle("Edit Payment");
 
             dialogStage.initModality(Modality.WINDOW_MODAL);
-            dialogStage.initOwner(tblPayment.getScene().getWindow());
+//            dialogStage.initOwner(tblPayment.getScene().getWindow());
+
             dialogStage.setScene(new Scene(loader.load()));
             AddEditPaymentController controller = loader.getController();
+            controller.setDialogStage(dialogStage);
+            controller.setPayment(payment);
 
-            //Observable List
-            controller.setPaymentList(payments);
-            controller.setPrescriptionList(prescriptions);
+            controller.initializeForm();
 
-            //DAO
-            controller.setPaymentDAO(paymentDAO);
-            controller.setPrescriptionDAO(prescriptionDAO);
-            controller.setPatientDAO(patientDAO);
+            dialogStage.showAndWait();
 
+            if(controller.getIsSaved()){
+                if(isListView){
+                    paymentDAO.update(payment);
+                    prescriptionDAO.update(payment.getPrescription());
+                }
+                paymentDetailController.setPaymentDetail(payment);
+            }
 
-        }catch (Exception e){
+            if(isListView){
+                paymentList.clear();
+                paymentList = paymentDAO.getAll();
+                tblPayment.setItems(paymentList);
+                tblPayment.refresh();
+            }
+        }catch (IOException e){
             e.printStackTrace();
         }
     }
-
-
-
 
 }
