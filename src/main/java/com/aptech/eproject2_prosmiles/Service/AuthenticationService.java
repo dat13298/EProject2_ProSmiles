@@ -18,7 +18,7 @@ public class AuthenticationService {
     private static final RoleDAO roleDAO = new RoleDAO();
 
     /*LOGIN*/
-    public static boolean login(Staff staff) {
+    public static boolean login(Staff staff) throws Exception {
         //check valid
         String password = staff.getPassword();
         Staff staffLogged = StaffDAO.getStaffByPhoneOrEmail(staff);
@@ -42,8 +42,8 @@ public class AuthenticationService {
             AppProperties.setProperty("staff.updateat", (
                     staffLogged.getUpdatedAt() == null ? "" :  Format.formatDate(staffLogged.getUpdatedAt()))
             );
-        }
-        return isLoginSuccess;
+        } else throw new Exception("Username or password wrong");
+        return true;
     }
 
     /*REGISTER*/
@@ -74,7 +74,7 @@ public class AuthenticationService {
     }
 
     /*CHECK USER FROM FILE SAVED*/
-    public static boolean authenticateFromFile(Properties properties) {
+    public static boolean authenticateFromFile(Properties properties) throws Exception {
         String userHome = System.getProperty("user.dir");
         String filePath = userHome + "/src/main/resources/application.properties";
         try {
