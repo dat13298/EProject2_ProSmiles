@@ -16,7 +16,7 @@ public class AppProperties {
                 properties.load(inputStream);
             }
         }catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Login Failed");
         }
     }
 
@@ -32,7 +32,7 @@ public class AppProperties {
             FileOutputStream outputStream = new FileOutputStream(filePath);
             properties.store(outputStream, null);
         }catch (IOException e){
-            throw new RuntimeException(e);
+            throw new RuntimeException("Login Failed");
         }
 
     }
