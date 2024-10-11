@@ -101,12 +101,18 @@ public class AddEditPrescriptionController extends BaseController implements Ini
 
     private void handleSave(ActionEvent actionEvent) {
         PatientDAO patientDAO = new PatientDAO();
+
         try{
             String patientId = txtPatientId.getText();
             if(patientId == null || patientId.isEmpty()) {
                 throw new Exception("Patient ID cannot be empty");
             }
-            prescription.setPatient(patientDAO.getById(Integer.parseInt(patientId)));
+           
+            Patient patient = patientDAO.getById(Integer.parseInt(patientId));
+            if (patient == null) {
+                throw new Exception("No patient found with the provided ID");
+            }
+            prescription.setPatient(patient);
 
             String description = txtDescription.getText();
             if(description == null || description.isEmpty()) {
