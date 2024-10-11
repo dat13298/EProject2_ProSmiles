@@ -85,8 +85,16 @@ public class AddNewPrescriptionInfoController extends BaseController{
             } else{
                 cmb_service.getSelectionModel().select(null);
             }
-            txt_quantity.setText(String.valueOf(prescriptionDetail.getQuantity()));
-            txt_unit.setText(String.valueOf(prescriptionDetail.getUnit()));
+            if(prescriptionDetail.getUnit() != null){
+                txt_unit.setText(prescriptionDetail.getUnit());
+            }else {
+                txt_unit.clear();
+            }
+            if(prescriptionDetail.getQuantity() != 0){
+                txt_quantity.setText(String.valueOf(prescriptionDetail.getQuantity()));
+            }else{
+                txt_quantity.clear();
+            }
         }
     }
 
