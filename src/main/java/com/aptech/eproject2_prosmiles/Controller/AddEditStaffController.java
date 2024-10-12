@@ -140,9 +140,7 @@ public class AddEditStaffController extends BaseController {
 
     private void handleSave(ActionEvent event) {
         try {
-            if (selectedFile == null && !isEditMode) {
-                throw new Exception("No file selected. Please choose an image.");
-            }
+            // Kiểm tra các trường thông tin khác
             String firstName = txt_first_name.getText();
             if (firstName == null || firstName.isEmpty()) {
                 throw new Exception("First name cannot be empty");
@@ -180,21 +178,15 @@ public class AddEditStaffController extends BaseController {
             staff.setAge(Integer.parseInt(age));
 
             String password = txt_password.getText();
-
-            if (!isEditMode && password.length() > 8) {
-                staff.setPassword(password);
-            }
             if (!isEditMode && password.length() < 8) {
                 throw new Exception("Password must be at least 8 characters");
+            } else if (isEditMode && !password.isEmpty() && password.length() < 8) {
+                throw new Exception("Password must be at least 8 characters");
             }
 
-            if (isEditMode && password.length() > 8) {
+            if (!password.isEmpty() && password.length() >= 8) {
                 String pwHash = BCrypt.hashpw(password, BCrypt.gensalt());
                 staff.setPassword(pwHash);
-            }
-
-            if (isEditMode && !password.isEmpty() && password.length() < 8) {
-                throw new Exception("Password must be at least 8 characters");
             }
 
             if (cmb_gender.getSelectionModel().getSelectedItem() == null) {
@@ -207,27 +199,38 @@ public class AddEditStaffController extends BaseController {
             }
             staff.setRole(cmb_role.getSelectionModel().getSelectedItem());
 
-            if (!isEditMode) {
+            // Kiểm tra file ảnh
+            if (!isEditMode && selectedFile == null) {
+                throw new Exception("No file selected. Please choose an image.");
+            } else if (isEditMode && selectedFile != null) {
+                // Nếu là chế độ chỉnh sửa và người dùng chọn ảnh mới, lưu ảnh mới
                 File savedFile = saveImageToDirectory(selectedFile);
                 if (savedFile == null) {
                     throw new Exception("Failed to save image");
                 }
                 String imagePath = "/com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
                 staff.setImagePath(imagePath);
+            }
 
+            if (!isEditMode) {
                 boolean registerSuccess = AuthenticationService.register(staff);
-
                 DialogHelper.showNotificationDialog(
                         registerSuccess ? "Notification" : "Error",
                         registerSuccess ? "Create new staff successfully" : "Failed to create new staff"
                 );
+            } else {
+                // Update staff trong trường hợp chỉnh sửa
+                // Các thông tin khác của staff đã được cập nhật phía trên
             }
+
             saved = true;
             dialogStage.close();
+
         } catch (Exception e) {
             lb_notify.setText(e.getMessage());
         }
     }
+
 
 
     private File saveImageToDirectory(File selectedFile) {
