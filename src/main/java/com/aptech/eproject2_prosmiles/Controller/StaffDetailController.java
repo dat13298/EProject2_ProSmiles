@@ -1,6 +1,8 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -36,6 +38,7 @@ public class StaffDetailController extends BaseController {
     private Staff staff;
     private Stage dialogStage;
     private StaffListController staffListController;
+    private MethodInterceptor methodInterceptor;
 
     public void setStaffListController(StaffListController staffListController) {
         this.staffListController = staffListController;
@@ -43,10 +46,21 @@ public class StaffDetailController extends BaseController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btn_edit.setOnAction(event -> {
-            staffListController.showAddEditForm(staff, true);
+        methodInterceptor = new MethodInterceptor(this);
+
+        btn_edit.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleEditStaff", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
         btn_cancel.setOnAction(event -> dialogStage.close());
+    }
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleEditStaff(ActionEvent event) {
+        staffListController.showAddEditForm(staff, true);
     }
 
     public void setDialogStage(Stage dialogStage) {

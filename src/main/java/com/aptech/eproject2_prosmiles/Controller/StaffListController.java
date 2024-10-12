@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Role;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
@@ -40,8 +41,12 @@ public class StaffListController extends BaseController {
     private ObservableList<Staff> staffList;
     private StaffDetailController staffDetailController;
 
+    private MethodInterceptor methodInterceptor;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        methodInterceptor = new MethodInterceptor(this);
+
         StaffDAO staffDAO = new StaffDAO();
         RoleDAO roleDAO = new RoleDAO();
 
@@ -86,28 +91,46 @@ public class StaffListController extends BaseController {
             return row;
         });
 
-        btn_add_staff.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                Staff newStaff = new Staff();
-                boolean isEditMode = false;
-                showAddEditForm(newStaff, isEditMode);
+        btn_add_staff.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleAddStaff", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
 
-        btn_delete_staff.setOnAction(event -> {
-            Staff selectedStaff = tblStaff.getSelectionModel().getSelectedItem();
-            if (selectedStaff != null) {
-                boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
-                if (confirmed) {
-                    selectedStaff.setIsDeleted(EIsDeleted.INACTIVE);
-                    staffDAO.delete(selectedStaff);//remove from the DB
-                    tblStaff.getItems().remove(selectedStaff);//remove from the list
-                    tblStaff.refresh();
-                }
+        btn_delete_staff.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleDeleteStaff", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
     }
+
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleAddStaff(ActionEvent event) {
+        Staff newStaff = new Staff();
+        boolean isEditMode = false;
+        showAddEditForm(newStaff, isEditMode);
+    }
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleDeleteStaff(ActionEvent event) {
+        Staff selectedStaff = tblStaff.getSelectionModel().getSelectedItem();
+        if (selectedStaff != null) {
+            boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
+            if (confirmed) {
+                selectedStaff.setIsDeleted(EIsDeleted.INACTIVE);
+                StaffDAO staffDAO = new StaffDAO(); // Khởi tạo StaffDAO nếu cần
+                staffDAO.delete(selectedStaff); // Xóa khỏi cơ sở dữ liệu
+                tblStaff.getItems().remove(selectedStaff); // Xóa khỏi danh sách
+                tblStaff.refresh();
+            }
+        }
+    }
+
 
     private void showStaffDetail(Staff staffClicked) {
         try {
