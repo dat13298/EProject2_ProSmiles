@@ -10,18 +10,17 @@ public class MySQLConnection {
     private static String password = "eProject2";
     public static Connection conn = null;
 
-    public MySQLConnection(Connection conn) {
-        MySQLConnection.conn = conn;
-    }
-
     public static Connection getConnection() {
         try{
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                    MySQLConnection.url,
-                    MySQLConnection.user,
-                    MySQLConnection.password
-            );
+            if (conn == null || conn.isClosed()) {
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                conn = DriverManager.getConnection(
+                        MySQLConnection.url,
+                        MySQLConnection.user,
+                        MySQLConnection.password
+                );
+            }
+
         }catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
@@ -31,7 +30,9 @@ public class MySQLConnection {
 
     public static void closeConnection() {
         try{
-            conn.close();
+            if (conn != null && !conn.isClosed()) {
+                conn.close();
+            }
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
