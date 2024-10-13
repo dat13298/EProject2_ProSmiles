@@ -18,33 +18,43 @@ public class AuthenticationService {
     private static final RoleDAO roleDAO = new RoleDAO();
 
     /*LOGIN*/
-    public static boolean login(Staff staff) throws Exception {
+    public static boolean login(Staff staff) {
         //check valid
         String password = staff.getPassword();
         Staff staffLogged = StaffDAO.getStaffByPhoneOrEmail(staff);
-        boolean isLoginSuccess = BCrypt.checkpw(password, staffLogged.getPassword());
-        if (isLoginSuccess) {
-            staffLogged = staffDAO.getById(staffLogged.getId());
-            AppProperties.setProperty("staff.loggedin", "false");
-            AppProperties.setProperty("staff.staffid", String.valueOf(staffLogged.getId()));
-            Role roleOfStaffLogged = roleDAO.getById(staffLogged.getRole().getId());
-            staffLogged.setRole(roleOfStaffLogged);
-            AppProperties.setProperty("staff.roletitle", roleOfStaffLogged.getTitle());
-            AppProperties.setProperty("staff.name", staffLogged.getFirstName() + " " + staffLogged.getLastName());
-            AppProperties.setProperty("staff.gender",staffLogged.getEGender().getGender());
-            AppProperties.setProperty("staff.phone", staffLogged.getPhone());
-            AppProperties.setProperty("staff.password", staffLogged.getPassword());
-            AppProperties.setProperty("staff.address", staffLogged.getAddress());
-            AppProperties.setProperty("staff.email", staffLogged.getEmail());
-            AppProperties.setProperty("staff.age", String.valueOf(staffLogged.getAge()));
-            AppProperties.setProperty("staff.imagepath", staffLogged.getImagePath());
-            AppProperties.setProperty("staff.createat", Format.formatDate(staffLogged.getCreatedAt()));
-            AppProperties.setProperty("staff.updateat", (
-                    staffLogged.getUpdatedAt() == null ? "" :  Format.formatDate(staffLogged.getUpdatedAt()))
-            );
-        } else throw new Exception("Username or password wrong");
-        return true;
+
+        try {
+            boolean isLoginSuccess = BCrypt.checkpw(password, staffLogged.getPassword());
+
+            if (isLoginSuccess) {
+                staffLogged = staffDAO.getById(staffLogged.getId());
+                AppProperties.setProperty("staff.loggedin", "false");
+                AppProperties.setProperty("staff.staffid", String.valueOf(staffLogged.getId()));
+                Role roleOfStaffLogged = roleDAO.getById(staffLogged.getRole().getId());
+                staffLogged.setRole(roleOfStaffLogged);
+                AppProperties.setProperty("staff.roletitle", roleOfStaffLogged.getTitle());
+                AppProperties.setProperty("staff.name", staffLogged.getFirstName() + " " + staffLogged.getLastName());
+                AppProperties.setProperty("staff.gender", staffLogged.getEGender().getGender());
+                AppProperties.setProperty("staff.phone", staffLogged.getPhone());
+                AppProperties.setProperty("staff.password", staffLogged.getPassword());
+                AppProperties.setProperty("staff.address", staffLogged.getAddress());
+                AppProperties.setProperty("staff.email", staffLogged.getEmail());
+                AppProperties.setProperty("staff.age", String.valueOf(staffLogged.getAge()));
+                AppProperties.setProperty("staff.imagepath", staffLogged.getImagePath());
+                AppProperties.setProperty("staff.createat", Format.formatDate(staffLogged.getCreatedAt()));
+                AppProperties.setProperty("staff.updateat", (
+                        staffLogged.getUpdatedAt() == null ? "" :  Format.formatDate(staffLogged.getUpdatedAt()))
+                );
+                return true;
+            } else {
+                System.out.println("Username or password wrong");
+                return false;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Email or password wrong");
+        }
     }
+
 
     /*REGISTER*/
     public static boolean register(Staff staff) {

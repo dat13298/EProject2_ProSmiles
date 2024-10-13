@@ -51,15 +51,6 @@
                             <Button fx:id="btn_staff" mnemonicParsing="false" styleClass="dashboard-navbar" text="Staff Manager" />
                             <Rectangle fx:id="btn_staff_underline" fill="#2980b9" height="2.0" width="0.0" StackPane.alignment="BOTTOM_CENTER" />
                         </StackPane>
-                        <StackPane fx:id="btn_report_pane">
-                            <MenuButton fx:id="btn_report_overview" mnemonicParsing="false" styleClass="dashboard-navbar" text="Report">
-                                <items>
-                                    <MenuItem fx:id="btn_report_weekly" mnemonicParsing="false" style="-fx-min-width: 200; -fx-background-color: none;" text="Weekly Report" />
-                                    <MenuItem fx:id="btn_report_monthly" mnemonicParsing="false" text="Monthly Report" />
-                                    <MenuItem fx:id="btn_report_yearly" mnemonicParsing="false" text="Yearly Report" />
-                                </items>
-                            </MenuButton>
-                        </StackPane>
                     </children>
                     <BorderPane.margin>
                         <Insets />
