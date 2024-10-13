@@ -140,7 +140,6 @@ public class AddEditStaffController extends BaseController {
 
     private void handleSave(ActionEvent event) {
         try {
-            // Kiểm tra các trường thông tin khác
             String firstName = txt_first_name.getText();
             if (firstName == null || firstName.isEmpty()) {
                 throw new Exception("First name cannot be empty");
@@ -184,7 +183,7 @@ public class AddEditStaffController extends BaseController {
                 throw new Exception("Password must be at least 8 characters");
             }
 
-            if (!password.isEmpty() && password.length() >= 8) {
+            if (password.length() >= 8) {
                 String pwHash = BCrypt.hashpw(password, BCrypt.gensalt());
                 staff.setPassword(pwHash);
             }
@@ -199,11 +198,18 @@ public class AddEditStaffController extends BaseController {
             }
             staff.setRole(cmb_role.getSelectionModel().getSelectedItem());
 
-            // Kiểm tra file ảnh
             if (!isEditMode && selectedFile == null) {
                 throw new Exception("No file selected. Please choose an image.");
             } else if (isEditMode && selectedFile != null) {
-                // Nếu là chế độ chỉnh sửa và người dùng chọn ảnh mới, lưu ảnh mới
+                File savedFile = saveImageToDirectory(selectedFile);
+                if (savedFile == null) {
+                    throw new Exception("Failed to save image");
+                }
+                String imagePath = "/com/aptech/eproject2_prosmiles/Media/StaffImage/" + savedFile.getName();
+                staff.setImagePath(imagePath);
+            }
+
+            if (!isEditMode && selectedFile != null) {
                 File savedFile = saveImageToDirectory(selectedFile);
                 if (savedFile == null) {
                     throw new Exception("Failed to save image");
@@ -213,6 +219,7 @@ public class AddEditStaffController extends BaseController {
             }
 
             if (!isEditMode) {
+                System.out.println(staff);
                 boolean registerSuccess = AuthenticationService.register(staff);
                 DialogHelper.showNotificationDialog(
                         registerSuccess ? "Notification" : "Error",
