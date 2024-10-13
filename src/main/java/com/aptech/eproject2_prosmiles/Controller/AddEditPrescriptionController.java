@@ -103,15 +103,18 @@ public class AddEditPrescriptionController extends BaseController implements Ini
         PatientDAO patientDAO = new PatientDAO();
 
         try{
+
             String patientId = txtPatientId.getText();
-            if(patientId == null || patientId.isEmpty()) {
+            if (patientId == null || patientId.isEmpty()) {
                 throw new Exception("Patient ID cannot be empty");
             }
-           
-            Patient patient = patientDAO.getById(Integer.parseInt(patientId));
-            if (patient == null) {
+
+            Optional<Patient> patientOptional = Optional.ofNullable(patientDAO.getById(Integer.parseInt(patientId)));
+            if (patientOptional.isEmpty()) {
                 throw new Exception("No patient found with the provided ID");
             }
+
+            Patient patient = patientOptional.get();
             prescription.setPatient(patient);
 
             String description = txtDescription.getText();
