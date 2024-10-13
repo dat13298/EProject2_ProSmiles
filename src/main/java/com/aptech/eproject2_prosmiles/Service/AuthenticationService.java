@@ -30,7 +30,7 @@ public class AuthenticationService {
             Role roleOfStaffLogged = roleDAO.getById(staffLogged.getRole().getId());
             staffLogged.setRole(roleOfStaffLogged);
             AppProperties.setProperty("staff.roletitle", roleOfStaffLogged.getTitle());
-            AppProperties.setProperty("staff.name", staffLogged.getLastName());
+            AppProperties.setProperty("staff.name", staffLogged.getFirstName() + " " + staffLogged.getLastName());
             AppProperties.setProperty("staff.gender",staffLogged.getEGender().getGender());
             AppProperties.setProperty("staff.phone", staffLogged.getPhone());
             AppProperties.setProperty("staff.password", staffLogged.getPassword());
