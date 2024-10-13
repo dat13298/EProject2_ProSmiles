@@ -23,50 +23,48 @@ public abstract class BaseController implements Initializable {
     /*CHECK ACCESS CLASS*/
     private void checkAccess(RolePermissionRequired annotationRole) {
         String currentRoleTitle = AppProperties.getProperty("staff.roletitle");
-        //check role required
-        for(String requiredRole : annotationRole.roles()){
-            if(!currentRoleTitle.equals(requiredRole)){
-                alertAccess("Role " + currentRoleTitle + " is not allowed to access staff");
-                return;
-            } else System.out.println("role " + requiredRole + " is allowed");
+        boolean hasAccess = false;
+
+        for (String requiredRole : annotationRole.roles()) {
+            if (currentRoleTitle.equals(requiredRole)) {
+                hasAccess = true;
+                System.out.println("Role " + requiredRole + " is allowed");
+                break;
+            }
         }
-        //check permission required
-//        for (String requiredPermission : annotationRole.permissions()){
-//            if(!currentStaff.hasPermission(requiredPermission)){
-//                alertAccess("Permission " + requiredPermission + " is not allowed to access staff");
-//                return;
-//            } else System.out.println("permission " + requiredPermission + " is allowed");
-//        }
+
+        if (!hasAccess) {
+            alertAccess("Role " + currentRoleTitle + " is not allowed to access staff");
+            return;
+        }
     }
+
 
     /*CHECK ACCESS METHOD*/
     protected void checkMethodAccess(Method method) {
         RolePermissionRequired annotationRole = method.getAnnotation(RolePermissionRequired.class);
-
         String currentRoleTitle = AppProperties.getProperty("staff.roletitle");
+        if (annotationRole != null) {
+            boolean hasAccess = false;
 
-        if(annotationRole != null){
-            for(String requiredRole : annotationRole.roles()){
-                //check role required
-                if(!currentRoleTitle.equals(requiredRole)){
-                    alertAccess("Role " + currentRoleTitle + " is not allowed to access staff");
-                    return;
-                } else System.out.println("role " + requiredRole + " is allowed");
+            for (String requiredRole : annotationRole.roles()) {
+                if (currentRoleTitle.equals(requiredRole)) {
+                    hasAccess = true;
+                    System.out.println("Role " + currentRoleTitle + " is allowed");
+                    break;
+                }
             }
-//            for (String requiredPermission : annotationRole.permissions()){
-//                if(!currentStaff.hasPermission(requiredPermission)){
-//                    alertAccess("Permission " + requiredPermission + " is not allowed to access staff");
-//                } else System.out.println("permission " + requiredPermission + " is allowed");
-//            }
+
+            if (!hasAccess) {
+                alertAccess("Role " + currentRoleTitle + " is not allowed to access this method");
+            }
         }
     }
 
 
+
     private void alertAccess(String message) {
-        // Alert here (Use actual alert mechanism instead of print)
         DialogHelper.showNotificationDialog("Warning", message);
-//        System.out.println("Access denied: " + message);
         throw new SecurityException(message);
-        // You can also add code to halt the application or redirect to an error page
     }
 }
