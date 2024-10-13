@@ -152,7 +152,7 @@ public class PaymentDAO implements DentalRepository<Payment> {
 
     @Override
     public Payment update(Payment entity) {
-        String sql = "update payment set id=?,bill_number=?,prescription_id=?,payment_type=?,total_amount=?,cre, updated_at=? where id=?";
+        String sql = "update payment set id=?,bill_number=?,prescription_id=?,payment_type=?,total_amount=?, updated_at=? where id=?";
         try{
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, entity.getId());

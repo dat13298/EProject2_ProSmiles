@@ -5,7 +5,8 @@ import com.aptech.eproject2_prosmiles.Model.Entity.*;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EPaymentType;
 import com.aptech.eproject2_prosmiles.Repository.*;
-import javafx.beans.property.SimpleDoubleProperty;
+
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
@@ -16,62 +17,49 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
+
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDateTime;
+
 import java.util.Objects;
 
 
 public class PrescriptionDetailController {
-
     @FXML
     private Button btnAddNew;
-
     @FXML
     private Button btnCancel;
-
     @FXML
     private Button btnDelete;
-
     @FXML
     private Button btnEdit;
-
     @FXML
     private Button btnPayment;
-
     @FXML
     private TableColumn<PrescriptionDetail, Integer> colId;
-
     @FXML
     private TableColumn<PrescriptionDetail, Double> colPrice;
-
     @FXML
     private TableColumn<PrescriptionDetail, Integer> colQuantity;
-
     @FXML
     private TableColumn<PrescriptionDetail, String> colServiceName;
-
     @FXML
     private TableColumn<PrescriptionDetail, String> colUnit;
-
     @FXML
     private Label lblDescription;
-
     @FXML
     private Label lblPatientName;
-
     @FXML
     private Label lblStaffName;
-
     @FXML
     private Label lblStatus;
-
     @FXML
     private TableView<PrescriptionDetail> tblPrescriptionDetail;
+    @FXML
+    private Button btn_export_pdf;
 
 
     private ObservableList<PrescriptionDetail> prescriptionDetailList;
@@ -87,12 +75,20 @@ public class PrescriptionDetailController {
 
         this.prescription = prescriptionClicked;
         lblPatientName.setText(prescriptionClicked.getPatient().getName());
-        lblDescription.setText(prescriptionClicked.getDescription());
+        lblDescription.setText(truncateText(prescriptionClicked.getDescription(), 20));
         lblStaffName.setText(prescriptionClicked.getStaff().toString());
         lblStatus.setText(prescriptionClicked.getStatus().getStatus());
 
         setupTableColumn(prescriptionDetailList);
     }
+
+    public String truncateText(String text, int maxLength) {
+        if (text != null && text.length() > maxLength) {
+            return text.substring(0, maxLength) + "...";
+        }
+        return text;
+    }
+
 
     public void setDetailDialogStage(Stage dialogStage) {
         this.detailDialogStage = dialogStage;
@@ -142,8 +138,9 @@ public class PrescriptionDetailController {
                 Payment payment = new Payment();
                 int maxId = paymentDAO.getAll().stream()
                                 .mapToInt(Payment::getId).max().orElse(0);
+                int rlId = maxId + 1;
                 payment.setPrescription(prescription);
-                payment.setBillNumber("BN00" + maxId);
+                payment.setBillNumber("BN00" + rlId);
                 payment.setPaymentType(EPaymentType.CASH);
                 payment.setTotalAmount(sumTotalPricePrescriptionDetail(prescription));
                 paymentDAO.save(payment);
@@ -280,9 +277,6 @@ public class PrescriptionDetailController {
                 .map(PrescriptionDetail::getPrice)
                 .reduce(0.0, Double::sum);
     }
-
-
-
 
 
 }
