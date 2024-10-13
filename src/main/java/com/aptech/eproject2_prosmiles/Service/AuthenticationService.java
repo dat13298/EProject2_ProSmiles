@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Service;
 
+import com.aptech.eproject2_prosmiles.Controller.ChangePasswordController;
 import com.aptech.eproject2_prosmiles.Global.AppProperties;
 import com.aptech.eproject2_prosmiles.Global.Format;
 import com.aptech.eproject2_prosmiles.Model.Entity.Role;
@@ -7,11 +8,15 @@ import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
 import com.aptech.eproject2_prosmiles.Model.Enum.EGender;
 import com.aptech.eproject2_prosmiles.Repository.RoleDAO;
 import com.aptech.eproject2_prosmiles.Repository.StaffDAO;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Random;
 
 public class AuthenticationService {
     private static final StaffDAO staffDAO = new StaffDAO();
@@ -104,5 +109,78 @@ public class AuthenticationService {
             }
         }
         return false;
+    }
+
+    public static void forgotPassword(String email) throws Exception {
+        Staff staff = new Staff();
+        staff.setEmail(email);
+        Staff staffFound = StaffDAO.getStaffByPhoneOrEmail(staff);
+
+        if (staffFound == null) {
+            throw new Exception("Email does not exist");
+        }
+
+        String otp = generateOTP();
+        staffFound.setOtp(otp);
+
+        staffDAO.updateOtp(staffFound);
+
+        String subject = "Recover password";
+        String body = "Hello, your OTP is: " + otp;
+
+        EmailService.sendEmail(email, subject, body);
+
+        System.out.println("Send email successful to: " + email);
+    }
+    private static String generateOTP() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
+
+    public static boolean verifyOtp(String email, String otp) throws Exception {
+        Staff staff = new Staff();
+        staff.setEmail(email);
+        Staff staffFound = StaffDAO.getStaffByPhoneOrEmail(staff);
+
+        if (staffFound != null && staffFound.getOtp().equals(otp)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static void changePassword(String email, String newPassword) throws Exception {
+        Staff staff = new Staff();
+        staff.setEmail(email);
+        Staff staffFound = StaffDAO.getStaffByPhoneOrEmail(staff);
+
+        if (staffFound != null) {
+            String pswd = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            staffFound.setPassword(pswd);
+
+            staffDAO.updatePasswordById(staffFound.getId(), pswd);
+        } else {
+            throw new Exception("Email does not exist");
+        }
+    }
+
+    public static void showChangePasswordModal(String email) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(AuthenticationService.class.getResource("/com/aptech/eproject2_prosmiles/View/ChangePasswordModal.fxml"));
+
+            Scene scene = new Scene(fxmlLoader.load());
+            Stage stage = new Stage();
+            stage.setTitle("Change Password");
+            stage.setScene(scene);
+
+            ChangePasswordController controller = fxmlLoader.getController();
+            controller.setEmail(email);
+
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
