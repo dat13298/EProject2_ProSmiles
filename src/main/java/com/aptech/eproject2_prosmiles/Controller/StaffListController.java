@@ -123,10 +123,13 @@ public class StaffListController extends BaseController {
             boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
             if (confirmed) {
                 selectedStaff.setIsDeleted(EIsDeleted.INACTIVE);
-                StaffDAO staffDAO = new StaffDAO(); // Khởi tạo StaffDAO nếu cần
-                staffDAO.delete(selectedStaff); // Xóa khỏi cơ sở dữ liệu
-                tblStaff.getItems().remove(selectedStaff); // Xóa khỏi danh sách
-                tblStaff.refresh();
+                StaffDAO staffDAO = new StaffDAO();
+                boolean deleted = staffDAO.delete(selectedStaff);
+                if (deleted) {
+                    staffList = staffDAO.getAll();
+                    tblStaff.setItems(staffList);
+                    tblStaff.refresh();
+                } else DialogHelper.showNotificationDialog("Error", "Failed to delete staff");
             }
         }
     }
