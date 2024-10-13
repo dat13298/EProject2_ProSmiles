@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 
+import com.aptech.eproject2_prosmiles.Global.AppProperties;
 import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -11,11 +12,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -57,7 +62,12 @@ public class DashBoardController implements Initializable {
     private MenuButton btn_report_overview;
     @FXML
     private Rectangle btn_report_overview_underline;
-    @FXML private StackPane stackPaneContent;
+    @FXML
+    private Label lbl_user_name;
+    @FXML
+    private ImageView img_user;
+    @FXML
+    private StackPane stackPaneContent;
 
 
     public void setContent(Parent newContentPane){
@@ -87,6 +97,16 @@ public class DashBoardController implements Initializable {
         setupUnderlineEffect(btn_payment, btn_payment_underline);
         setupUnderlineEffect(btn_staff, btn_staff_underline);
 //        setupUnderlineEffect(btn_report, btn_report_underline);
+
+        lbl_user_name.setText(AppProperties.getProperty("staff.name"));
+
+        File file = new File("src/main/resources" + AppProperties.getProperty("staff.imagepath"));
+        if (file.exists()) {
+            Image image = new Image(file.toURI().toString());
+            img_user.setImage(image);
+        } else {
+            System.out.println("Image not found");
+        }
 
 //        log out
         btn_log_out.setOnAction((ActionEvent event) -> {

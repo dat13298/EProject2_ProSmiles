@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
+<?import javafx.scene.shape.Circle?>
 <AnchorPane prefHeight="600.0" prefWidth="1000.0" styleClass="parent" stylesheets="@../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.DashBoardController">
     <children>
         <BorderPane prefHeight="600.0" prefWidth="1000.0">
@@ -80,14 +81,38 @@
                                 <Image url="@../Media/Logo.png" />
                             </image>
                         </ImageView>
-                        <Label fx:id="lbl_welcome" layoutX="222.0" layoutY="21.0" text="Welcome back, " textAlignment="RIGHT" />
-                  <Button fx:id="btn_log_out" layoutX="916.0" layoutY="14.0" mnemonicParsing="false" text="Logout" />
+
+                        <!-- Label 'Welcome' -->
+                        <Label layoutX="620.0" layoutY="21.0" text="Welcome," textAlignment="RIGHT" />
+
+                        <!-- Label hiển thị tên người dùng -->
+                        <Label fx:id="lbl_user_name" layoutX="690.0" layoutY="21.0" text="user Name" textAlignment="RIGHT" />
+
+                        <!-- StackPane chứa ImageView với hiệu ứng hình tròn và viền -->
+                        <StackPane layoutX="800.0" layoutY="10.0">
+                            <!-- Viền màu xanh -->
+                            <Circle radius="22.0" stroke="#2980b9" strokeWidth="2" fill="transparent" />
+                            <!-- ImageView hình tròn -->
+                            <ImageView fx:id="img_user" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                                <clip>
+                                    <Circle centerX="20" centerY="20" radius="20" />
+                                </clip>
+<!--                                <image>-->
+<!--                                    <Image url="@../Media/your_image.png" /> &lt;!&ndash; Đường dẫn đúng đến hình ảnh của bạn &ndash;&gt;-->
+<!--                                </image>-->
+                            </ImageView>
+                        </StackPane>
+
+
+                        <!-- Nút Logout -->
+                        <Button fx:id="btn_log_out" layoutX="890.0" layoutY="14.0" mnemonicParsing="false" text="Logout" /> <!-- Tăng layoutX lên 20.0 -->
                     </children>
-               <styleClass>
-                  <String fx:value="master-dashboard" />
-                  <String fx:value="dashboard-top" />
-               </styleClass>
+                    <styleClass>
+                        <String fx:value="master-dashboard" />
+                        <String fx:value="dashboard-top" />
+                    </styleClass>
                 </Pane>
+
             </top>
         </BorderPane>
     </children>
