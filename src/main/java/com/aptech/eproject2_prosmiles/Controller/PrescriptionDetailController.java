@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Global.DialogHelper;
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.*;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Model.Enum.EPaymentType;
@@ -27,7 +28,7 @@ import java.io.InputStream;
 import java.util.Objects;
 
 
-public class PrescriptionDetailController {
+public class PrescriptionDetailController extends BaseController {
     @FXML
     private Button btnAddNew;
     @FXML
@@ -65,6 +66,7 @@ public class PrescriptionDetailController {
     private ObservableList<PrescriptionDetail> prescriptionDetailList;
     private Prescription prescription;
     private Stage detailDialogStage;
+    private MethodInterceptor methodInterceptor;
     private PrescriptionListController prescriptionListController;
     private PrescriptionDetailInfoController prescriptionDetailInfoController;
     private PaymentListController paymentListController = new PaymentListController();
@@ -100,35 +102,33 @@ public class PrescriptionDetailController {
 
     @FXML
     public void initialize() {
+        methodInterceptor = new MethodInterceptor(this);
         PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
         PaymentDAO paymentDAO = new PaymentDAO();
 
-        btnEdit.setOnAction(event -> {
-            prescriptionListController.showAddEditForm(prescription, true);
+        btnEdit.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleEditPrescription", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         btnCancel.setOnAction(event -> detailDialogStage.close());
 
-        btnAddNew.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
-                prescriptionDetail.setPrescription(prescription);
-                boolean isEditMode = false;
-                showAddEditPrescriptionDetailInfo(prescriptionDetail, isEditMode);
+        btnAddNew.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleAddPresDetail", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
 
         btnDelete.setOnAction(event -> {
-            PrescriptionDetail selectedPrescriptionDetail = tblPrescriptionDetail.getSelectionModel().getSelectedItem();
-            if(selectedPrescriptionDetail != null) {
-                boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this Prescription?");
-                if (confirmed) {
-                    selectedPrescriptionDetail.setIsDeleted(EIsDeleted.INACTIVE);
-                    prescriptionDetailDAO.delete(selectedPrescriptionDetail);//remove from the DB
-                    tblPrescriptionDetail.getItems().remove(selectedPrescriptionDetail);//remove from the list
-                    tblPrescriptionDetail.refresh();
-                }
+            try {
+                methodInterceptor.invokeMethod("handleDeletePresDetail", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
 
@@ -149,6 +149,33 @@ public class PrescriptionDetailController {
         });
     }
 
+    @RolePermissionRequired(roles = {"Manager", "Doctor"})
+    public void handleEditPrescription(ActionEvent actionEvent) {
+        prescriptionListController.showAddEditForm(prescription, true);
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Doctor"})
+    public void handleAddPresDetail(ActionEvent actionEvent) {
+        PrescriptionDetail prescriptionDetail = new PrescriptionDetail();
+        prescriptionDetail.setPrescription(prescription);
+        boolean isEditMode = false;
+        showAddEditPrescriptionDetailInfo(prescriptionDetail, isEditMode);
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Doctor"})
+    public void handleDeletePresDetail(ActionEvent actionEvent) {
+        PrescriptionDetail selectedPrescriptionDetail = tblPrescriptionDetail.getSelectionModel().getSelectedItem();
+        if(selectedPrescriptionDetail != null) {
+            boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this Prescription?");
+            if (confirmed) {
+                selectedPrescriptionDetail.setIsDeleted(EIsDeleted.INACTIVE);
+                PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
+                prescriptionDetailDAO.delete(selectedPrescriptionDetail);//remove from the DB
+                tblPrescriptionDetail.getItems().remove(selectedPrescriptionDetail);//remove from the list
+                tblPrescriptionDetail.refresh();
+            }
+        }
+    }
 
     private void setupTableColumn(ObservableList<PrescriptionDetail> prescriptionDetails) {
         ServiceDAO serviceDAO = new ServiceDAO();
