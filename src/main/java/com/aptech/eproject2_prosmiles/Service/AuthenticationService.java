@@ -90,7 +90,6 @@ public class AuthenticationService {
         try {
             FileInputStream inputStream = new FileInputStream(filePath);
             properties.load(inputStream);
-            System.out.println(properties.getProperty("staff.isremember"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

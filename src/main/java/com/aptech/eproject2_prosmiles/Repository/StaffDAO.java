@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Repository;
 
 import com.aptech.eproject2_prosmiles.Conectivity.MySQLConnection;
+import com.aptech.eproject2_prosmiles.Global.AppProperties;
 import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.IGeneric.DentalRepository;
 import com.aptech.eproject2_prosmiles.Model.Entity.Role;
@@ -49,7 +50,7 @@ public class StaffDAO implements DentalRepository<Staff> {
                     "s.gender, s.phone, s.password, s.address, s.email, " +
                     "s.age, s.image_path, s.created_at, s.updated_at, s.is_deleted " +
                     "FROM staff s " +
-                    "WHERE 1=1 LIMIT 100";
+                    "WHERE s.is_deleted = 0 LIMIT 100";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -175,16 +176,29 @@ public class StaffDAO implements DentalRepository<Staff> {
         try {
             String sql = "UPDATE staff s " +
                     "SET s.is_deleted = ? " +
-                    "WHERE s.id = ?";
+                    "WHERE s.id = ? AND s.email <> ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, entity.getIsDeleted().getValue());
             pstmt.setInt(2, entity.getId());
-            pstmt.executeUpdate();
-        }catch (SQLException e){
+            String email = AppProperties.getProperty("staff.email");
+            pstmt.setString(3, email);
+
+            int rowsAffected = pstmt.executeUpdate(); // Lưu số dòng bị ảnh hưởng
+
+            if (rowsAffected > 0) {
+                return true; // Trả về true nếu có ít nhất một dòng bị cập nhật
+            } else {
+                // Nếu không có dòng nào bị ảnh hưởng
+                System.out.println("No staff found with the given ID or email is the same.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
             DialogHelper.showNotificationDialog("Error", "Failed to delete staff");
+            return false; // Trả về false nếu có lỗi
         }
-        return false;
     }
+
 
     /*SET PROPERTIES STAFF*/
     private Staff setPropertiesStaff(ResultSet rs) throws SQLException {
