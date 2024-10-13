@@ -5,7 +5,6 @@ import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-
 public class Staff {
     private int id;
     private Role role;
@@ -21,11 +20,12 @@ public class Staff {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private EIsDeleted isDeleted;
+    private String otp; // New field for OTP
 
     public Staff() {;}
     public Staff(int id, Role role, String firstName, String lastName, EGender eGender, String phone
             , String password, String address, String email, int age, String imagePath
-            , LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted) {
+            , LocalDateTime createdAt, LocalDateTime updatedAt, EIsDeleted isDeleted, String otp) {
         this.id = id;
         this.role = role;
         this.firstName = firstName;
@@ -33,20 +33,31 @@ public class Staff {
         this.gender = eGender;
         this.phone = phone;
         this.password = password;
+        this.address = address;
         this.email = email;
         this.age = age;
         this.imagePath = imagePath;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isDeleted = isDeleted;
+        this.otp = otp; // New OTP field
     }
 
-//    boolean has Role
+    // Add getter and setter for OTP
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    //    boolean has Role
     public boolean hasRole(String role) {
         return this.getRole().getTitle().equals(role);
     }
 
-//    boolean has Permission
+    //    boolean has Permission
     public boolean hasPermission(String permission) {
 //        stream List permission to check anyMatch
         return this.getRole().getPermissions().stream().anyMatch(p -> p.getTitle().equals(permission));
@@ -109,7 +120,7 @@ public class Staff {
 
     public void setPassword(String password) {
         this.password = password;
-        }
+    }
 
     public String getAddress() {
         return address;

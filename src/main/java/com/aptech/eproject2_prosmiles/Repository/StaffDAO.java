@@ -21,23 +21,33 @@ public class StaffDAO implements DentalRepository<Staff> {
 
     /*GET STAFF BY PHONE OR EMAIL*/
     public static Staff getStaffByPhoneOrEmail(Staff staff) {
+        Staff foundStaff = null;
         try {
-            String sql = "SELECT " +
-                    "s.id, s.password " +
-                    "FROM staff s " +
-                    "WHERE s.phone = ? OR s.email = ?";
+            if (conn == null) {
+                throw new SQLException("Failed to connect Database");
+            }
+
+            String sql = "SELECT s.id, s.password, s.first_name, s.last_name, s.email, s.phone, s.otp " +
+                    "FROM staff s WHERE s.email = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, staff.getPhone());
-            pstmt.setString(2, staff.getEmail());
+            pstmt.setString(1, staff.getEmail());
+
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                staff.setId(rs.getInt("id"));
-                staff.setPassword(rs.getString("password"));
+                foundStaff = new Staff();
+                foundStaff.setId(rs.getInt("id"));
+                foundStaff.setPassword(rs.getString("password"));
+                foundStaff.setEmail(rs.getString("email"));
+                foundStaff.setPhone(rs.getString("phone"));
+                foundStaff.setFirstName(rs.getString("first_name"));
+                foundStaff.setLastName(rs.getString("last_name"));
+                foundStaff.setOtp(rs.getString("otp"));
             }
-        }catch (SQLException e){
-            DialogHelper.showNotificationDialog("Error", "Server connection failed");
+        } catch (SQLException e) {
+            DialogHelper.showNotificationDialog("Error", "Server connection failed: " + e.getMessage());
         }
-        return staff;
+
+        return foundStaff;
     }
 
     /*GET ALL*/
@@ -45,6 +55,9 @@ public class StaffDAO implements DentalRepository<Staff> {
     public ObservableList<Staff> getAll() {
         ObservableList<Staff> staffList = FXCollections.observableArrayList();
         try {
+            if (conn == null) {
+                throw new SQLException("Failed to connect to database");
+            }
             String sql = "SELECT " +
                     "s.id, s.role_id, s.first_name, s.last_name, " +
                     "s.gender, s.phone, s.password, s.address, s.email, " +
@@ -69,6 +82,9 @@ public class StaffDAO implements DentalRepository<Staff> {
     @Override
     public Staff getById(int id) {
         try {
+            if (conn == null) {
+                throw new SQLException("Failed to connect to database");
+            }
             String sql = "SELECT " +
                     "s.id, s.role_id, s.first_name, s.last_name, " +
                     "s.gender, s.phone, s.password, s.address, s.email, " +
@@ -109,6 +125,9 @@ public class StaffDAO implements DentalRepository<Staff> {
     @Override
     public Staff save(Staff entity) {
         try {
+            if (conn == null) {
+                throw new SQLException("Failed to connect to database");
+            }
             String sql = "INSERT INTO staff (role_id, first_name, last_name, gender, phone, password, address, email, " +
                     "age, image_path, created_at) " +
                     " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -136,6 +155,9 @@ public class StaffDAO implements DentalRepository<Staff> {
     @Override
     public Staff update(Staff entity) {
         try {
+            if (conn == null) {
+                throw new SQLException("Failed to connect to database");
+            }
             String sql = "UPDATE staff s " +
                     "SET s.role_id = ?, " +
                     "s.first_name = ?, " +
@@ -175,6 +197,9 @@ public class StaffDAO implements DentalRepository<Staff> {
     @Override
     public boolean delete(Staff entity) {
         try {
+            if (conn == null) {
+                throw new SQLException("Failed to connect to database");
+            }
             String sql = "UPDATE staff s " +
                     "SET s.is_deleted = ? " +
                     "WHERE s.id = ? AND s.email <> ?";
@@ -184,19 +209,18 @@ public class StaffDAO implements DentalRepository<Staff> {
             String email = AppProperties.getProperty("staff.email");
             pstmt.setString(3, email);
 
-            int rowsAffected = pstmt.executeUpdate(); // Lưu số dòng bị ảnh hưởng
+            int rowsAffected = pstmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                return true; // Trả về true nếu có ít nhất một dòng bị cập nhật
+                return true;
             } else {
-                // Nếu không có dòng nào bị ảnh hưởng
                 System.out.println("No staff found with the given ID or email is the same.");
                 return false;
             }
         } catch (SQLException e) {
             System.out.println("SQL Error: " + e.getMessage());
             DialogHelper.showNotificationDialog("Error", "Failed to delete staff");
-            return false; // Trả về false nếu có lỗi
+            return false;
         }
     }
 
@@ -205,10 +229,10 @@ public class StaffDAO implements DentalRepository<Staff> {
     private Staff setPropertiesStaff(ResultSet rs) throws SQLException {
         Staff staff = new Staff();
         staff.setId(rs.getInt("id"));
-        int role_id = rs.getInt("role_id");// Retrieve the role ID from the ResultSet
+        int role_id = rs.getInt("role_id");
         Role role = new Role();
-        role.setId(role_id);// Set the ID of the Role object
-        staff.setRole(Optional.of(role));// Wrap the Role in an Optional and set it to the Staff object
+        role.setId(role_id);
+        staff.setRole(Optional.of(role));
         staff.setFirstName(rs.getString("first_name"));
         staff.setLastName(rs.getString("last_name"));
         staff.setEGender(EGender.fromValue(rs.getString("gender")));
@@ -227,5 +251,36 @@ public class StaffDAO implements DentalRepository<Staff> {
         LocalDateTime updatedAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
         staff.setUpdatedAt(updatedAt);
         return staff;
+    }
+
+    public void updateOtp(Staff staff) {
+        try {
+            if (conn == null) {
+                throw new SQLException("Failed to connect to database");
+            }
+            String sql = "UPDATE staff SET otp = ? WHERE email = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, staff.getOtp());
+            pstmt.setString(2, staff.getEmail());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            DialogHelper.showNotificationDialog("Error", "Failed to update OTP: " + e.getMessage());
+        }
+    }
+
+    public void updatePasswordById(int id, String newPassword) {
+        try {
+            if (conn == null) {
+                throw new SQLException("Failed to connect to database");
+            }
+            String sql = "UPDATE staff SET password = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newPassword);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+            DialogHelper.showNotificationDialog("Success", "Password updated successfully.");
+        } catch (SQLException e) {
+            DialogHelper.showNotificationDialog("Error", "Failed to update password: " + e.getMessage());
+        }
     }
 }
