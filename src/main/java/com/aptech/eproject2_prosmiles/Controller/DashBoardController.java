@@ -129,6 +129,16 @@ public class DashBoardController implements Initializable {
             }
         });
 
+//        home
+        getContentPane("/com/aptech/eproject2_prosmiles/View/Home.fxml");
+
+        btn_home.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                getContentPane("/com/aptech/eproject2_prosmiles/View/Home.fxml");
+            }
+        });
+
 //        Prescription
         btn_prescription.setOnAction((new EventHandler<ActionEvent>() {
             @Override
