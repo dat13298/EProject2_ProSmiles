@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Global.DialogHelper;
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Patient;
 import com.aptech.eproject2_prosmiles.Model.Entity.Payment;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
@@ -14,6 +15,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -50,11 +52,11 @@ public class PaymentListController extends BaseController{
     private PaymentDetailController paymentDetailController;
     private boolean isListView = true;
 
-
-
+    private MethodInterceptor methodInterceptor;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        methodInterceptor = new MethodInterceptor(this);
         PaymentDAO paymentDAO = new PaymentDAO();
         PatientDAO patientDAO = new PatientDAO();
         PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
@@ -105,19 +107,28 @@ public class PaymentListController extends BaseController{
             return row;
         });
 
-        btnDelete.setOnAction(event -> {
-            Payment selectedPayment = tblPayment.getSelectionModel().getSelectedItem();
-            if(selectedPayment != null) {
-                boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this payment?");
-                if(confirmed) {
-                    selectedPayment.setIsDeleted(EIsDeleted.INACTIVE);
-                    paymentDAO.delete(selectedPayment);
-                    tblPayment.getItems().remove(selectedPayment);
-                    tblPayment.refresh();
-                }
+        btnDelete.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleDelete", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
+    }
 
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleDelete(ActionEvent event) {
+        Payment selectedPayment = tblPayment.getSelectionModel().getSelectedItem();
+        if(selectedPayment != null) {
+            boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this payment?");
+            if(confirmed) {
+                selectedPayment.setIsDeleted(EIsDeleted.INACTIVE);
+                PaymentDAO paymentDAO = new PaymentDAO();
+                paymentDAO.delete(selectedPayment);
+                tblPayment.getItems().remove(selectedPayment);
+                tblPayment.refresh();
+            }
+        }
     }
 
     public void showPaymentDetail(Payment payment, boolean isView){

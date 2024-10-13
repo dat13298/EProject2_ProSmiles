@@ -2,6 +2,7 @@ package com.aptech.eproject2_prosmiles.Controller;
 
 
 import com.aptech.eproject2_prosmiles.Global.DialogHelper;
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Payment;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Entity.PrescriptionDetail;
@@ -25,6 +26,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.properties.TextAlignment;
 import com.itextpdf.layout.properties.UnitValue;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -53,6 +55,8 @@ public class PaymentDetailController extends BaseController{
     private Label lblStatus;
     @FXML
     private Button btn_payment_export;
+
+    private MethodInterceptor methodInterceptor;
 
 
     private Payment payment;
@@ -100,13 +104,33 @@ public class PaymentDetailController extends BaseController{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btnEdit.setOnAction(event -> {
-            paymentListController.showAddEditPayment(payment);
+        methodInterceptor = new MethodInterceptor(this);
+        btnEdit.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleDeleteStaff", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
         btnCancel.setOnAction(event -> dialogStage.close());
-        btn_payment_export.setOnMouseClicked(event -> {
-            exportToPDF("PaymentDetails_" + lblPaymentNumber.getText() + ".pdf");
+        btn_payment_export.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleExport", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
+
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Receptionist"})
+    public void handleEdit(ActionEvent event) {
+        paymentListController.showAddEditPayment(payment);
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Receptionist"})
+    public void handleExport(ActionEvent event) {
+        exportToPDF("PaymentDetails_" + lblPaymentNumber.getText() + ".pdf");
     }
 
     public void exportToPDF(String destinationFileName) {
