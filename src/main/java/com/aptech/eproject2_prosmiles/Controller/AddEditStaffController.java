@@ -225,9 +225,6 @@ public class AddEditStaffController extends BaseController {
                         registerSuccess ? "Notification" : "Error",
                         registerSuccess ? "Create new staff successfully" : "Failed to create new staff"
                 );
-            } else {
-                // Update staff trong trường hợp chỉnh sửa
-                // Các thông tin khác của staff đã được cập nhật phía trên
             }
 
             saved = true;
