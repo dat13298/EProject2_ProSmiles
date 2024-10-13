@@ -97,7 +97,7 @@ public class PatientDAO implements DentalRepository<Patient> {
         String query = "INSERT INTO patient (name, gender, phone, address, age, email, created_at, updated_at, is_deleted) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW(), 0)";
         try (PreparedStatement pst = conn.prepareStatement(query)) {
             pst.setString(1, entity.getName());
-            pst.setString(2, entity.getGender().name());
+            pst.setString(2, entity.getGender().getGender());
             pst.setString(3, entity.getPhone());
             pst.setString(4, entity.getAddress());
             pst.setInt(5, entity.getAge());
@@ -117,7 +117,7 @@ public class PatientDAO implements DentalRepository<Patient> {
         String query = "UPDATE patient SET name = ?, gender = ?, phone = ?, address = ?, age = ?, email = ?, updated_at = NOW() WHERE id = ? AND is_deleted = 0";
         try (PreparedStatement pst = conn.prepareStatement(query)) {
             pst.setString(1, entity.getName());
-            pst.setString(2, entity.getGender().name());
+            pst.setString(2, entity.getGender().getGender());
             pst.setString(3, entity.getPhone());
             pst.setString(4, entity.getAddress());
             pst.setInt(5, entity.getAge());
