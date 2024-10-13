@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Global.DialogHelper;
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.*;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.*;
@@ -51,10 +52,12 @@ public class PrescriptionListController extends BaseController{
 
     private ObservableList<Prescription> prescriptionList;
     private PrescriptionDetailController prescriptionDetailController;
+    private MethodInterceptor methodInterceptor;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        methodInterceptor = new MethodInterceptor(this);
         PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
         ServiceDAO serviceDAO = new ServiceDAO();
         PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
@@ -106,27 +109,43 @@ public class PrescriptionListController extends BaseController{
             return row;
         });
 
-        btnAddNew.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Prescription newPrescription = new Prescription();
-                boolean isEditMode = false;
-                showAddEditForm(newPrescription, isEditMode);
+        btnAddNew.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleAddPrescription", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
 
-        btnDelete.setOnAction(event -> {
-            Prescription selectedPrescription = tablePrescription.getSelectionModel().getSelectedItem();
-            if(selectedPrescription != null) {
-                boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this Prescription?");
-                if (confirmed) {
-                    selectedPrescription.setIsDeleted(EIsDeleted.INACTIVE);
-                    prescriptionDAO.delete(selectedPrescription);//remove from the DB
-                    tablePrescription.getItems().remove(selectedPrescription);//remove from the list
-                    tablePrescription.refresh();
-                }
+        btnDelete.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleDeletePrescription", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Doctor"})
+    public void handleAddPrescription(ActionEvent actionEvent) {
+        Prescription newPrescription = new Prescription();
+        boolean isEditMode = false;
+        showAddEditForm(newPrescription, isEditMode);
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Doctor"})
+    public void handleDeletePrescription(ActionEvent actionEvent) {
+        Prescription selectedPrescription = tablePrescription.getSelectionModel().getSelectedItem();
+        if(selectedPrescription != null) {
+            boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this Prescription?");
+            if (confirmed) {
+                selectedPrescription.setIsDeleted(EIsDeleted.INACTIVE);
+                PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
+                prescriptionDAO.delete(selectedPrescription);//remove from the DB
+                tablePrescription.getItems().remove(selectedPrescription);//remove from the list
+                tablePrescription.refresh();
+            }
+        }
     }
 
     private void showPrescriptionDetail(Prescription prescriptionClicked) {
