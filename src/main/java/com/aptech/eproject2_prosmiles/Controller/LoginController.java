@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -108,8 +109,6 @@ public class LoginController implements Initializable {
                 }
             }
             /*END EVENT LOGIN BUTTON*/
-
-            /*FORGOT PASSWORD*/
         });
     }
     /* LOAD MAIN MENU FXML */
@@ -164,5 +163,22 @@ public class LoginController implements Initializable {
 
         AuthenticationService.register(staffRegister);
 
+    }
+
+    @FXML
+    public void handleForgotPassword(MouseEvent mouseEvent) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/ForgotPasswordModal.fxml"));
+            Scene scene = new Scene(fxmlLoader.load());
+
+            Stage stage = new Stage();
+            stage.setTitle("Forgot Password");
+            stage.setScene(scene);
+
+            stage.setResizable(false);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
