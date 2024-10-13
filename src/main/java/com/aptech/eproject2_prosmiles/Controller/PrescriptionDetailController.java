@@ -25,7 +25,9 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.net.URL;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 
 public class PrescriptionDetailController extends BaseController {
@@ -101,7 +103,7 @@ public class PrescriptionDetailController extends BaseController {
     }
 
     @FXML
-    public void initialize() {
+    public void initialize(URL location, ResourceBundle resources) {
         methodInterceptor = new MethodInterceptor(this);
         PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
         PaymentDAO paymentDAO = new PaymentDAO();
