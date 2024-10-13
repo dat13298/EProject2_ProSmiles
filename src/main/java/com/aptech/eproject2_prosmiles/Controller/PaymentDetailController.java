@@ -105,7 +105,7 @@ public class PaymentDetailController extends BaseController{
         });
         btnCancel.setOnAction(event -> dialogStage.close());
         btn_payment_export.setOnMouseClicked(event -> {
-            exportToPDF("PaymentDetails.pdf");
+            exportToPDF("PaymentDetails_" + lblPaymentNumber.getText() + ".pdf");
         });
     }
 
