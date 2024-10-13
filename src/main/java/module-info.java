@@ -11,6 +11,7 @@ module com.aptech.eproject2_prosmiles {
     requires jdk.jshell;
     requires java.desktop;
     requires kernel;
+    requires java.mail;
     requires layout;
 
     opens com.aptech.eproject2_prosmiles to javafx.fxml;
