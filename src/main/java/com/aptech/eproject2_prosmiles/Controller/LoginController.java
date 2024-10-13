@@ -102,7 +102,6 @@ public class LoginController implements Initializable {
                         loadMainMenu();
                     } else throw new Exception("Invalid username or password");
                 } catch (Exception e) {
-                    System.out.println(e.getMessage());
                     lbl_authenticate.visibleProperty().set(true);//set visible true
                     lbl_authenticate.setStyle("-fx-text-fill: #f63838");
                     lbl_authenticate.setText(e.getMessage());//Notification
