@@ -10,6 +10,8 @@ module com.aptech.eproject2_prosmiles {
     requires jbcrypt;
     requires jdk.jshell;
     requires java.desktop;
+    requires kernel;
+    requires layout;
 
     opens com.aptech.eproject2_prosmiles to javafx.fxml;
     exports com.aptech.eproject2_prosmiles;
