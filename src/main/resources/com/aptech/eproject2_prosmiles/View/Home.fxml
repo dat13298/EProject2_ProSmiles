@@ -40,7 +40,7 @@
                             <Image url="@../Media/icon_record.png" />
                         </image>
                     </ImageView>
-                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Manage medical records" />
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="Manage medical records" />
                 </HBox>
                 <HBox spacing="10">
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
@@ -48,7 +48,7 @@
                             <Image url="@../Media/icon_service.png" />
                         </image>
                     </ImageView>
-                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Manage services" />
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="Manage services" />
                 </HBox>
                 <HBox spacing="10">
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
@@ -56,7 +56,7 @@
                             <Image url="@../Media/icon_personnel.png" />
                         </image>
                     </ImageView>
-                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Manage personnel" />
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="Manage personnel" />
                 </HBox>
                 <HBox spacing="10">
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
@@ -64,7 +64,7 @@
                             <Image url="@../Media/icon_invoice.png" />
                         </image>
                     </ImageView>
-                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Generate invoices" />
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="Generate invoices" />
                 </HBox>
                 <HBox spacing="10">
                     <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
@@ -72,7 +72,7 @@
                             <Image url="@../Media/icon_storage.png" />
                         </image>
                     </ImageView>
-                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Data storage" />
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="Data storage" />
                 </HBox>
             </VBox>
         </VBox>
