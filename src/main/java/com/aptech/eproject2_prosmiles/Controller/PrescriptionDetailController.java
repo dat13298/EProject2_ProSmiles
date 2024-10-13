@@ -61,10 +61,9 @@ public class PrescriptionDetailController extends BaseController {
     private Label lblStatus;
     @FXML
     private TableView<PrescriptionDetail> tblPrescriptionDetail;
-    @FXML
-    private Button btn_export_pdf;
 
 
+    private boolean isDetailView;
     private ObservableList<PrescriptionDetail> prescriptionDetailList;
     private Prescription prescription;
     private Stage detailDialogStage;
@@ -102,53 +101,62 @@ public class PrescriptionDetailController extends BaseController {
         this.prescriptionListController = prescriptionListController;
     }
 
+    public void setIsDetailView(boolean detailView) {
+        isDetailView = detailView;
+        if(!detailView){
+            btnAddNew.setVisible(false);
+            btnDelete.setVisible(false);
+            btnEdit.setVisible(false);
+            btnPayment.setVisible(false);
+        }
+    }
+
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         methodInterceptor = new MethodInterceptor(this);
         PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
         PaymentDAO paymentDAO = new PaymentDAO();
+            btnEdit.setOnAction((ActionEvent event) -> {
+                try {
+                    methodInterceptor.invokeMethod("handleEditPrescription", event);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
-        btnEdit.setOnAction((ActionEvent event) -> {
-            try {
-                methodInterceptor.invokeMethod("handleEditPrescription", event);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        });
+            btnAddNew.setOnAction((ActionEvent event) -> {
+                try {
+                    methodInterceptor.invokeMethod("handleAddPresDetail", event);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
+            btnDelete.setOnAction(event -> {
+                try {
+                    methodInterceptor.invokeMethod("handleDeletePresDetail", event);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            btnPayment.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    Payment payment = new Payment();
+                    int maxId = paymentDAO.getAll().stream()
+                            .mapToInt(Payment::getId).max().orElse(0);
+                    int rlId = maxId + 1;
+                    payment.setPrescription(prescription);
+                    payment.setBillNumber("BN00" + rlId);
+                    payment.setPaymentType(EPaymentType.CASH);
+                    payment.setTotalAmount(sumTotalPricePrescriptionDetail(prescription));
+                    paymentDAO.save(payment);
+                    paymentListController.showPaymentDetail(payment, false);
+                }
+            });
         btnCancel.setOnAction(event -> detailDialogStage.close());
 
-        btnAddNew.setOnAction((ActionEvent event) -> {
-            try {
-                methodInterceptor.invokeMethod("handleAddPresDetail", event);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        btnDelete.setOnAction(event -> {
-            try {
-                methodInterceptor.invokeMethod("handleDeletePresDetail", event);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        btnPayment.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                Payment payment = new Payment();
-                int maxId = paymentDAO.getAll().stream()
-                                .mapToInt(Payment::getId).max().orElse(0);
-                int rlId = maxId + 1;
-                payment.setPrescription(prescription);
-                payment.setBillNumber("BN00" + rlId);
-                payment.setPaymentType(EPaymentType.CASH);
-                payment.setTotalAmount(sumTotalPricePrescriptionDetail(prescription));
-                paymentDAO.save(payment);
-                paymentListController.showPaymentDetail(payment, false);
-            }
-        });
     }
 
     @RolePermissionRequired(roles = {"Manager", "Doctor"})

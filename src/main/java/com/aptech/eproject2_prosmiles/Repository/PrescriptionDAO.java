@@ -204,4 +204,48 @@ public class PrescriptionDAO implements DentalRepository<Prescription> {
         return false;
     }
 
+    public ObservableList<Prescription> getPrescriptionByPatientId(int patientId) {
+        ObservableList<Prescription> prescriptionsByPatient = FXCollections.observableArrayList();
+        String sql = "SELECT p.id, p.patient_id, p.staff_id, p.description, p.status, p.created_at, " +
+                "p.updated_at, p.is_deleted " +
+                "FROM prescription p WHERE p.patient_id = ? AND p.is_deleted = 0";
+
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, patientId);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Prescription p = new Prescription();
+                Patient pt = new Patient();
+                Staff st = new Staff();
+
+                p.setId(rs.getInt("id"));
+                pt.setId(rs.getInt("patient_id"));
+                p.setPatient(Optional.of(pt));
+                st.setId(rs.getInt("staff_id"));
+                p.setStaff(Optional.of(st));
+
+                p.setDescription(rs.getString("description"));
+                p.setStatus(EStatus.fromString(rs.getString("status")));
+
+                Timestamp createTime = rs.getTimestamp("created_at");
+                LocalDateTime createAt = createTime == null ? null : createTime.toLocalDateTime();
+                p.setCreatedAt(createAt);
+
+                Timestamp updateTime = rs.getTimestamp("updated_at");
+                LocalDateTime updateAt = updateTime == null ? null : updateTime.toLocalDateTime();
+                p.setUpdatedAt(updateAt);
+
+                p.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
+
+                prescriptionsByPatient.add(p);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return prescriptionsByPatient;
+    }
+
 }

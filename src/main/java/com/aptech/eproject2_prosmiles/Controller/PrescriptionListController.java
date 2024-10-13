@@ -103,7 +103,7 @@ public class PrescriptionListController extends BaseController{
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && !row.isEmpty()) {
                     Prescription prescriptionClicked = row.getItem();
-                    showPrescriptionDetail(prescriptionClicked);
+                    showPrescriptionDetail(prescriptionClicked, true);
                 }
             });
             return row;
@@ -148,7 +148,7 @@ public class PrescriptionListController extends BaseController{
         }
     }
 
-    private void showPrescriptionDetail(Prescription prescriptionClicked) {
+    public void showPrescriptionDetail(Prescription prescriptionClicked, boolean isDetailView) {
         try{
             InputStream fxmlStream = getClass().getResourceAsStream("/com/aptech/eproject2_prosmiles/View/Prescription/PrescriptionDetail.fxml");
             if(fxmlStream == null) {
@@ -170,6 +170,7 @@ public class PrescriptionListController extends BaseController{
             prescriptionDetailController = detailController;
             detailController.setPrescription(prescriptionClicked);
             detailController.setDetailDialogStage(dialogStage);
+            detailController.setIsDetailView(isDetailView);
             detailController.setPrescriptionListController(this);
 
             dialogStage.initModality(Modality.WINDOW_MODAL);

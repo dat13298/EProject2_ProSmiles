@@ -7,26 +7,26 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="540.0" prefWidth="777.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.View.Patient.PatientList">
+<AnchorPane prefHeight="540.0" prefWidth="777.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.PatientListController">
     <children>
-        <TableView layoutY="52.0" prefHeight="488.0" prefWidth="777.0">
+        <TableView fx:id="tbl_patient" layoutY="52.0" prefHeight="488.0" prefWidth="777.0">
             <columns>
-                <TableColumn prefWidth="40.0" text="ID" />
-                <TableColumn prefWidth="175.0" text="Patient's Name" />
-                <TableColumn prefWidth="185.0" text="Prescription" />
-                <TableColumn prefWidth="141.0" text="Service's Name" />
-                <TableColumn prefWidth="142.0" text="Created Time" />
-                <TableColumn prefWidth="72.0" text="Status" />
+            <TableColumn fx:id="col_id" prefWidth="75.0" text="ID" />
+                <TableColumn fx:id="col_name" prefWidth="175.0" text="Patient's Name" />
+                <TableColumn fx:id="col_gender" prefWidth="74.0" text="Gender" />
+                <TableColumn fx:id="col_age" prefWidth="150.0" text="Age" />
+                <TableColumn fx:id="col_phone" prefWidth="88.0" text="Phone" />
+            <TableColumn fx:id="col_address" maxWidth="300.0" prefWidth="269.0" text="Address" />
             </columns>
         </TableView>
-        <Button layoutX="623.0" layoutY="14.0" mnemonicParsing="false" text="Add New Patient">
+        <Button fx:id="btn_add" layoutX="623.0" layoutY="14.0" mnemonicParsing="false" text="Add New Patient">
             <styleClass>
                 <String fx:value="master_button" />
                 <String fx:value="title" />
             </styleClass>
         </Button>
         <Label layoutX="14.0" layoutY="19.0" styleClass="title" text="Patient List" />
-      <Button layoutX="489.0" layoutY="14.0" mnemonicParsing="false" text="Delete Patient">
+      <Button fx:id="btn_delete" layoutX="489.0" layoutY="14.0" mnemonicParsing="false" text="Delete Patient">
          <styleClass>
             <String fx:value="button-delete" />
             <String fx:value="title" />
