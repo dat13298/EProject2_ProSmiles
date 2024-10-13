@@ -127,6 +127,7 @@ public class StaffDAO implements DentalRepository<Staff> {
             pstmt.setTimestamp(11, Timestamp.valueOf(now));
             pstmt.executeUpdate();
         }catch (SQLException e){
+            System.out.println(e.getMessage());
             DialogHelper.showConfirmationDialog("Error", "Failed to create staff");
         }
         return entity;
