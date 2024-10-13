@@ -1,14 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.aptech.eproject2_prosmiles.Controller.HomeController"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="540.0" prefWidth="777.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.HomeController">
 
+    <StackPane prefHeight="540.0" prefWidth="777.0">
+        <ImageView pickOnBounds="true" preserveRatio="true">
+            <image>
+                <Image url="@../Media/background_image.png" />
+            </image>
+        </ImageView>
+
+        <Rectangle fill="rgba(255, 255, 255, 0.3)" height="540" width="777" />
+
+        <VBox alignment="TOP_CENTER" layoutX="50.0" layoutY="5.0" spacing="10.0" style="-fx-padding: 30 0 0 0;"> <!-- Thay đổi padding ở đây -->
+            <ImageView fitHeight="137.0" fitWidth="287.0" pickOnBounds="true" preserveRatio="true">
+                <image>
+                    <Image url="@../Media/Logo.png" />
+                </image>
+            </ImageView>
+
+            <Text fill="#2980b9" style="-fx-font-size: 28;" text="Welcome to the eProject Application!" />
+
+            <Text fill="#34495e" style="-fx-font-size: 16;" text="Our application helps you manage services efficiently." wrappingWidth="600" />
+
+            <Text fill="#2980b9" style="-fx-font-size: 24;" text="The features of the application include:" wrappingWidth="600" />
+
+            <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 0 0 0 30;">
+                <HBox spacing="10">
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <image>
+                            <Image url="@../Media/icon_record.png" />
+                        </image>
+                    </ImageView>
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Manage medical records" />
+                </HBox>
+                <HBox spacing="10">
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <image>
+                            <Image url="@../Media/icon_service.png" />
+                        </image>
+                    </ImageView>
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Manage services" />
+                </HBox>
+                <HBox spacing="10">
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <image>
+                            <Image url="@../Media/icon_personnel.png" />
+                        </image>
+                    </ImageView>
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Manage personnel" />
+                </HBox>
+                <HBox spacing="10">
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <image>
+                            <Image url="@../Media/icon_invoice.png" />
+                        </image>
+                    </ImageView>
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Generate invoices" />
+                </HBox>
+                <HBox spacing="10">
+                    <ImageView fitHeight="24" fitWidth="24" preserveRatio="true">
+                        <image>
+                            <Image url="@../Media/icon_storage.png" />
+                        </image>
+                    </ImageView>
+                    <Text fill="#34495e" style="-fx-font-size: 16;" text="- Data storage" />
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <VBox alignment="BOTTOM_CENTER" prefHeight="540.0" prefWidth="777.0">
+            <Text fill="#7f8c8d" style="-fx-font-size: 14;" text="© 2024 eProject. All rights reserved." VBox.vgrow="ALWAYS" />
+        </VBox>
+    </StackPane>
 </AnchorPane>
