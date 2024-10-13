@@ -1,9 +1,11 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Entity.PrescriptionDetail;
 import com.aptech.eproject2_prosmiles.Repository.PrescriptionDetailDAO;
 import com.aptech.eproject2_prosmiles.Repository.ServiceDAO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -15,7 +17,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-
 
 
 public class PrescriptionDetailInfoController extends BaseController {
@@ -40,6 +41,7 @@ public class PrescriptionDetailInfoController extends BaseController {
     private PrescriptionDetail prescriptionDetail;
     private Prescription prescription;
     private Stage dialog;
+    private MethodInterceptor methodInterceptor;
     private PrescriptionDetailController prescriptionDetailController;
 
     public void setPrescriptionDetailController(PrescriptionDetailController prescriptionDetailController) {
@@ -62,12 +64,22 @@ public class PrescriptionDetailInfoController extends BaseController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-      btn_edit.setOnAction(actionEvent -> {
-          boolean isEditMode = true;
-          prescriptionDetailController.showAddEditPrescriptionDetailInfo(prescriptionDetail, isEditMode);
-      });
+        methodInterceptor = new MethodInterceptor(this);
+        btn_edit.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleEditPrescriptionDetailInfo", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-      btn_cancel.setOnAction(actionEvent -> dialog.close());
+        btn_cancel.setOnAction(actionEvent -> dialog.close());
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Doctor"})
+    public void handleEditPrescriptionDetailInfo(ActionEvent actionEvent) {
+        boolean isEditMode = true;
+        prescriptionDetailController.showAddEditPrescriptionDetailInfo(prescriptionDetail, isEditMode);
     }
 
 }
