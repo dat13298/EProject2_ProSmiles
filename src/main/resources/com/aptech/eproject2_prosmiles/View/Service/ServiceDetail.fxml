@@ -8,7 +8,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="516.0" prefWidth="625.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.ServiceDetailController">
+<AnchorPane prefHeight="516.0" prefWidth="625.0"
+            styleClass="parent" stylesheets="@../../Style/Style.css"
+            xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.aptech.eproject2_prosmiles.Controller.ServiceDetailController">
     <children>
         <Label fx:id="lb_title" layoutX="14.0" layoutY="14.0" styleClass="title" text="Service Detail" />
         <Label fx:id="lb_title_service_name" layoutX="14.0" layoutY="60.0" styleClass="title" text="Service's Name :" />
