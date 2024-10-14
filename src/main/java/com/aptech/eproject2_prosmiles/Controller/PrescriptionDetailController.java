@@ -32,35 +32,35 @@ import java.util.ResourceBundle;
 
 public class PrescriptionDetailController extends BaseController {
     @FXML
-    private Button btnAddNew;
+    private Button btn_add_new;
     @FXML
-    private Button btnCancel;
+    private Button btn_cancel;
     @FXML
-    private Button btnDelete;
+    private Button btn_delete;
     @FXML
-    private Button btnEdit;
+    private Button btn_edit;
     @FXML
-    private Button btnPayment;
+    private Button btn_payment;
     @FXML
-    private TableColumn<PrescriptionDetail, Integer> colId;
+    private TableColumn<PrescriptionDetail, Integer> col_id;
     @FXML
-    private TableColumn<PrescriptionDetail, Double> colPrice;
+    private TableColumn<PrescriptionDetail, Double> col_price;
     @FXML
-    private TableColumn<PrescriptionDetail, Integer> colQuantity;
+    private TableColumn<PrescriptionDetail, Integer> col_quantity;
     @FXML
-    private TableColumn<PrescriptionDetail, String> colServiceName;
+    private TableColumn<PrescriptionDetail, String> col_service_name;
     @FXML
-    private TableColumn<PrescriptionDetail, String> colUnit;
+    private TableColumn<PrescriptionDetail, String> col_unit;
     @FXML
-    private Label lblDescription;
+    private Label lbl_description;
     @FXML
-    private Label lblPatientName;
+    private Label lbl_patient_name;
     @FXML
     private Label lblStaffName;
     @FXML
-    private Label lblStatus;
+    private Label lbl_status;
     @FXML
-    private TableView<PrescriptionDetail> tblPrescriptionDetail;
+    private TableView<PrescriptionDetail> tbl_prescription_detail;
 
 
     private boolean isDetailView;
@@ -77,10 +77,10 @@ public class PrescriptionDetailController extends BaseController {
         prescriptionDetailList = prescriptionDetailDAO.getPresDetailByPresId(prescriptionClicked.getId());
 
         this.prescription = prescriptionClicked;
-        lblPatientName.setText(prescriptionClicked.getPatient().getName());
-        lblDescription.setText(truncateText(prescriptionClicked.getDescription(), 20));
+        lbl_patient_name.setText(prescriptionClicked.getPatient().getName());
+        lbl_description.setText(truncateText(prescriptionClicked.getDescription(), 20));
         lblStaffName.setText(prescriptionClicked.getStaff().toString());
-        lblStatus.setText(prescriptionClicked.getStatus().getStatus());
+        lbl_status.setText(prescriptionClicked.getStatus().getStatus());
 
         setupTableColumn(prescriptionDetailList);
     }
@@ -104,10 +104,10 @@ public class PrescriptionDetailController extends BaseController {
     public void setIsDetailView(boolean detailView) {
         isDetailView = detailView;
         if(!detailView){
-            btnAddNew.setVisible(false);
-            btnDelete.setVisible(false);
-            btnEdit.setVisible(false);
-            btnPayment.setVisible(false);
+            btn_add_new.setVisible(false);
+            btn_delete.setVisible(false);
+            btn_edit.setVisible(false);
+            btn_payment.setVisible(false);
         }
     }
 
@@ -116,7 +116,7 @@ public class PrescriptionDetailController extends BaseController {
         methodInterceptor = new MethodInterceptor(this);
         PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
         PaymentDAO paymentDAO = new PaymentDAO();
-            btnEdit.setOnAction((ActionEvent event) -> {
+            btn_edit.setOnAction((ActionEvent event) -> {
                 try {
                     methodInterceptor.invokeMethod("handleEditPrescription", event);
                 } catch (NoSuchMethodException e) {
@@ -124,7 +124,7 @@ public class PrescriptionDetailController extends BaseController {
                 }
             });
 
-            btnAddNew.setOnAction((ActionEvent event) -> {
+            btn_add_new.setOnAction((ActionEvent event) -> {
                 try {
                     methodInterceptor.invokeMethod("handleAddPresDetail", event);
                 } catch (NoSuchMethodException e) {
@@ -132,7 +132,7 @@ public class PrescriptionDetailController extends BaseController {
                 }
             });
 
-            btnDelete.setOnAction(event -> {
+            btn_delete.setOnAction(event -> {
                 try {
                     methodInterceptor.invokeMethod("handleDeletePresDetail", event);
                 } catch (NoSuchMethodException e) {
@@ -140,7 +140,7 @@ public class PrescriptionDetailController extends BaseController {
                 }
             });
 
-            btnPayment.setOnAction(new EventHandler<ActionEvent>() {
+            btn_payment.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
                     Payment payment = new Payment();
@@ -155,7 +155,7 @@ public class PrescriptionDetailController extends BaseController {
                     paymentListController.showPaymentDetail(payment, false);
                 }
             });
-        btnCancel.setOnAction(event -> detailDialogStage.close());
+        btn_cancel.setOnAction(event -> detailDialogStage.close());
 
     }
 
@@ -174,15 +174,15 @@ public class PrescriptionDetailController extends BaseController {
 
     @RolePermissionRequired(roles = {"Manager", "Doctor"})
     public void handleDeletePresDetail(ActionEvent actionEvent) {
-        PrescriptionDetail selectedPrescriptionDetail = tblPrescriptionDetail.getSelectionModel().getSelectedItem();
+        PrescriptionDetail selectedPrescriptionDetail = tbl_prescription_detail.getSelectionModel().getSelectedItem();
         if(selectedPrescriptionDetail != null) {
             boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this Prescription?");
             if (confirmed) {
                 selectedPrescriptionDetail.setIsDeleted(EIsDeleted.INACTIVE);
                 PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
                 prescriptionDetailDAO.delete(selectedPrescriptionDetail);//remove from the DB
-                tblPrescriptionDetail.getItems().remove(selectedPrescriptionDetail);//remove from the list
-                tblPrescriptionDetail.refresh();
+                tbl_prescription_detail.getItems().remove(selectedPrescriptionDetail);//remove from the list
+                tbl_prescription_detail.refresh();
             }
         }
     }
@@ -191,38 +191,38 @@ public class PrescriptionDetailController extends BaseController {
         ServiceDAO serviceDAO = new ServiceDAO();
         PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
 
-        tblPrescriptionDetail.setEditable(true);
+        tbl_prescription_detail.setEditable(true);
 
-        colId.setCellValueFactory(cellData -> {
+        col_id.setCellValueFactory(cellData -> {
             PrescriptionDetail prescriptionDetail = cellData.getValue();
             return new SimpleObjectProperty<>(prescriptionDetail.getId());
         });
 
-        colServiceName.setCellValueFactory(cellData -> {
+        col_service_name.setCellValueFactory(cellData -> {
             PrescriptionDetail prescriptionDetail = cellData.getValue();
             Service service = serviceDAO.getById(prescriptionDetail.getService().getId());
             prescriptionDetail.setService(service);
             return new SimpleStringProperty(service.getName());
         });
 
-        colUnit.setCellValueFactory(cellData-> {
+        col_unit.setCellValueFactory(cellData-> {
             PrescriptionDetail prescriptionDetail = cellData.getValue();
             return new SimpleStringProperty(prescriptionDetail.getUnit());
         });
 
-        colQuantity.setCellValueFactory(cellData -> {
+        col_quantity.setCellValueFactory(cellData -> {
             PrescriptionDetail prescriptionDetail = cellData.getValue();
             return new SimpleObjectProperty<Integer>(prescriptionDetail.getQuantity());
         });
 
-        colPrice.setCellValueFactory(cellData -> {
+        col_price.setCellValueFactory(cellData -> {
             PrescriptionDetail prescriptionDetail = cellData.getValue();
             return new SimpleObjectProperty<Double>(prescriptionDetail.getPrice());
         });
 
-        tblPrescriptionDetail.setItems(prescriptionDetails);
+        tbl_prescription_detail.setItems(prescriptionDetails);
 
-        tblPrescriptionDetail.setRowFactory(tv -> {
+        tbl_prescription_detail.setRowFactory(tv -> {
             TableRow<PrescriptionDetail> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2 && !row.isEmpty()) {
@@ -297,8 +297,8 @@ public class PrescriptionDetailController extends BaseController {
                 }
                 prescriptionDetailList.clear();
                 prescriptionDetailList = prescriptionDetailDAO.getPresDetailByPresId(prescriptionDetail.getPrescription().getId());
-                tblPrescriptionDetail.setItems(prescriptionDetailList);
-                tblPrescriptionDetail.refresh();
+                tbl_prescription_detail.setItems(prescriptionDetailList);
+                tbl_prescription_detail.refresh();
             }
         }catch (IOException e){
             e.printStackTrace();

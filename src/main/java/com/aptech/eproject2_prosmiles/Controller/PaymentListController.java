@@ -34,19 +34,19 @@ import java.util.ResourceBundle;
 
 public class PaymentListController extends BaseController{
     @FXML
-    private TableColumn<Payment, Double> colAmount;
+    private TableColumn<Payment, Double> col_amount;
     @FXML
-    private TableColumn<Payment, Integer> colId;
+    private TableColumn<Payment, Integer> col_id;
     @FXML
-    private TableColumn<Payment, String> colPatientName;
+    private TableColumn<Payment, String> col_patient_name;
     @FXML
-    private TableColumn<Payment, String> colPaymentNumber;
+    private TableColumn<Payment, String> col_payment_number;
     @FXML
-    private TableColumn<Payment, String> colPaymentType;
+    private TableColumn<Payment, String> col_payment_type;
     @FXML
-    private TableView<Payment> tblPayment;
+    private TableView<Payment> tbl_payment;
     @FXML
-    private Button btnDelete;
+    private Button btn_delete;
 
     private ObservableList<Payment> paymentList;
     private PaymentDetailController paymentDetailController;
@@ -62,14 +62,14 @@ public class PaymentListController extends BaseController{
         PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
 
         paymentList = paymentDAO.getAll();
-        tblPayment.setEditable(true);
+        tbl_payment.setEditable(true);
 
-        colId.setCellValueFactory(cellData -> {
+        col_id.setCellValueFactory(cellData -> {
             int id = cellData.getValue().getId();
             return new SimpleObjectProperty<>(id);
         });
 
-        colPatientName.setCellValueFactory(cellData -> {
+        col_patient_name.setCellValueFactory(cellData -> {
             Payment payment = cellData.getValue();
             Prescription prescription = prescriptionDAO.getById(payment.getPrescription().getId());
             Patient patient = patientDAO.getById(prescription.getPatient().getId());
@@ -79,24 +79,24 @@ public class PaymentListController extends BaseController{
             return new SimpleStringProperty(patient.getName());
         });
 
-        colPaymentNumber.setCellValueFactory(cellData -> {
+        col_payment_number.setCellValueFactory(cellData -> {
             Payment payment = cellData.getValue();
             return new SimpleStringProperty(payment.getBillNumber());
         });
 
-        colAmount.setCellValueFactory(cellData -> {
+        col_amount.setCellValueFactory(cellData -> {
             Payment payment = cellData.getValue();
             return new SimpleObjectProperty<Double>(payment.getTotalAmount());
         });
 
-        colPaymentType.setCellValueFactory(cellData -> {
+        col_payment_type.setCellValueFactory(cellData -> {
             Payment payment = cellData.getValue();
             return new SimpleStringProperty(payment.getPaymentType().getValue());
         });
 
-        tblPayment.setItems(paymentList);
+        tbl_payment.setItems(paymentList);
 
-        tblPayment.setRowFactory(tv -> {
+        tbl_payment.setRowFactory(tv -> {
             TableRow<Payment> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
                 if(event.getClickCount() == 2) {
@@ -107,7 +107,7 @@ public class PaymentListController extends BaseController{
             return row;
         });
 
-        btnDelete.setOnAction((ActionEvent event) -> {
+        btn_delete.setOnAction((ActionEvent event) -> {
             try {
                 methodInterceptor.invokeMethod("handleDelete", event);
             } catch (NoSuchMethodException e) {
@@ -118,15 +118,15 @@ public class PaymentListController extends BaseController{
 
     @RolePermissionRequired(roles = {"Manager"})
     public void handleDelete(ActionEvent event) {
-        Payment selectedPayment = tblPayment.getSelectionModel().getSelectedItem();
+        Payment selectedPayment = tbl_payment.getSelectionModel().getSelectedItem();
         if(selectedPayment != null) {
             boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this payment?");
             if(confirmed) {
                 selectedPayment.setIsDeleted(EIsDeleted.INACTIVE);
                 PaymentDAO paymentDAO = new PaymentDAO();
                 paymentDAO.delete(selectedPayment);
-                tblPayment.getItems().remove(selectedPayment);
-                tblPayment.refresh();
+                tbl_payment.getItems().remove(selectedPayment);
+                tbl_payment.refresh();
             }
         }
     }
@@ -198,8 +198,8 @@ public class PaymentListController extends BaseController{
             if(isListView){
                 paymentList.clear();
                 paymentList = paymentDAO.getAll();
-                tblPayment.setItems(paymentList);
-                tblPayment.refresh();
+                tbl_payment.setItems(paymentList);
+                tbl_payment.refresh();
             }
         }catch (IOException e){
             e.printStackTrace();

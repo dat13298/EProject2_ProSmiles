@@ -9,17 +9,17 @@
 
 <AnchorPane prefHeight="540.0" prefWidth="777.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.PaymentListController">
     <children>
-        <TableView fx:id="tblPayment" layoutX="56.0" layoutY="52.0" prefHeight="488.0" prefWidth="678.0">
+        <TableView fx:id="tbl_payment" layoutX="56.0" layoutY="52.0" prefHeight="488.0" prefWidth="678.0">
             <columns>
-                <TableColumn fx:id="colId" prefWidth="52.799991607666016" text="ID" />
-                <TableColumn fx:id="colPatientName" prefWidth="162.3999786376953" text="Patient's Name" />
-                <TableColumn fx:id="colPaymentNumber" prefWidth="183.0" text="Payment Number" />
-                <TableColumn fx:id="colAmount" prefWidth="110.0" text="Amount" />
-                <TableColumn fx:id="colPaymentType" prefWidth="152.0" text="Payment type" />
+                <TableColumn fx:id="col_id" prefWidth="52.799991607666016" text="ID" />
+                <TableColumn fx:id="col_patient_name" prefWidth="162.3999786376953" text="Patient's Name" />
+                <TableColumn fx:id="col_payment_number" prefWidth="183.0" text="Payment Number" />
+                <TableColumn fx:id="col_amount" prefWidth="110.0" text="Amount" />
+                <TableColumn fx:id="col_payment_type" prefWidth="152.0" text="Payment type" />
             </columns>
         </TableView>
         <Label layoutX="14.0" layoutY="19.0" styleClass="title" text="Payment's List" />
-      <Button fx:id="btnDelete" layoutX="601.0" layoutY="14.0" mnemonicParsing="false" text="Delete Payment">
+      <Button fx:id="btn_delete" layoutX="601.0" layoutY="14.0" mnemonicParsing="false" text="Delete Payment">
          <styleClass>
             <String fx:value="button-delete" />
             <String fx:value="title" />

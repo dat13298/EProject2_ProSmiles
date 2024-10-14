@@ -22,13 +22,13 @@ import java.util.ResourceBundle;
 
 public class AddEditPaymentController extends BaseController{
     @FXML
-    private Button btnCancel;
+    private Button btn_cancel;
     @FXML
-    private Button btnSave;
+    private Button btn_save;
     @FXML
-    private ComboBox<EPaymentType> comboPaymentType;
+    private ComboBox<EPaymentType> cmb_payment_type;
     @FXML
-    private ComboBox<EStatus> comboStatus;
+    private ComboBox<EStatus> cmb_status;
     @FXML
     private Label lbl_amount;
     @FXML
@@ -61,18 +61,18 @@ public class AddEditPaymentController extends BaseController{
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        comboStatus.getItems().clear();
+        cmb_status.getItems().clear();
         for (EStatus status : EStatus.values()) {
-            comboStatus.getItems().add(status);
+            cmb_status.getItems().add(status);
         }
 
-        comboPaymentType.getItems().clear();
+        cmb_payment_type.getItems().clear();
         for (EPaymentType paymentType : EPaymentType.values()) {
-            comboPaymentType.getItems().add(paymentType);
+            cmb_payment_type.getItems().add(paymentType);
         }
 
-        btnSave.setOnAction(this::handleSave);
-        btnCancel.setOnAction(event -> dialogStage.close());
+        btn_save.setOnAction(this::handleSave);
+        btn_cancel.setOnAction(event -> dialogStage.close());
     }
 
 
@@ -82,21 +82,21 @@ public class AddEditPaymentController extends BaseController{
             lbl_patient_name.setText(payment.getPrescription().getPatient().getName());
             lbl_payment_number.setText(payment.getBillNumber());
             lbl_amount.setText(String.valueOf(payment.getTotalAmount()));
-            comboPaymentType.setValue(payment.getPaymentType());
-            comboStatus.setValue(payment.getPrescription().getStatus());
+            cmb_payment_type.setValue(payment.getPaymentType());
+            cmb_status.setValue(payment.getPrescription().getStatus());
         }
     }
 
     private void handleSave(ActionEvent actionEvent) {
         try{
-            if(comboPaymentType.getSelectionModel().getSelectedItem() == null){
+            if(cmb_payment_type.getSelectionModel().getSelectedItem() == null){
                 throw new Exception("Payment type is not selected");
             }
-            payment.setPaymentType(comboPaymentType.getSelectionModel().getSelectedItem());
-            if(comboStatus.getSelectionModel().getSelectedItem() == null){
+            payment.setPaymentType(cmb_payment_type.getSelectionModel().getSelectedItem());
+            if(cmb_status.getSelectionModel().getSelectedItem() == null){
                 throw new Exception("Status is not selected");
             }
-            payment.getPrescription().setStatus(comboStatus.getSelectionModel().getSelectedItem());
+            payment.getPrescription().setStatus(cmb_status.getSelectionModel().getSelectedItem());
 
             DialogHelper.showNotificationDialog("Edit Success", "Payment has been updated successfully");
 
