@@ -23,10 +23,10 @@ import java.util.ResourceBundle;
 
 public class AddNewPrescriptionInfoController extends BaseController{
     @FXML
-    private Button btnCancel;
+    private Button btn_cancel;
 
     @FXML
-    private Button btnSave;
+    private Button btn_save;
 
     @FXML
     private ComboBox<Service> cmb_service;
@@ -73,8 +73,8 @@ public class AddNewPrescriptionInfoController extends BaseController{
         cmb_service.getItems().clear();
         cmb_service.getItems().addAll(services);
 
-        btnSave.setOnAction(this::handleSave);
-        btnCancel.setOnAction(event -> dialogStage.close());
+        btn_save.setOnAction(this::handleSave);
+        btn_cancel.setOnAction(event -> dialogStage.close());
     }
 
 

@@ -40,19 +40,19 @@ import java.util.ResourceBundle;
 
 public class PaymentDetailController extends BaseController{
     @FXML
-    private Button btnCancel;
+    private Button btn_cancel;
     @FXML
-    private Button btnEdit;
+    private Button btn_edit;
     @FXML
-    private Label lblAmount;
+    private Label lbl_amount;
     @FXML
-    private Label lblPatientName;
+    private Label lbl_patient_name;
     @FXML
-    private Label lblPaymentNumber;
+    private Label lbl_payment_number;
     @FXML
-    private Label lblPaymentType;
+    private Label lbl_payment_type;
     @FXML
-    private Label lblStatus;
+    private Label lbl_status;
     @FXML
     private Button btn_payment_export;
 
@@ -79,11 +79,11 @@ public class PaymentDetailController extends BaseController{
         ServiceDAO serviceDAO = new ServiceDAO();
         PrescriptionDetailDAO prescriptionDetailDAO = new PrescriptionDetailDAO();
 
-        lblPatientName.setText(paymentClicked.getPrescription().getPatient().getName());
-        lblPaymentNumber.setText(paymentClicked.getBillNumber());
-        lblAmount.setText(String.valueOf(paymentClicked.getTotalAmount()));
-        lblPaymentType.setText(paymentClicked.getPaymentType().getValue());
-        lblStatus.setText(paymentClicked.getPrescription().getStatus().getStatus());
+        lbl_patient_name.setText(paymentClicked.getPrescription().getPatient().getName());
+        lbl_payment_number.setText(paymentClicked.getBillNumber());
+        lbl_amount.setText(String.valueOf(paymentClicked.getTotalAmount()));
+        lbl_payment_type.setText(paymentClicked.getPaymentType().getValue());
+        lbl_status.setText(paymentClicked.getPrescription().getStatus().getStatus());
 
         Prescription prescription = prescriptionDAO.getById(paymentClicked.getPrescription().getId());
 
@@ -105,14 +105,14 @@ public class PaymentDetailController extends BaseController{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         methodInterceptor = new MethodInterceptor(this);
-        btnEdit.setOnAction((ActionEvent event) -> {
+        btn_edit.setOnAction((ActionEvent event) -> {
             try {
                 methodInterceptor.invokeMethod("handleDeleteStaff", event);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
         });
-        btnCancel.setOnAction(event -> dialogStage.close());
+        btn_cancel.setOnAction(event -> dialogStage.close());
         btn_payment_export.setOnAction((ActionEvent event) -> {
             try {
                 methodInterceptor.invokeMethod("handleExport", event);
@@ -130,7 +130,7 @@ public class PaymentDetailController extends BaseController{
 
     @RolePermissionRequired(roles = {"Manager", "Receptionist"})
     public void handleExport(ActionEvent event) {
-        exportToPDF("PaymentDetails_" + lblPaymentNumber.getText() + ".pdf");
+        exportToPDF("PaymentDetails_" + lbl_payment_number.getText() + ".pdf");
     }
 
     public void exportToPDF(String destinationFileName) {
@@ -182,7 +182,7 @@ public class PaymentDetailController extends BaseController{
             document.add(new Paragraph("Invoice Date: " + java.time.LocalDate.now().toString())
                     .setFontSize(10)
                     .setTextAlignment(TextAlignment.RIGHT));
-            document.add(new Paragraph("Payment Number: " + lblPaymentNumber.getText())
+            document.add(new Paragraph("Payment Number: " + lbl_payment_number.getText())
                     .setFontSize(10)
                     .setTextAlignment(TextAlignment.RIGHT));
 
@@ -191,9 +191,9 @@ public class PaymentDetailController extends BaseController{
                     .setBold()
                     .setFontSize(12)
                     .setMarginBottom(5));
-            document.add(new Paragraph("Patient Name: " + lblPatientName.getText())
+            document.add(new Paragraph("Patient Name: " + lbl_patient_name.getText())
                     .setFontSize(10));
-            document.add(new Paragraph("Payment Type: " + lblPaymentType.getText())
+            document.add(new Paragraph("Payment Type: " + lbl_payment_type.getText())
                     .setFontSize(10)
                     .setMarginBottom(5));
 
@@ -254,7 +254,7 @@ public class PaymentDetailController extends BaseController{
 
 
             // Add total amount
-            document.add(new Paragraph("\nTotal Amount: $" + lblAmount.getText())
+            document.add(new Paragraph("\nTotal Amount: $" + lbl_amount.getText())
                     .setBold()
                     .setFontSize(12)
                     .setTextAlignment(TextAlignment.RIGHT));

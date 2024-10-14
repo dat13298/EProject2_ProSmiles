@@ -24,24 +24,24 @@ public class AddEditPrescriptionController extends BaseController implements Ini
 
 
     @FXML
-    private Button btnSave;
+    private Button btn_save;
 
     @FXML
-    private TextField txtDescription;
+    private TextField txt_description;
 
     @FXML
-    private TextField txtPatientId;
-
-
-    @FXML
-    private ComboBox<Staff> comboStaff;
-
-    @FXML
-    private ComboBox<EStatus> comboStatus;
+    private TextField txt_patient_id;
 
 
     @FXML
-    private Button btnCancel;
+    private ComboBox<Staff> cmb_staff;
+
+    @FXML
+    private ComboBox<EStatus> cmb_status;
+
+
+    @FXML
+    private Button btn_cancel;
 
     @FXML
     private Label lbl_inform;
@@ -74,28 +74,28 @@ public class AddEditPrescriptionController extends BaseController implements Ini
     public void initialize(URL url, ResourceBundle resourceBundle) {
         StaffDAO staffDAO = new StaffDAO();
         ObservableList<Staff> staffs = staffDAO.getAll();
-        comboStaff.getItems().clear();
-        comboStaff.getItems().addAll(staffs);
+        cmb_staff.getItems().clear();
+        cmb_staff.getItems().addAll(staffs);
 
-        comboStatus.getItems().clear();
+        cmb_status.getItems().clear();
         for(EStatus status : EStatus.values()) {
-            comboStatus.getItems().add(status);
+            cmb_status.getItems().add(status);
         }
 
-        btnSave.setOnAction(this::handleSave);
-        btnCancel.setOnAction(event -> dialogStage.close());
+        btn_save.setOnAction(this::handleSave);
+        btn_cancel.setOnAction(event -> dialogStage.close());
     }
 
     public void initializeForm() {
         if(prescription != null) {
             if (prescription.getPatient() != null) {
-                txtPatientId.setText(String.valueOf(prescription.getPatient().getId()));
+                txt_patient_id.setText(String.valueOf(prescription.getPatient().getId()));
             } else {
-                txtPatientId.clear(); // Clear the text field if there is no patient
+                txt_patient_id.clear(); // Clear the text field if there is no patient
             }
-            txtDescription.setText(prescription.getDescription());
-            comboStaff.setValue(prescription.getStaff());
-            comboStatus.setValue(prescription.getStatus());
+            txt_description.setText(prescription.getDescription());
+            cmb_staff.setValue(prescription.getStaff());
+            cmb_status.setValue(prescription.getStatus());
         }
     }
 
@@ -104,7 +104,7 @@ public class AddEditPrescriptionController extends BaseController implements Ini
 
         try{
 
-            String patientId = txtPatientId.getText();
+            String patientId = txt_patient_id.getText();
             if (patientId == null || patientId.isEmpty()) {
                 throw new Exception("Patient ID cannot be empty");
             }
@@ -117,19 +117,19 @@ public class AddEditPrescriptionController extends BaseController implements Ini
             Patient patient = patientOptional.get();
             prescription.setPatient(patient);
 
-            String description = txtDescription.getText();
+            String description = txt_description.getText();
             if(description == null || description.isEmpty()) {
                 throw new Exception("Description cannot be empty");
             }
             prescription.setDescription(description);
 
-            Staff staff = comboStaff.getSelectionModel().getSelectedItem();
+            Staff staff = cmb_staff.getSelectionModel().getSelectedItem();
             if(staff == null) {
                 throw new Exception("Staff cannot be empty");
             }
             prescription.setStaff(staff);
 
-            EStatus status = comboStatus.getSelectionModel().getSelectedItem();
+            EStatus status = cmb_status.getSelectionModel().getSelectedItem();
             if(status == null) {
                 throw new Exception("Status cannot be empty");
             }
