@@ -12,8 +12,8 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
@@ -39,15 +39,14 @@ public class ServiceListController extends BaseController {
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ServiceDAO serviceDAO = new ServiceDAO();
-        List<Service> services = serviceDAO.getAll();
+        services = serviceDAO.getAll();
         int column = 0;
         int row = 0;
 
         for (Service service : services) {
-            String imagePath = "/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
-            InputStream inputStream = getClass().getResourceAsStream(imagePath);
-            assert inputStream != null;
-            Image image = new Image(inputStream);
+            String imagePath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
+            File file = new File(imagePath);
+            Image image = new Image(file.toURI().toString());
             ImageView imageView = new ImageView(image);
 
             imageView.setFitHeight(120);
@@ -66,18 +65,17 @@ public class ServiceListController extends BaseController {
             vBox.setMaxHeight(150);
             vBox.getChildren().addAll(imageView, nameLabel);
 
-            // Thêm VBox vào GridPane
             serviceGrid.add(vBox, column, row);
             vBox.getStyleClass().add("service-box");
             imageView.getStyleClass().add("image-box");
 
             // Sự kiện chọn dịch vụ khi nhấp vào VBox
             vBox.setOnMouseClicked(event -> {
-                if (event.getClickCount() == 2) { // Kiểm tra nếu click chuột 2 lần
-                    openServiceDetail(service); // Mở chi tiết dịch vụ
+                if (event.getClickCount() == 2) {
+                    openServiceDetail(service);
                 } else {
-                    selectedService = service; // Lưu dịch vụ được chọn
-                    highlightSelectedService(vBox); // Đánh dấu dịch vụ đang chọn
+                    selectedService = service;
+                    highlightSelectedService(vBox);
                 }
             });
 
@@ -93,23 +91,20 @@ public class ServiceListController extends BaseController {
             if (selectedService != null) {
                 boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service?");
                 if (confirmed) {
-                    selectedService.setIsDeleted(EIsDeleted.INACTIVE); // Đánh dấu là đã xóa
-                    serviceDAO.delete(selectedService); // Xóa khỏi DB
-                    removeServiceFromGrid(selectedService); // Xóa khỏi GridPane
+                    selectedService.setIsDeleted(EIsDeleted.INACTIVE);
+                    serviceDAO.delete(selectedService);
+                    removeServiceFromGrid(selectedService);
                 }
             }
         });
 
-        // Thêm sự kiện cho nút Add New
         btnAddNew.setOnAction(event -> {
-            Service newService = new Service(); // Tạo một dịch vụ mới
-            boolean isEditMode = false; // Chế độ thêm mới
-            showAddEditServiceForm(newService, isEditMode); // Gọi hàm để hiển thị biểu mẫu thêm
+            Service newService = new Service();
+            boolean isEditMode = false;
+            showAddEditServiceForm(newService, isEditMode);
         });
     }
 
-    // Hàm mở file ServiceDetail.fxml khi nhấp chuột đôi vào dịch vụ
-    // Hàm mở file ServiceDetail.fxml khi nhấp chuột đôi vào dịch vụ
     private void openServiceDetail(Service service) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass()
@@ -122,20 +117,17 @@ public class ServiceListController extends BaseController {
             Scene scene = new Scene(loader.load());
             detailStage.setScene(scene);
 
-            // Lấy controller và truyền đối tượng service vào
             ServiceDetailController controller = loader.getController();
-            controller.setDialogStage(detailStage); // Truyền dialogStage vào controller
-            controller.setService(service); // Truyền đối tượng service vào controller
-
-            detailStage.showAndWait(); // Hiển thị dialog và chờ
+            controller.setDialogStage(detailStage);
+            controller.setService(service);
+            controller.setServiceListController(this);
+            detailStage.showAndWait();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-
-    // Hàm chuyển sang trang AddEditService.fxml
-    private void showAddEditServiceForm(Service service, boolean isEditMode) {
+    public void showAddEditServiceForm(Service service, boolean isEditMode) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("/com/aptech/eproject2_prosmiles/View/Service/AddEditService.fxml"));
@@ -150,24 +142,22 @@ public class ServiceListController extends BaseController {
             AddEditServiceController controller = loader.getController();
             controller.setDialogStage(dialogStage);
             controller.setEditMode(isEditMode);
-            controller.setService(service); // Truyền đối tượng service vào controller
+            controller.setService(service);
+            controller.initializeForm();
 
             dialogStage.showAndWait();
 
             if (controller.getIsSaved()) {
                 if (isEditMode) {
-                    serviceDAO.update(service); // Cập nhật dịch vụ
-                } else {
-                    services = serviceDAO.getAll(); // Lấy danh sách dịch vụ mới
+                    serviceDAO.update(service);
                 }
-                refreshServiceGrid(); // Cập nhật GridPane với dịch vụ mới
+                refreshServiceGrid();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Hàm hiện thông báo xác nhận
     private boolean showConfirmationDialog(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -178,7 +168,6 @@ public class ServiceListController extends BaseController {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-    // Đánh dấu dịch vụ được chọn
     private void highlightSelectedService(VBox selectedVBox) {
         // Xóa highlight của các dịch vụ khác
         for (var node : serviceGrid.getChildren()) {
@@ -190,12 +179,10 @@ public class ServiceListController extends BaseController {
         selectedVBox.getStyleClass().add("selected-service");
     }
 
-    // Xóa dịch vụ khỏi GridPane
     private void removeServiceFromGrid(Service service) {
-        // Tìm và loại bỏ VBox chứa dịch vụ từ GridPane
         for (var node : serviceGrid.getChildren()) {
             if (node instanceof VBox) {
-                Label label = (Label) ((VBox) node).getChildren().get(1); // Lấy Label chứa tên dịch vụ
+                Label label = (Label) ((VBox) node).getChildren().get(1);
                 if (label.getText().equals(service.getName())) {
                     serviceGrid.getChildren().remove(node);
                     break;
@@ -204,22 +191,17 @@ public class ServiceListController extends BaseController {
         }
     }
 
-    // Phương thức refreshServiceGrid (cần được thêm vào)
     private void refreshServiceGrid() {
-        // Xóa tất cả các dịch vụ hiện tại trong GridPane
         serviceGrid.getChildren().clear();
-
-        // Tải lại danh sách dịch vụ
         ServiceDAO serviceDAO = new ServiceDAO();
         List<Service> services = serviceDAO.getAll();
         int column = 0;
         int row = 0;
 
         for (Service service : services) {
-            String imagePath = "/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
-            InputStream inputStream = getClass().getResourceAsStream(imagePath);
-            assert inputStream != null;
-            Image image = new Image(inputStream);
+            String imagePath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
+            File file = new File(imagePath);
+            Image image = new Image(file.toURI().toString());
             ImageView imageView = new ImageView(image);
 
             imageView.setFitHeight(120);
@@ -238,10 +220,17 @@ public class ServiceListController extends BaseController {
             vBox.setMaxHeight(150);
             vBox.getChildren().addAll(imageView, nameLabel);
 
-            // Thêm VBox vào GridPane
             serviceGrid.add(vBox, column, row);
             vBox.getStyleClass().add("service-box");
             imageView.getStyleClass().add("image-box");
+            vBox.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    openServiceDetail(service);
+                } else {
+                    selectedService = service;
+                    highlightSelectedService(vBox);
+                }
+            });
 
             column++;
             if (column == 3) {

@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
@@ -38,18 +39,6 @@ public class AddEditServiceController extends BaseController {
 
     @FXML
     private ImageView imv_service_picture;
-
-    @FXML
-    private Label lb_belong_service;
-
-    @FXML
-    private Label lb_image_service;
-
-    @FXML
-    private Label lb_title_service_description;
-
-    @FXML
-    private Label lb_title_service_name;
 
     @FXML
     private TextArea txt_description_service;
@@ -85,7 +74,6 @@ public class AddEditServiceController extends BaseController {
 
     public void setService(Service service) {
         this.service = service;
-        setFieldValues(service); // Gọi phương thức để thiết lập giá trị trường
     }
 
     public boolean getIsSaved() {
@@ -99,11 +87,14 @@ public class AddEditServiceController extends BaseController {
         if (selectedFile != null) {
             Image image = new Image(selectedFile.toURI().toString());
             imv_service_picture.setImage(image);
+        }else{
+            System.out.println("khong tim thay anh");
+
         }
     }
 
     private void handleSave(ActionEvent event) {
-        if (selectedFile != null) {
+        if (selectedFile != null || isEditMode) { // Cho phép lưu cả khi chỉ chỉnh sửa thông tin (không chọn lại ảnh)
             String serviceName = txt_service_name.getText();
             if (serviceName != null && !serviceName.isEmpty()) {
                 service.setName(serviceName);
@@ -112,42 +103,74 @@ public class AddEditServiceController extends BaseController {
             if (serviceDescription != null && !serviceDescription.isEmpty()) {
                 service.setDescription(serviceDescription);
             }
-
-            File savedFile = saveImageToDirectory(selectedFile);
-            String imagePath = "com/aptech/eproject2_prosmiles/Media/img_service/" + savedFile.getName();
-            service.setImagePath(imagePath);
-
-            // Lưu dịch vụ
-            serviceDAO.save(service);
+            if (selectedFile != null) {
+                File savedFile = saveImageToDirectory(selectedFile);
+                String imagePath = savedFile.getName();
+                service.setImagePath(imagePath);
+            }
+            if (!isEditMode) {
+                serviceDAO.save(service);
+            } else {
+                serviceDAO.update(service); // Cập nhật khi chỉnh sửa
+            }
             saved = true;
-            dialogStage.close();
+
+            // Sau khi lưu xong, gọi phương thức refresh của ServiceDetailController (nếu có)
+            if (dialogStage != null) {
+                dialogStage.close();
+            }
         }
     }
 
-    private void setFieldValues(Service service) {
+
+    private void refreshServiceList() {
+        ObservableList<Service> updatedServices = serviceDAO.getAll(); // Lấy danh sách cập nhật từ cơ sở dữ liệu
+        cmb_belong_service.getItems().setAll(updatedServices); // Cập nhật lại ComboBox hoặc các thành phần giao diện khác
+        // Nếu bạn có TableView hiển thị danh sách dịch vụ, bạn cũng có thể cập nhật TableView ở đây.
+    }
+
+
+
+    public void initializeForm() {
         if (service != null) {
             txt_service_name.setText(service.getName());
             txt_description_service.setText(service.getDescription());
-            // Nếu bạn muốn thiết lập hình ảnh, hãy sử dụng đường dẫn của hình ảnh hiện tại
+
             if (service.getImagePath() != null) {
-                Image image = new Image(service.getImagePath());
-                imv_service_picture.setImage(image);
+                String imagePath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
+                File file = new File(imagePath);
+                if (file.exists()) {
+                    try {
+                        Image image = new Image(file.toURI().toString());
+                        imv_service_picture.setImage(image);
+                    } catch (Exception e) {
+                        System.out.println("Error loading image: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Image file not found: " + file.getAbsolutePath());
+                }
+            } else {
+                System.out.println("Image path is null.");
             }
-            // Cài đặt giá trị cho ComboBox nếu cần
-            // cmb_belong_service.setValue(service.getBelongService());
         }
+        btn_upload_image.setText(isEditMode ? "Change Picture" : "Add Picture");
     }
 
+
+
     private File saveImageToDirectory(File selectedFile) {
+        // Đường dẫn lưu file ảnh
         String destinationPath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/";
         File destinationDir = new File(destinationPath);
         File destinationFile = getFilePath(selectedFile, destinationDir);
 
         try {
+            // Sao chép file từ nguồn vào thư mục đích
             Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return destinationFile;
     }
 

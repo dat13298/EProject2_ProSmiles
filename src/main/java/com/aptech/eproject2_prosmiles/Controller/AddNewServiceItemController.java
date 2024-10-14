@@ -32,24 +32,6 @@ public class AddNewServiceItemController extends BaseController {
     private Button btn_add_save;
 
     @FXML
-    private Label lb_title;
-
-    @FXML
-    private Label lb_title_service_item_description;
-
-    @FXML
-    private Label lb_title_service_item_name;
-
-    @FXML
-    private Label lb_title_service_item_price;
-
-    @FXML
-    private Label lb_title_service_item_quantity;
-
-    @FXML
-    private Label lb_title_service_item_unit;
-
-    @FXML
     private TextArea txt_add_service_item_description;
 
     @FXML
@@ -80,47 +62,43 @@ public class AddNewServiceItemController extends BaseController {
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         btn_add_save.setOnAction(this::handleSave);
-        // Xử lý sự kiện nút Cancel
         btn_add_cancel.setOnAction(event -> {
-            // Lấy Stage hiện tại và đóng cửa sổ
             Stage stage = (Stage) btn_add_cancel.getScene().getWindow();
             stage.close();
         });
     }
 
+    @FXML
     private void handleSave(ActionEvent event) {
         String name = txt_add_service_item_name.getText();
         String unit = txt_add_service_item_unit.getText();
         String quantity = txt_add_service_item_quantity.getText();
         String price = txt_add_service_item_price.getText();
         String description = txt_add_service_item_description.getText();
-        // Giả sử serviceId là ID của service đang được chọn
-        int serviceId = selectedService.getId(); // service được chọn
 
         if (!name.isEmpty() && !unit.isEmpty() && !quantity.isEmpty() && !price.isEmpty() && !description.isEmpty()) {
-            // Tạo ServiceItem mới
+            // Tạo một ServiceItem mới
             ServiceItem newItem = new ServiceItem();
-            newItem.setService(selectedService); // Gán Service được chọn
+            newItem.setService(selectedService);
             newItem.setName(name);
             newItem.setUnit(unit);
             newItem.setQuantity(Integer.parseInt(quantity));
             newItem.setPrice(Double.parseDouble(price));
             newItem.setDescription(description);
 
-            // Lưu vào database qua ServiceItemDAO
             ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
             serviceItemDAO.save(newItem);
 
-            // Thêm vào danh sách hiển thị trong TableView
+            // Thông báo cho ServiceDetailController để làm mới danh sách
             serviceDetailController.addServiceItem(newItem);
 
-            // Đóng cửa sổ
+            // Đóng dialog
             Stage stage = (Stage) btn_add_save.getScene().getWindow();
             stage.close();
         } else {
-            // Xử lý trường hợp dữ liệu không hợp lệ (ví dụ: hiện thông báo lỗi)
-            System.out.println("Please fill all fields!");
+            System.out.println("Vui lòng điền đầy đủ các trường!");
         }
     }
+
 
 }

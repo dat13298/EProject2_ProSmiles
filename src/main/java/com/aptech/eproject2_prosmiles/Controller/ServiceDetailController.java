@@ -16,8 +16,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -60,6 +63,11 @@ public class ServiceDetailController extends BaseController {
 
     private Stage dialogStage;
     private Service service;
+    private ServiceListController serviceListController;
+
+    public void setServiceListController(ServiceListController serviceListController) {
+        this.serviceListController = serviceListController;
+    }
 
     private com.aptech.eproject2_prosmiles.Repository.ServiceItemDAO serviceItemDAO;
 
@@ -67,35 +75,17 @@ public class ServiceDetailController extends BaseController {
     public void initialize(URL location, ResourceBundle resources) {
         ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
         serviceItems = serviceItemDAO.getAll();
-
-        // Xử lý sự kiện nút Edit
         btn_edit.setOnAction(event -> {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/Service/EditServiceDetail.fxml"));
-                Parent editServiceDetailRoot = loader.load();
-
-                // Chuyển đến màn hình mới
-                Stage stage = (Stage) btn_edit.getScene().getWindow();
-                Scene scene = new Scene(editServiceDetailRoot);
-                stage.setScene(scene);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            serviceListController.showAddEditServiceForm(service, true);
         });
-
-        // Xử lý sự kiện nút Cancel
         btn_cancel.setOnAction(event -> dialogStage.close());
 
-        // Xử lý sự kiện nút Add New Service Item
         btn_add_new_service_item.setOnAction(event -> {
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/aptech/eproject2_prosmiles/View/Service/AddNewServiceItem.fxml"));
                 Parent addNewServiceItemRoot = loader.load();
-
                 AddNewServiceItemController controller = loader.getController();
-                controller.setServiceDetailController(this); // Truyền ServiceDetailController
-
+                controller.setServiceDetailController(this);
                 Stage stage = new Stage();
                 stage.setScene(new Scene(addNewServiceItemRoot));
                 stage.show();
@@ -110,14 +100,43 @@ public class ServiceDetailController extends BaseController {
                 boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
                 if (confirmed) {
                     selectedService.setIsDeleted(EIsDeleted.INACTIVE);
-                    serviceItemDAO.delete(selectedService);//remove from the DB
-                    tbl_service_item.getItems().remove(selectedService);//remove from the list
+                    serviceItemDAO.delete(selectedService);
+                    tbl_service_item.getItems().remove(selectedService);
                     tbl_service_item.refresh();
                 }
             }
         });
+        tbl_service_item.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
+                ServiceItem selectedItem = tbl_service_item.getSelectionModel().getSelectedItem();
+                if (selectedItem != null) {
+                    try {
+                        FXMLLoader loader = new FXMLLoader(getClass()
+                                .getResource("/com/aptech/eproject2_prosmiles/View/Service/DetailServiceItem.fxml"));
+                        Parent detailServiceItemRoot = loader.load();
+
+                        DetailServiceItemController controller = loader.getController();
+                        controller.setServiceItem(selectedItem);
+                        Stage stage = new Stage();
+                        Scene scene = new Scene(detailServiceItemRoot);
+                        stage.setScene(scene);
+                        DetailServiceItemController detailServiceItemController = loader.getController();
+                        detailServiceItemController.setDialogStage(stage);
+                        detailServiceItemController.setServiceItem(selectedItem);
+                        detailServiceItemController.setServiceDetailController(this);
+                        stage.initModality(Modality.WINDOW_MODAL);
+                        stage.showAndWait();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
 
     }
+
+
     private boolean showConfirmationDialog(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle(title);
@@ -128,12 +147,6 @@ public class ServiceDetailController extends BaseController {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-   /* public void loadServiceItems(int serviceId) {
-        ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
-        List<ServiceItem> items = serviceItemDAO.getServiceItemsByServiceId(serviceId); // Lấy danh sách từ database
-        serviceItems.setAll(items); // Đặt dữ liệu vào ObservableList
-        tbl_service_item.setItems(serviceItems); // Cập nhật TableView
-    }*/
 
 
 
@@ -149,22 +162,53 @@ public class ServiceDetailController extends BaseController {
         return totalPrice;
     }
 
-
-    private ObservableList<ServiceItem> findServiceItemByServiceId(int id) {
-        return FXCollections.observableArrayList(serviceItems.stream()
-                .filter(p -> p.getService().getId() == id).toList()
-        );
+    public void refreshServiceItems() {
+        // Xóa bảng và làm đầy nó với ServiceItems cho dịch vụ hiện tại
+        ObservableList<ServiceItem> filteredItems = findServiceItemByServiceId(service.getId());
+        tbl_service_item.setItems(filteredItems);
+        tbl_service_item.refresh();
     }
 
-    public void setService(Service service) {
+    public void refreshServiceDetails() {
+        // Cập nhật lại tên, mô tả, và hình ảnh của dịch vụ
+        lb_service_name.setText(service.getName());
+        lb_description.setText(service.getDescription());
 
+        // Cập nhật lại hình ảnh
+        String imagePath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
+        File file = new File(imagePath);
+        if (file.exists()) {
+            Image image = new Image(file.toURI().toString());
+            imv_service_image.setImage(image);
+        } else {
+            System.out.println("Image file not found: " + file.getAbsolutePath());
+        }
+    }
+
+
+
+    public void setService(Service service) {
         this.service = service;
         lb_service_name.setText(service.getName());
         lb_description.setText(service.getDescription());
 
-        String imagePath = "/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
-        Image image = new Image(getClass().getResourceAsStream(imagePath));
-        imv_service_image.setImage(image);
+        // Sử dụng File thay vì getResourceAsStream
+        String imagePath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
+        File file = new File(imagePath);
+
+        if (file.exists()) {
+            // Tạo Image từ file URI
+            Image image = new Image(file.toURI().toString());
+            imv_service_image.setImage(image);
+        } else {
+            File defaultFile = new File("src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/tooth_extraction.jpg");
+            if (defaultFile.exists()) {
+                Image defaultImage = new Image(defaultFile.toURI().toString());
+                imv_service_image.setImage(defaultImage);
+            } else {
+                System.out.println("Default image not found.");
+            }
+        }
 
         col_service_item_quantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         col_service_item_name.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -176,12 +220,22 @@ public class ServiceDetailController extends BaseController {
         ObservableList<ServiceItem> newServiceItems = FXCollections.observableArrayList(findServiceItemByServiceId(service.getId()));
         tbl_service_item.setItems(newServiceItems);
         tbl_service_item.refresh();
-
     }
     public void addServiceItem(ServiceItem item) {
-        serviceItems.add(item);
-        tbl_service_item.setItems(serviceItems); // Cập nhật TableView
-        tbl_service_item.refresh(); // Làm mới TableView
+        // Chỉ thêm mục nếu nó thuộc về dịch vụ đang chọn
+        if (item.getService().getId() == service.getId()) {
+            serviceItems.add(item);
+            refreshServiceItems(); // Làm mới bảng để hiển thị mục mới
+        }
     }
+    private ObservableList<ServiceItem> findServiceItemByServiceId(int id) {
+        ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
+        return FXCollections.observableArrayList(serviceItemDAO.getAll().stream()
+                .filter(p -> p.getService().getId() == id)
+                .toList());
+    }
+
+
+
 
 }
