@@ -11,7 +11,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="540.0" prefWidth="800.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.ServiceListController">
+<AnchorPane prefHeight="540.0" prefWidth="800.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.aptech.eproject2_prosmiles.Controller.ServiceListController">
    <children>
       <!-- VBox cho phép xếp chồng các phần tử theo chiều dọc -->
       <VBox alignment="CENTER_LEFT" spacing="10">
