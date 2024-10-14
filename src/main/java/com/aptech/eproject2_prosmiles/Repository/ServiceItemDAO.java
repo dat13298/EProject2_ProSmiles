@@ -158,9 +158,10 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
     @Override
     public boolean delete(ServiceItem entity) {
         try{
-            String sql = "UPDATE service_item si SET si.is_deleted=1 WHERE si.id=?";
+            String sql = "UPDATE service_item si SET si.is_deleted = ? WHERE si.id=?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, entity.getId());
+            pstmt.setInt(1, entity.getIsDeleted().getValue());
+            pstmt.setInt(2, entity.getId());
             pstmt.executeUpdate();
         }catch (SQLException e){
             throw new RuntimeException(e);
