@@ -136,14 +136,26 @@ public class PrescriptionListController extends BaseController{
     @RolePermissionRequired(roles = {"Manager", "Doctor"})
     public void handleDeletePrescription(ActionEvent actionEvent) {
         Prescription selectedPrescription = tbl_prescription.getSelectionModel().getSelectedItem();
-        if(selectedPrescription != null) {
+        if (selectedPrescription != null) {
             boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this Prescription?");
             if (confirmed) {
                 selectedPrescription.setIsDeleted(EIsDeleted.INACTIVE);
                 PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
-                prescriptionDAO.delete(selectedPrescription);//remove from the DB
-                tbl_prescription.getItems().remove(selectedPrescription);//remove from the list
-                tbl_prescription.refresh();
+                PaymentDAO paymentDAO = new PaymentDAO();
+
+                // Get and delete all payments for the prescription
+                ObservableList<Payment> paymentsForPrescription = paymentDAO.getPaymentByPrescriptionId(selectedPrescription.getId());
+                for (Payment payment : paymentsForPrescription) {
+                    payment.setIsDeleted(EIsDeleted.INACTIVE);  // Soft delete
+                    paymentDAO.delete(payment);  // Update each payment to mark it as deleted
+                }
+
+                // Delete the prescription from the database
+                prescriptionDAO.delete(selectedPrescription);
+
+                // Update the UI
+                tbl_prescription.getItems().remove(selectedPrescription);  // Remove from the list
+                tbl_prescription.refresh();  // Refresh the table view
             }
         }
     }

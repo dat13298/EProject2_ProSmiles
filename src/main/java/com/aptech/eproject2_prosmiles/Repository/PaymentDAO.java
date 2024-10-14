@@ -183,4 +183,45 @@ public class PaymentDAO implements DentalRepository<Payment> {
         }
         return false;
     }
+
+    public ObservableList<Payment> getPaymentByPrescriptionId(int prescriptionId) {
+        String sql = "select p.id, p.bill_number, p.prescription_id, " +
+                "p.payment_type, p.total_amount, p.created_at, p.updated_at, p.is_deleted " +
+                "from payment p where p.prescription_id = ? and is_deleted = 0";
+
+        ObservableList<Payment> paymentsForPrescription = FXCollections.observableArrayList();
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, prescriptionId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Payment payment = new Payment();
+                Prescription prescription = new Prescription();
+                payment.setId(rs.getInt("id"));
+                payment.setBillNumber(rs.getString("bill_number"));
+
+                prescription.setId(rs.getInt("prescription_id"));
+                payment.setPrescription(Optional.of(prescription));
+
+                payment.setPaymentType(EPaymentType.fromValue(rs.getString("payment_type")));
+                payment.setTotalAmount(rs.getDouble("total_amount"));
+
+                Timestamp timestamp = rs.getTimestamp("created_at");
+                LocalDateTime createdAt = timestamp == null ? null : timestamp.toLocalDateTime();
+                payment.setCreatedAt(createdAt);
+
+                Timestamp timestamp2 = rs.getTimestamp("updated_at");
+                LocalDateTime updatedAt = timestamp2 == null ? null : timestamp2.toLocalDateTime();
+                payment.setUpdatedAt(updatedAt);
+
+                payment.setIsDeleted(EIsDeleted.fromInt(rs.getInt("is_deleted")));
+                paymentsForPrescription.add(payment);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return paymentsForPrescription;
+    }
 }
+
+
