@@ -101,7 +101,7 @@ public class ServiceListController extends BaseController {
         btnAddNew.setOnAction(event -> {
             Service newService = new Service();
             boolean isEditMode = false;
-            showAddEditServiceForm(newService, isEditMode);
+            showAddEditServiceForm(newService, isEditMode, null);
         });
     }
 
@@ -127,7 +127,7 @@ public class ServiceListController extends BaseController {
         }
     }
 
-    public void showAddEditServiceForm(Service service, boolean isEditMode) {
+    public void showAddEditServiceForm(Service service, boolean isEditMode, ServiceDetailController serviceDetailController) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("/com/aptech/eproject2_prosmiles/View/Service/AddEditService.fxml"));
@@ -140,6 +140,7 @@ public class ServiceListController extends BaseController {
             dialogStage.setScene(new Scene(loader.load()));
 
             AddEditServiceController controller = loader.getController();
+            controller.setServiceDetailController(serviceDetailController);
             controller.setDialogStage(dialogStage);
             controller.setEditMode(isEditMode);
             controller.setService(service);
