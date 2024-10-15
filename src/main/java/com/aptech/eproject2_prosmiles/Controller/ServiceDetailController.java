@@ -44,11 +44,11 @@ public class ServiceDetailController extends BaseController {
     @FXML
     private TableColumn<ServiceItem, Integer> col_service_item_quantity;
     @FXML
-    private TableColumn<?, ?> col_service_item_description;
+    private TableColumn<ServiceItem, String> col_service_item_description;
     @FXML
-    private TableColumn<?, ?> col_service_item_id;
+    private TableColumn<ServiceItem, Integer> col_service_item_id;
     @FXML
-    private TableColumn<?, ?> col_service_item_price;
+    private TableColumn<ServiceItem, Double> col_service_item_price;
     @FXML
     private Button btn_edit;
     @FXML
@@ -62,7 +62,7 @@ public class ServiceDetailController extends BaseController {
     private ObservableList<ServiceItem> serviceItems = FXCollections.observableArrayList();
 
     private Stage dialogStage;
-    private Service service;
+    private Service service = new Service();
     private ServiceListController serviceListController;
 
     public void setServiceListController(ServiceListController serviceListController) {
@@ -73,10 +73,10 @@ public class ServiceDetailController extends BaseController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
+        serviceItemDAO = new ServiceItemDAO();
         serviceItems = serviceItemDAO.getAll();
         btn_edit.setOnAction(event -> {
-            serviceListController.showAddEditServiceForm(service, true);
+            serviceListController.showAddEditServiceForm(service, true, this);
         });
         btn_cancel.setOnAction(event -> dialogStage.close());
 
@@ -124,6 +124,7 @@ public class ServiceDetailController extends BaseController {
                         detailServiceItemController.setDialogStage(stage);
                         detailServiceItemController.setServiceItem(selectedItem);
                         detailServiceItemController.setServiceDetailController(this);
+
                         stage.initModality(Modality.WINDOW_MODAL);
                         stage.showAndWait();
                     } catch (IOException e) {
@@ -147,32 +148,28 @@ public class ServiceDetailController extends BaseController {
         return result.isPresent() && result.get() == ButtonType.OK;
     }
 
-
-
-
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
 
     public double totalPrice(Service service) {
-        double totalPrice = serviceItems.stream()
+        return serviceItems.stream()
                 .filter(item -> item.getService().getId() == service.getId())
                 .mapToDouble(ServiceItem::getPrice)
                 .sum();
-        return totalPrice;
     }
 
     public void refreshServiceItems() {
-        // Xóa bảng và làm đầy nó với ServiceItems cho dịch vụ hiện tại
         ObservableList<ServiceItem> filteredItems = findServiceItemByServiceId(service.getId());
         tbl_service_item.setItems(filteredItems);
         tbl_service_item.refresh();
     }
 
-    public void refreshServiceDetails() {
-        // Cập nhật lại tên, mô tả, và hình ảnh của dịch vụ
-        lb_service_name.setText(service.getName());
-        lb_description.setText(service.getDescription());
+
+
+    public void refreshServiceDetails(Service serviceEdited) {
+        lb_service_name.setText(serviceEdited.getName());
+        lb_description.setText(serviceEdited.getDescription());
 
         // Cập nhật lại hình ảnh
         String imagePath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
@@ -229,7 +226,6 @@ public class ServiceDetailController extends BaseController {
         }
     }
     private ObservableList<ServiceItem> findServiceItemByServiceId(int id) {
-        ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
         return FXCollections.observableArrayList(serviceItemDAO.getAll().stream()
                 .filter(p -> p.getService().getId() == id)
                 .toList());
