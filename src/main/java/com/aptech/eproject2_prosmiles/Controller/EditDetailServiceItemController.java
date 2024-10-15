@@ -57,6 +57,7 @@ public class EditDetailServiceItemController extends BaseController {
         serviceItemDAO = new ServiceItemDAO(); // Khởi tạo DAO
     }
 
+    private ServiceDetailController serviceDetailController;
 
     public void setServiceItemDetailController(DetailServiceItemController setServiceItemDetailController) {
         this.setServiceItem = setServiceItemDetailController;
