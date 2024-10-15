@@ -77,8 +77,8 @@ public class ServiceDAO implements DentalRepository<Service> {
     public Service save(Service entity) {
         try{
             String sql = "INSERT INTO service (p_id, name, description" +
-                    ", image_path, created_at, is_deleted) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+                    ", image_path, created_at) " +
+                    "VALUES (?, ?, ?, ?, ?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, entity.getpId());
             pstmt.setString(2, entity.getName());
@@ -86,10 +86,9 @@ public class ServiceDAO implements DentalRepository<Service> {
             pstmt.setString(4, entity.getImagePath());
             LocalDateTime now = LocalDateTime.now();
             pstmt.setTimestamp(5, Timestamp.valueOf(now));
-            pstmt.setString(6, entity.getIsDeleted().toString());
             pstmt.executeUpdate();
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return entity;
     }
@@ -99,18 +98,17 @@ public class ServiceDAO implements DentalRepository<Service> {
         try{
             String sql = "UPDATE service sv SET sv.p_id = ?, sv.name = ?" +
                     ", sv.description = ?, sv.image_path = ?" +
-                    ", is_deleted = ? WHERE id = ?";
+                    " WHERE id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, entity.getpId());
             pstmt.setString(2, entity.getName());
             pstmt.setString(3, entity.getDescription());
             pstmt.setString(4, entity.getImagePath());
-            pstmt.setString(5, entity.getIsDeleted().toString());
-            pstmt.setInt(6, entity.getId());
+            pstmt.setInt(5, entity.getId());
             pstmt.executeUpdate();
 
         }catch (SQLException e){
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return entity;
     }
@@ -118,9 +116,10 @@ public class ServiceDAO implements DentalRepository<Service> {
     @Override
     public boolean delete(Service entity) {
         try{
-            String sql = "UPDATE service sv SET sv.is_deleted = 1 WHERE sv.id = ?";
+            String sql = "UPDATE service sv SET sv.is_deleted = ? WHERE sv.id = ?";
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setInt(1, entity.getId());
+            pstmt.setInt(1, entity.getIsDeleted().getValue());
+            pstmt.setInt(2, entity.getId());
             pstmt.executeUpdate();
         }catch (SQLException e){
             throw new RuntimeException(e);
