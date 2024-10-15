@@ -51,6 +51,11 @@ public class AddEditServiceController extends BaseController {
     private Service service;
     private File selectedFile;
     private boolean isEditMode;
+    private ServiceDetailController serviceDetailController;
+
+    public void setServiceDetailController(ServiceDetailController serviceDetailController) {
+        this.serviceDetailController = serviceDetailController;
+    }
 
     ServiceDAO serviceDAO = new ServiceDAO();
     ObservableList<Service> services = serviceDAO.getAll();
@@ -60,8 +65,6 @@ public class AddEditServiceController extends BaseController {
         btn_upload_image.setOnAction(this::handleSelectFile);
         btn_save.setOnAction(this::handleSave);
         btn_cancel.setOnAction(event -> dialogStage.close());
-
-        // Thiết lập danh sách dịch vụ vào ComboBox
         cmb_belong_service.getItems().addAll(services);
     }
 
@@ -94,7 +97,12 @@ public class AddEditServiceController extends BaseController {
     }
 
     private void handleSave(ActionEvent event) {
-        if (selectedFile != null || isEditMode) { // Cho phép lưu cả khi chỉ chỉnh sửa thông tin (không chọn lại ảnh)
+        if (service == null) {
+            System.out.println("Service is not initialized.");
+            return;
+        }
+
+        if (selectedFile != null || isEditMode) {
             String serviceName = txt_service_name.getText();
             if (serviceName != null && !serviceName.isEmpty()) {
                 service.setName(serviceName);
@@ -108,25 +116,30 @@ public class AddEditServiceController extends BaseController {
                 String imagePath = savedFile.getName();
                 service.setImagePath(imagePath);
             }
+
             if (!isEditMode) {
                 serviceDAO.save(service);
             } else {
-                serviceDAO.update(service); // Cập nhật khi chỉnh sửa
+                serviceDAO.update(service);
             }
             saved = true;
 
-            // Sau khi lưu xong, gọi phương thức refresh của ServiceDetailController (nếu có)
             if (dialogStage != null) {
                 dialogStage.close();
             }
+            if (serviceDetailController != null) {
+                serviceDetailController.refreshServiceDetails(service);
+            }
+
         }
     }
 
 
+
+
     private void refreshServiceList() {
-        ObservableList<Service> updatedServices = serviceDAO.getAll(); // Lấy danh sách cập nhật từ cơ sở dữ liệu
-        cmb_belong_service.getItems().setAll(updatedServices); // Cập nhật lại ComboBox hoặc các thành phần giao diện khác
-        // Nếu bạn có TableView hiển thị danh sách dịch vụ, bạn cũng có thể cập nhật TableView ở đây.
+        ObservableList<Service> updatedServices = serviceDAO.getAll();
+        cmb_belong_service.getItems().setAll(updatedServices);
     }
 
 
@@ -159,13 +172,11 @@ public class AddEditServiceController extends BaseController {
 
 
     private File saveImageToDirectory(File selectedFile) {
-        // Đường dẫn lưu file ảnh
         String destinationPath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/";
         File destinationDir = new File(destinationPath);
         File destinationFile = getFilePath(selectedFile, destinationDir);
 
         try {
-            // Sao chép file từ nguồn vào thư mục đích
             Files.copy(selectedFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
@@ -192,4 +203,5 @@ public class AddEditServiceController extends BaseController {
         }
         return destinationFile;
     }
+
 }

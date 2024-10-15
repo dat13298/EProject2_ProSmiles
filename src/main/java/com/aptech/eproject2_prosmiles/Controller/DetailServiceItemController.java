@@ -102,9 +102,9 @@ public class DetailServiceItemController extends BaseController {
 
     }
     public void refreshServiceItemDetails() {
-        ServiceItemDAO serviceItemDAO = new ServiceItemDAO(); // Khởi tạo DAO
-        serviceItem = serviceItemDAO.getById(serviceItem.getId()); // Tìm lại serviceItem từ database
-        setServiceItem(serviceItem); // Cập nhật lại các trường hiển thị
+        ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
+        serviceItem = serviceItemDAO.getById(serviceItem.getId());
+        setServiceItem(serviceItem);
     }
 
 
