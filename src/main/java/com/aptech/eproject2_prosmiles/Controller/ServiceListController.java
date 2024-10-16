@@ -1,9 +1,11 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Service;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.ServiceDAO;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -35,9 +37,11 @@ public class ServiceListController extends BaseController {
 
     public static Service selectedService;
     private ObservableList<Service> services;
+    private MethodInterceptor methodInterceptor;
 
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        methodInterceptor = new MethodInterceptor(this);
         ServiceDAO serviceDAO = new ServiceDAO();
         services = serviceDAO.getAll();
         int column = 0;
@@ -85,22 +89,41 @@ public class ServiceListController extends BaseController {
             }
         }
 
-        btnDelete.setOnAction(event -> {
-            if (selectedService != null) {
-                boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service?");
-                if (confirmed) {
-                    selectedService.setIsDeleted(EIsDeleted.INACTIVE);
-                    serviceDAO.delete(selectedService);
-                    removeServiceFromGrid(selectedService);
-                }
+        btnDelete.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleDelete", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
 
-        btnAddNew.setOnAction(event -> {
-            Service newService = new Service();
-            boolean isEditMode = false;
-            showAddEditServiceForm(newService, isEditMode, null);
+        btnAddNew.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleAddService", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
+    }
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleAddService(ActionEvent event) {
+        Service newService = new Service();
+        boolean isEditMode = false;
+        showAddEditServiceForm(newService, isEditMode, null);
+    }
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleDelete(ActionEvent event) {
+        if (selectedService != null) {
+            boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service?");
+            if (confirmed) {
+                selectedService.setIsDeleted(EIsDeleted.INACTIVE);
+                ServiceDAO serviceDAO = new ServiceDAO();
+                serviceDAO.delete(selectedService);
+                removeServiceFromGrid(selectedService);
+            }
+        }
     }
 
     private void openServiceDetail(Service service) {
