@@ -33,7 +33,7 @@ public class ServiceListController extends BaseController {
     @FXML
     private Button btnDelete;
 
-    public static Service selectedService; // Dịch vụ được chọn để xóa
+    public static Service selectedService;
     private ObservableList<Service> services;
 
     @FXML
@@ -69,7 +69,6 @@ public class ServiceListController extends BaseController {
             vBox.getStyleClass().add("service-box");
             imageView.getStyleClass().add("image-box");
 
-            // Sự kiện chọn dịch vụ khi nhấp vào VBox
             vBox.setOnMouseClicked(event -> {
                 if (event.getClickCount() == 2) {
                     openServiceDetail(service);
@@ -86,7 +85,6 @@ public class ServiceListController extends BaseController {
             }
         }
 
-        // Xử lý sự kiện nút Delete
         btnDelete.setOnAction(event -> {
             if (selectedService != null) {
                 boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service?");

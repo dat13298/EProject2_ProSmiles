@@ -1,29 +1,20 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
-import com.aptech.eproject2_prosmiles.Global.Validation;
-import com.aptech.eproject2_prosmiles.Model.Entity.Role;
-import com.aptech.eproject2_prosmiles.Model.Entity.Service;
 import com.aptech.eproject2_prosmiles.Model.Entity.ServiceItem;
-import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
-import com.aptech.eproject2_prosmiles.Model.Enum.EGender;
 import com.aptech.eproject2_prosmiles.Repository.ServiceItemDAO;
-import com.aptech.eproject2_prosmiles.Service.AuthenticationService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import static com.aptech.eproject2_prosmiles.Controller.ServiceListController.selectedService;
 
-public class AddNewServiceItemController extends BaseController {
+public class AddEditServiceItemController extends BaseController {
 
     @FXML
     private Button btn_add_cancel;
@@ -46,9 +37,25 @@ public class AddNewServiceItemController extends BaseController {
     @FXML
     private TextField txt_add_service_item_unit;
     private Stage dialogStage;
-    private boolean saved = false;
     private ServiceItem serviceItem;
+    private boolean isEditMode;
+    private ServiceItemDetailController serviceItemDetailController;
 
+    public void setServiceItemDetailController(ServiceItemDetailController serviceItemDetailController) {
+        this.serviceItemDetailController = serviceItemDetailController;
+    }
+
+    public boolean isEditMode() {
+        return isEditMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        isEditMode = editMode;
+    }
+
+    public void setServiceItem(ServiceItem serviceItem) {
+        this.serviceItem = serviceItem;
+    }
 
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
@@ -58,6 +65,8 @@ public class AddNewServiceItemController extends BaseController {
     public void setServiceDetailController(ServiceDetailController controller) {
         this.serviceDetailController = controller;
     }
+
+
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,6 +79,21 @@ public class AddNewServiceItemController extends BaseController {
 
     @FXML
     private void handleSave(ActionEvent event) {
+        handleSaveServiceItem();
+    }
+
+    public void setServiceItemTextField(){
+        txt_add_service_item_name.setText(serviceItem.getName());
+        txt_add_service_item_unit.setText(serviceItem.getUnit());
+        txt_add_service_item_price.setText(String.valueOf(serviceItem.getPrice()));
+        txt_add_service_item_quantity.setText(String.valueOf(serviceItem.getQuantity()));
+        txt_add_service_item_description.setText(serviceItem.getDescription());
+    }
+
+    private void handleSaveServiceItem() {
+        if (serviceItem == null) {
+            serviceItem = new ServiceItem();
+        }
         String name = txt_add_service_item_name.getText();
         String unit = txt_add_service_item_unit.getText();
         String quantity = txt_add_service_item_quantity.getText();
@@ -77,28 +101,30 @@ public class AddNewServiceItemController extends BaseController {
         String description = txt_add_service_item_description.getText();
 
         if (!name.isEmpty() && !unit.isEmpty() && !quantity.isEmpty() && !price.isEmpty() && !description.isEmpty()) {
-            // Tạo một ServiceItem mới
-            ServiceItem newItem = new ServiceItem();
-            newItem.setService(selectedService);
-            newItem.setName(name);
-            newItem.setUnit(unit);
-            newItem.setQuantity(Integer.parseInt(quantity));
-            newItem.setPrice(Double.parseDouble(price));
-            newItem.setDescription(description);
-
+            serviceItem.setService(selectedService);
+            serviceItem.setName(name);
+            serviceItem.setUnit(unit);
+            serviceItem.setQuantity(Integer.parseInt(quantity));
+            serviceItem.setPrice(Double.parseDouble(price));
+            serviceItem.setDescription(description);
             ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
-            serviceItemDAO.save(newItem);
+            if(isEditMode) {
+                serviceItemDAO.update(serviceItem);
+                serviceItemDetailController.setItemTextLabel(serviceItem);
+            }else {
+                serviceItemDAO.save(serviceItem);
+            }
+            serviceDetailController.refreshServiceItems();
 
-            // Thông báo cho ServiceDetailController để làm mới danh sách
-            serviceDetailController.addServiceItem(newItem);
-
-            // Đóng dialog
             Stage stage = (Stage) btn_add_save.getScene().getWindow();
             stage.close();
         } else {
-            System.out.println("Vui lòng điền đầy đủ các trường!");
+            System.out.println("Please fill in all fields!");
         }
     }
+
+
+
 
 
 }
