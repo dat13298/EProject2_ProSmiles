@@ -91,7 +91,7 @@ public class AddEditServiceController extends BaseController {
             Image image = new Image(selectedFile.toURI().toString());
             imv_service_picture.setImage(image);
         }else{
-            System.out.println("khong tim thay anh");
+            System.out.println("no image found");
 
         }
     }
@@ -134,9 +134,6 @@ public class AddEditServiceController extends BaseController {
         }
     }
 
-
-
-
     private void refreshServiceList() {
         ObservableList<Service> updatedServices = serviceDAO.getAll();
         cmb_belong_service.getItems().setAll(updatedServices);
@@ -172,6 +169,7 @@ public class AddEditServiceController extends BaseController {
 
 
     private File saveImageToDirectory(File selectedFile) {
+        // Đường dẫn lưu file ảnh
         String destinationPath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/";
         File destinationDir = new File(destinationPath);
         File destinationFile = getFilePath(selectedFile, destinationDir);
