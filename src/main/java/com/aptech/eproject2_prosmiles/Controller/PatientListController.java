@@ -1,6 +1,7 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
 import com.aptech.eproject2_prosmiles.Global.DialogHelper;
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Patient;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.PatientDAO;
@@ -9,6 +10,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -47,9 +49,12 @@ public class PatientListController extends BaseController {
 
     private ObservableList<Patient> patientList;
     private PatientDetailController patientDetailController;
+    private MethodInterceptor methodInterceptor;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        methodInterceptor = new MethodInterceptor(this);
+
         PatientDAO patientDAO = new PatientDAO();
 
         patientList = patientDAO.getAll();
@@ -98,24 +103,43 @@ public class PatientListController extends BaseController {
             return row;
         });
 
-        btn_add.setOnAction(event -> {
-            Patient newPatient = new Patient();
-            boolean isEditMode = false;
-            showAddEditForm(newPatient, isEditMode);
-        });
-
-        btn_delete.setOnAction(event -> {
-            Patient selectedPatient = tbl_patient.getSelectionModel().getSelectedItem();
-            if(selectedPatient != null) {
-                boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to delete this patient?");
-                if(confirmed) {
-                    selectedPatient.setIsDeleted(EIsDeleted.INACTIVE);
-                    patientDAO.delete(selectedPatient);
-                    tbl_patient.getItems().remove(selectedPatient);
-                    tbl_patient.refresh();
-                }
+        btn_add.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleAddPatient", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
+
+        btn_delete.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleDeletePatient", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Receptionist"})
+    public void handleAddPatient(ActionEvent actionEvent) {
+        Patient newPatient = new Patient();
+        boolean isEditMode = false;
+        showAddEditForm(newPatient, isEditMode);
+    }
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleDeletePatient(ActionEvent actionEvent) {
+        Patient selectedPatient = tbl_patient.getSelectionModel().getSelectedItem();
+        if(selectedPatient != null) {
+            boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to delete this patient?");
+            if(confirmed) {
+                selectedPatient.setIsDeleted(EIsDeleted.INACTIVE);
+                PatientDAO patientDAO = new PatientDAO();
+                patientDAO.delete(selectedPatient);
+                tbl_patient.getItems().remove(selectedPatient);
+                tbl_patient.refresh();
+            }
+        }
     }
 
     private void showPatientDetail(Patient patientClicked) {
