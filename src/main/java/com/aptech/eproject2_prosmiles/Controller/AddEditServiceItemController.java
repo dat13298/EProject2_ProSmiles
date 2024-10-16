@@ -114,6 +114,7 @@ public class AddEditServiceItemController extends BaseController {
             }else {
                 serviceItemDAO.save(serviceItem);
             }
+            serviceDetailController.addServiceItem(serviceItem);
             serviceDetailController.refreshServiceItems();
 
             Stage stage = (Stage) btn_add_save.getScene().getWindow();
