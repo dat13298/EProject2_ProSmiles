@@ -107,7 +107,7 @@ public class PaymentDetailController extends BaseController{
         methodInterceptor = new MethodInterceptor(this);
         btn_edit.setOnAction((ActionEvent event) -> {
             try {
-                methodInterceptor.invokeMethod("handleDeleteStaff", event);
+                methodInterceptor.invokeMethod("handleEdit", event);
             } catch (NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
