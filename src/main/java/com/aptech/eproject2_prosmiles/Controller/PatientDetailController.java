@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Patient;
 import com.aptech.eproject2_prosmiles.Model.Entity.Prescription;
 import com.aptech.eproject2_prosmiles.Model.Entity.Staff;
@@ -9,6 +10,7 @@ import com.aptech.eproject2_prosmiles.Repository.StaffDAO;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -48,6 +50,7 @@ public class PatientDetailController extends BaseController {
     private Stage detailDialogStage;
     private PatientListController patientListController;
     private PrescriptionListController prescriptionListController = new PrescriptionListController();
+    private MethodInterceptor methodInterceptor;
 
     public void setPatientListController(PatientListController patientListController) {
         this.patientListController = patientListController;
@@ -74,11 +77,21 @@ public class PatientDetailController extends BaseController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        btn_edit.setOnAction(event -> {
-            patientListController.showAddEditForm(patient, true);
+        methodInterceptor = new MethodInterceptor(this);
+        btn_edit.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleEditPatient", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         btn_cancel.setOnAction(event -> detailDialogStage.close());
+    }
+
+    @RolePermissionRequired(roles = {"Manager", "Receptionist"})
+    public void handleEditPatient(ActionEvent event) {
+        patientListController.showAddEditForm(patient, true);
     }
 
     private void setupTableColumn(ObservableList<Prescription> prescriptionList) {
