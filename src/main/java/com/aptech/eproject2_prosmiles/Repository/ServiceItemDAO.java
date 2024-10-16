@@ -124,8 +124,8 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
         }
         return entity;
     }
-    public List<ServiceItem> getServiceItemsByServiceId(int serviceId) {
-        List<ServiceItem> serviceItems = new ArrayList<>();
+    public ObservableList<ServiceItem> getServiceItemsByServiceId(int serviceId) {
+        ObservableList<ServiceItem> serviceItemList = FXCollections.observableArrayList();
 
         try {
             String sql = "SELECT * FROM service_item WHERE service_id = ?";
@@ -144,13 +144,13 @@ public class ServiceItemDAO implements DentalRepository<ServiceItem> {
                 item.setDescription(rs.getString("description"));
                 item.setDosage(rs.getString("dosage"));
                 item.setUsageInstruction(rs.getString("usage_instruction"));
-                // Thêm vào danh sách
-                serviceItems.add(item);
+                serviceItemList.add(item);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
+        serviceItems.clear();
+        serviceItems.addAll(serviceItemList);
         return serviceItems;
     }
 
