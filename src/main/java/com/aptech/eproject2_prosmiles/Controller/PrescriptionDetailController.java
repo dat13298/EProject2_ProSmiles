@@ -276,7 +276,6 @@ public class PrescriptionDetailController extends BaseController {
             dialogAddEditInfo.setTitle(isEditMode ? "Edit Prescription Detail" : "Add Prescription Detail");
 
             dialogAddEditInfo.initModality(Modality.WINDOW_MODAL);
-//            dialogAddEditInfo.initOwner(tblPrescriptionDetail.getScene().getWindow());
 
             dialogAddEditInfo.setScene(new Scene(loader.load()));
             AddNewPrescriptionInfoController controller = loader.getController();

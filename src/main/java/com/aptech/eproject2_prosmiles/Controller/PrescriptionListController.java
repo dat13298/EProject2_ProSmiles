@@ -144,20 +144,17 @@ public class PrescriptionListController extends BaseController{
                 PrescriptionDAO prescriptionDAO = new PrescriptionDAO();
                 PaymentDAO paymentDAO = new PaymentDAO();
 
-                // Get and delete all payments for the prescription
                 ObservableList<Payment> paymentsForPrescription = paymentDAO.getPaymentByPrescriptionId(selectedPrescription.getId());
                 for (Payment payment : paymentsForPrescription) {
-                    payment.setIsDeleted(EIsDeleted.INACTIVE);  // Soft delete
+                    payment.setIsDeleted(EIsDeleted.INACTIVE);
                     paymentDAO.delete(payment);
-                    deleteBillPDF(payment.getBillNumber());// Update each payment to mark it as deleted
+                    deleteBillPDF(payment.getBillNumber());
                 }
 
-                // Delete the prescription from the database
                 prescriptionDAO.delete(selectedPrescription);
 
-                // Update the UI
-                tbl_prescription.getItems().remove(selectedPrescription);  // Remove from the list
-                tbl_prescription.refresh();  // Refresh the table view
+                tbl_prescription.getItems().remove(selectedPrescription);
+                tbl_prescription.refresh();
             }
         }
     }
@@ -206,7 +203,7 @@ public class PrescriptionListController extends BaseController{
             dialogStage.setTitle(isEditMode ? "Edit Prescription" : "Add Prescription");
 
             dialogStage.initModality(Modality.WINDOW_MODAL);
-//            dialogStage.initOwner(tablePrescription.getScene().getWindow());
+
 
             dialogStage.setScene(new Scene(loader.load()));
             AddEditPrescriptionController controller = loader.getController();
