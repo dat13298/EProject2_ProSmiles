@@ -1,7 +1,9 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.ServiceItem;
 import com.aptech.eproject2_prosmiles.Repository.ServiceItemDAO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -42,6 +44,7 @@ public class ServiceItemDetailController extends BaseController {
     private Stage dialogStage;
 
     private ServiceItem serviceItem;
+    private MethodInterceptor methodInterceptor;
 
     public void setItemTextLabel(ServiceItem serviceItem) {
         this.serviceItem = serviceItem;
@@ -66,6 +69,7 @@ public class ServiceItemDetailController extends BaseController {
 
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        methodInterceptor = new MethodInterceptor(this);
         btn_add_cancel.setOnAction(event -> {
             if (dialogStage != null) {
                 dialogStage.close();
@@ -73,14 +77,19 @@ public class ServiceItemDetailController extends BaseController {
         })
         ;
 
-        btn_edit.setOnAction(event -> {
-            handleEditServiceItem();
+        btn_edit.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleEditServiceItem", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
 
 
     }
 
-    public void handleEditServiceItem() {
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleEditServiceItem(ActionEvent event) {
         serviceDetailController.showAddEditItem(true, serviceItem, this);
     }
 
