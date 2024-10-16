@@ -21,6 +21,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -147,7 +148,8 @@ public class PrescriptionListController extends BaseController{
                 ObservableList<Payment> paymentsForPrescription = paymentDAO.getPaymentByPrescriptionId(selectedPrescription.getId());
                 for (Payment payment : paymentsForPrescription) {
                     payment.setIsDeleted(EIsDeleted.INACTIVE);  // Soft delete
-                    paymentDAO.delete(payment);  // Update each payment to mark it as deleted
+                    paymentDAO.delete(payment);
+                    deleteBillPDF(payment.getBillNumber());// Update each payment to mark it as deleted
                 }
 
                 // Delete the prescription from the database
@@ -229,6 +231,22 @@ public class PrescriptionListController extends BaseController{
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+
+    private void deleteBillPDF(String billId) {
+        String pdfFilePath = "billing/PaymentDetails_" + billId + ".pdf";  // Replace with actual path
+
+        File pdfFile = new File(pdfFilePath);
+        if (pdfFile.exists()) {
+            if (pdfFile.delete()) {
+                System.out.println("Bill PDF for prescription ID " + billId + " was deleted.");
+            } else {
+                System.err.println("Failed to delete the bill PDF for prescription ID " + billId);
+            }
+        } else {
+            System.err.println("Bill PDF for prescription ID " + billId + " not found.");
         }
     }
 
