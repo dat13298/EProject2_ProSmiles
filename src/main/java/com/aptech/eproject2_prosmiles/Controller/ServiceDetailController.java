@@ -85,17 +85,22 @@ public class ServiceDetailController extends BaseController {
 
 
         btn_delete_service_item.setOnAction(event -> {
-            ServiceItem selectedService = tbl_service_item.getSelectionModel().getSelectedItem();
-            if (selectedService != null) {
+            ServiceItem selectedServiceItem = tbl_service_item.getSelectionModel().getSelectedItem();
+            if (selectedServiceItem != null) {
                 boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
                 if (confirmed) {
-                    selectedService.setIsDeleted(EIsDeleted.INACTIVE);
-                    serviceItemDAO.delete(selectedService);
-                    tbl_service_item.getItems().remove(selectedService);
+                    selectedServiceItem.setIsDeleted(EIsDeleted.INACTIVE);
+                    serviceItemDAO.delete(selectedServiceItem);
+                    tbl_service_item.getItems().remove(selectedServiceItem);
                     tbl_service_item.refresh();
+
+                    // Cập nhật giá tổng sau khi xoá ServiceItem
+                    lb_service_price.setText(String.format("%.2f", totalPrice(service)));
                 }
             }
         });
+
+
         tbl_service_item.setOnMouseClicked(event -> {
             showServiceItemDetail();
         });
@@ -168,11 +173,17 @@ public class ServiceDetailController extends BaseController {
     }
 
     public double totalPrice(Service service) {
+        // Kiểm tra nếu service hoặc serviceItems null
+        if (service == null || serviceItems == null) {
+            return 0.0;
+        }
+
         return serviceItems.stream()
-                .filter(item -> item.getService().getId() == service.getId())
+                .filter(item -> item.getService() != null && item.getService().getId() == service.getId())
                 .mapToDouble(ServiceItem::getPrice)
                 .sum();
     }
+
 
     public void refreshServiceItems() {
         ObservableList<ServiceItem> filteredItems = findServiceItemByServiceId(service.getId());
@@ -203,9 +214,7 @@ public class ServiceDetailController extends BaseController {
 
         String imagePath = "src/main/resources/com/aptech/eproject2_prosmiles/Media/img_service/" + service.getImagePath();
         File file = new File(imagePath);
-
         if (file.exists()) {
-            // Tạo Image từ file URI
             Image image = new Image(file.toURI().toString());
             imv_service_image.setImage(image);
         } else {
@@ -223,18 +232,22 @@ public class ServiceDetailController extends BaseController {
         col_service_item_id.setCellValueFactory(new PropertyValueFactory<>("id"));
         col_service_item_price.setCellValueFactory(new PropertyValueFactory<>("price"));
         col_service_item_description.setCellValueFactory(new PropertyValueFactory<>("description"));
-        lb_service_price.setText(String.valueOf(totalPrice(service)));
 
         ObservableList<ServiceItem> newServiceItems = FXCollections.observableArrayList(findServiceItemByServiceId(service.getId()));
         tbl_service_item.setItems(newServiceItems);
         tbl_service_item.refresh();
+
+        lb_service_price.setText(String.format("%.2f", totalPrice(service)));
     }
+
 
     public void addServiceItem(ServiceItem item) {
         if (item.getService().getId() == service.getId()) {
             refreshServiceItems();
+            lb_service_price.setText(String.format("%.2f", totalPrice(service)));
         }
     }
+
 
     private ObservableList<ServiceItem> findServiceItemByServiceId(int id) {
         return FXCollections.observableArrayList(serviceItemDAO.getAll().stream()
