@@ -1,11 +1,13 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Service;
 import com.aptech.eproject2_prosmiles.Model.Entity.ServiceItem;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
 import com.aptech.eproject2_prosmiles.Repository.ServiceItemDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -57,6 +59,7 @@ public class ServiceDetailController extends BaseController {
     private Stage dialogStage;
     private Service service = new Service();
     private ServiceListController serviceListController;
+    private MethodInterceptor methodInterceptor;
 
     public void setServiceListController(ServiceListController serviceListController) {
         this.serviceListController = serviceListController;
@@ -71,32 +74,33 @@ public class ServiceDetailController extends BaseController {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        methodInterceptor = new MethodInterceptor(this);
         serviceItemDAO = new ServiceItemDAO();
         serviceItems = serviceItemDAO.getServiceItemsByServiceId(service.getId());
-        btn_edit.setOnAction(event -> {
-            serviceListController.showAddEditServiceForm(service, true, this);
+        btn_edit.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleEditService", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
+
         btn_cancel.setOnAction(event -> dialogStage.close());
 
-        btn_add_new_service_item.setOnAction(event -> {
-            boolean isEditMode = false;
-            showAddEditItem(isEditMode, null, null);
+        btn_add_new_service_item.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleAddServiceItem", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
         });
 
 
-        btn_delete_service_item.setOnAction(event -> {
-            ServiceItem selectedServiceItem = tbl_service_item.getSelectionModel().getSelectedItem();
-            if (selectedServiceItem != null) {
-                boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
-                if (confirmed) {
-                    selectedServiceItem.setIsDeleted(EIsDeleted.INACTIVE);
-                    serviceItemDAO.delete(selectedServiceItem);
-                    tbl_service_item.getItems().remove(selectedServiceItem);
-                    tbl_service_item.refresh();
-
-                    // Cập nhật giá tổng sau khi xoá ServiceItem
-                    lb_service_price.setText(String.format("%.2f", totalPrice(service)));
-                }
+        btn_delete_service_item.setOnAction((ActionEvent event) -> {
+            try {
+                methodInterceptor.invokeMethod("handleDeleteServiceItem", event);
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         });
 
@@ -104,7 +108,34 @@ public class ServiceDetailController extends BaseController {
         tbl_service_item.setOnMouseClicked(event -> {
             showServiceItemDetail();
         });
+    }
 
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleEditService(ActionEvent event) {
+        serviceListController.showAddEditServiceForm(service, true, this);
+    }
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleAddServiceItem(ActionEvent event) {
+        boolean isEditMode = false;
+        showAddEditItem(isEditMode, null, null);
+    }
+
+    @RolePermissionRequired(roles = {"Manager"})
+    public void handleDeleteServiceItem(ActionEvent event) {
+        ServiceItem selectedServiceItem = tbl_service_item.getSelectionModel().getSelectedItem();
+        if (selectedServiceItem != null) {
+            boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
+            if (confirmed) {
+                selectedServiceItem.setIsDeleted(EIsDeleted.INACTIVE);
+                serviceItemDAO.delete(selectedServiceItem);
+                tbl_service_item.getItems().remove(selectedServiceItem);
+                tbl_service_item.refresh();
+
+                // Cập nhật giá tổng sau khi xoá ServiceItem
+                lb_service_price.setText(String.format("%.2f", totalPrice(service)));
+            }
+        }
     }
 
     private void showServiceItemDetail() {
