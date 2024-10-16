@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="463.0" prefWidth="342.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.DetailServiceItemController">
+<AnchorPane prefHeight="463.0" prefWidth="342.0" styleClass="parent" stylesheets="@../../Style/Style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.aptech.eproject2_prosmiles.Controller.ServiceItemDetailController">
     <children>
         <Label fx:id="lb_title" layoutX="14.0" layoutY="14.0" styleClass="title" text="Service Item Detail " />
         <Button fx:id="btn_add_cancel" layoutX="96.0" layoutY="411.0" mnemonicParsing="false" text="Cancel">
@@ -20,12 +20,12 @@
         <Label fx:id="lb_title_service_item_name" layoutX="27.0" layoutY="155.0" styleClass="title" text="Name :" />
         <Label fx:id="lb_title_service_item_description" layoutX="32.0"  layoutY="337.0" styleClass="title" text="Description :" maxWidth="150" wrapText="true"/>
       <Label fx:id="lb_title_service_item_unit" layoutX="32.0" layoutY="244.0" styleClass="title" text="Unit :" />
-      <Label fx:id="txt_detail_service_id" layoutX="151.0" layoutY="68.0" />
-      <Label fx:id="txt_detail_service_price" layoutX="151.0" layoutY="201.0" />
-      <Label fx:id="txt_detail_service_name" layoutX="151.0" layoutY="155.0" />
-      <Label fx:id="txt_detail_service_svid" layoutX="151.0" layoutY="111.0" />
-      <Label fx:id="txt_detail_service_unit" layoutX="151.0" layoutY="244.0" />
-      <Label fx:id="txt_detail_service_quantity" layoutX="151.0" layoutY="285.0" />
+      <Label fx:id="lb_detail_service_id" layoutX="151.0" layoutY="68.0" />
+      <Label fx:id="lb_detail_service_price" layoutX="151.0" layoutY="201.0" />
+      <Label fx:id="lb_detail_service_name" layoutX="151.0" layoutY="155.0" />
+      <Label fx:id="lb_detail_service_svid" layoutX="151.0" layoutY="111.0" />
+      <Label fx:id="lb_detail_service_unit" layoutX="151.0" layoutY="244.0" />
+      <Label fx:id="lb_detail_service_quantity" layoutX="151.0" layoutY="285.0" />
       <Button fx:id="btn_edit" layoutX="181.0" layoutY="411.0" mnemonicParsing="false" text="Edit">
          <styleClass>
             <String fx:value="master_button" />
@@ -33,6 +33,6 @@
          </styleClass>
       </Button>
       <Label fx:id="" layoutX="32.0" layoutY="285.0" styleClass="title" text="Quantity :" />
-      <Label fx:id="txt_detail_service_description" layoutX="151.0" layoutY="337.0" />
+      <Label fx:id="lb_detail_service_description" layoutX="151.0" layoutY="337.0" />
     </children>
 </AnchorPane>
