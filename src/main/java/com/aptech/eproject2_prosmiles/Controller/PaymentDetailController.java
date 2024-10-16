@@ -90,13 +90,9 @@ public class PaymentDetailController extends BaseController{
         paymentClicked.setPrescription(prescription);
         prescriptionDetails = prescriptionDetailDAO.getPresDetailByPresId(paymentClicked.getPrescription().getId());
 
-        // Loop through each prescription detail and fetch the service using the serviceItem ID
         for (PrescriptionDetail detail : prescriptionDetails) {
             if (detail.getService() != null) {
-                // Fetch the service by the serviceItem's ID
                 Service service = serviceDAO.getById(detail.getService().getId());
-
-                // Set the fetched service back to the prescription detail's serviceItem
                 detail.setService(service);
             }
         }
@@ -136,38 +132,33 @@ public class PaymentDetailController extends BaseController{
     public void exportToPDF(String destinationFileName) {
         try {
             System.out.println(prescriptionDetails);
-            // Construct the path to the "billing" folder from the content root
+
             String billingFolder = "billing";
             File folder = new File(billingFolder);
 
-            // Create the "billing" directory if it doesn't exist
+
             if (!folder.exists()) {
                 folder.mkdirs();
             }
 
-            // Full path to the PDF file in the billing folder
+
             String fullPath = billingFolder + File.separator + destinationFileName;
 
-            // Initialize PDF writer with the full path
             PdfWriter writer = new PdfWriter(fullPath);
 
-            // Initialize PDF document
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc, PageSize.A4);
             document.setMargins(20, 20, 20, 20);
 
-            // Add Invoice Header
             document.add(new Paragraph("PAYMENT DETAIL")
                     .setFontSize(24)
                     .setBold()
                     .setTextAlignment(TextAlignment.CENTER)
                     .setMarginBottom(20));
 
-            // Add line separator
             LineSeparator ls = new LineSeparator(new SolidLine());
             document.add(ls);
 
-            // Add company info
             document.add(new Paragraph("ProSmiles Dental")
                     .setBold()
                     .setFontSize(12)
@@ -178,7 +169,6 @@ public class PaymentDetailController extends BaseController{
                     .setFontSize(10)
                     .setMarginBottom(20));
 
-            // Add date and payment number
             document.add(new Paragraph("Invoice Date: " + java.time.LocalDate.now().toString())
                     .setFontSize(10)
                     .setTextAlignment(TextAlignment.RIGHT));
@@ -186,7 +176,6 @@ public class PaymentDetailController extends BaseController{
                     .setFontSize(10)
                     .setTextAlignment(TextAlignment.RIGHT));
 
-            // Add patient and payment details
             document.add(new Paragraph("\nBill To:")
                     .setBold()
                     .setFontSize(12)
@@ -197,15 +186,12 @@ public class PaymentDetailController extends BaseController{
                     .setFontSize(10)
                     .setMarginBottom(5));
 
-            // Add line separator
             document.add(new LineSeparator(new SolidLine()));
 
-            // Create table for payment breakdown
             Table table = new Table(UnitValue.createPercentArray(new float[]{2, 2, 1, 1}))
                     .useAllAvailableWidth()
                     .setMarginTop(20);
 
-            // Table Header
             Color tableHeaderColor = new DeviceRgb(63, 169, 219); // Customize your header color
             Cell header1 = new Cell().add(new Paragraph("Service Name"))
                     .setBackgroundColor(tableHeaderColor)
@@ -233,7 +219,6 @@ public class PaymentDetailController extends BaseController{
             table.addHeaderCell(header3);
             table.addHeaderCell(header4);
 
-            // Dummy data for the table (you can use your actual data)
             for (PrescriptionDetail detail : prescriptionDetails) {
                 table.addCell(new Cell().add(new Paragraph(detail.getService().getName()))
                         .setTextAlignment(TextAlignment.LEFT)
@@ -249,24 +234,21 @@ public class PaymentDetailController extends BaseController{
                         .setBorder(new SolidBorder(1)));
             }
 
-            // Add table to document
+
             document.add(table);
 
 
-            // Add total amount
             document.add(new Paragraph("\nTotal Amount: $" + lbl_amount.getText())
                     .setBold()
                     .setFontSize(12)
                     .setTextAlignment(TextAlignment.RIGHT));
 
-            // Footer with thank you message
             document.add(new Paragraph("\nThank you for your business!")
                     .setTextAlignment(TextAlignment.CENTER)
                     .setMarginTop(50)
                     .setFontSize(12)
                     .setItalic());
 
-            // Close document
             document.close();
 
             DialogHelper.showNotificationDialog("Export Success", "Successfully exported payment details");

@@ -176,7 +176,6 @@ public class PaymentListController extends BaseController{
             dialogStage.setTitle("Edit Payment");
 
             dialogStage.initModality(Modality.WINDOW_MODAL);
-//            dialogStage.initOwner(tblPayment.getScene().getWindow());
 
             dialogStage.setScene(new Scene(loader.load()));
             AddEditPaymentController controller = loader.getController();
