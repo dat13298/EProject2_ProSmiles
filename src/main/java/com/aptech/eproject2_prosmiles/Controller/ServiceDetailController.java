@@ -77,6 +77,7 @@ public class ServiceDetailController extends BaseController {
         methodInterceptor = new MethodInterceptor(this);
         serviceItemDAO = new ServiceItemDAO();
         serviceItems = serviceItemDAO.getServiceItemsByServiceId(service.getId());
+
         btn_edit.setOnAction((ActionEvent event) -> {
             try {
                 methodInterceptor.invokeMethod("handleEditService", event);
@@ -95,7 +96,6 @@ public class ServiceDetailController extends BaseController {
             }
         });
 
-
         btn_delete_service_item.setOnAction((ActionEvent event) -> {
             try {
                 methodInterceptor.invokeMethod("handleDeleteServiceItem", event);
@@ -104,9 +104,10 @@ public class ServiceDetailController extends BaseController {
             }
         });
 
-
         tbl_service_item.setOnMouseClicked(event -> {
-            showServiceItemDetail();
+            if (event.getClickCount() == 2) { // Kiểm tra nếu nhấp đúp
+                showServiceItemDetail();
+            }
         });
     }
 
@@ -125,18 +126,23 @@ public class ServiceDetailController extends BaseController {
     public void handleDeleteServiceItem(ActionEvent event) {
         ServiceItem selectedServiceItem = tbl_service_item.getSelectionModel().getSelectedItem();
         if (selectedServiceItem != null) {
-            boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this staff?");
+            boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service item?");
             if (confirmed) {
+                // Lưu giá của ServiceItem trước khi xóa
+                double priceToRemove = selectedServiceItem.getPrice();
+
                 selectedServiceItem.setIsDeleted(EIsDeleted.INACTIVE);
                 serviceItemDAO.delete(selectedServiceItem);
                 tbl_service_item.getItems().remove(selectedServiceItem);
                 tbl_service_item.refresh();
 
                 // Cập nhật giá tổng sau khi xoá ServiceItem
-                lb_service_price.setText(String.format("%.2f", totalPrice(service)));
+                double newTotalPrice = totalPrice(service) - priceToRemove;
+                lb_service_price.setText(String.format("%.2f", newTotalPrice));
             }
         }
     }
+
 
     private void showServiceItemDetail() {
         ServiceItem selectedItem = tbl_service_item.getSelectionModel().getSelectedItem();
@@ -204,7 +210,6 @@ public class ServiceDetailController extends BaseController {
     }
 
     public double totalPrice(Service service) {
-        // Kiểm tra nếu service hoặc serviceItems null
         if (service == null || serviceItems == null) {
             return 0.0;
         }
@@ -274,6 +279,7 @@ public class ServiceDetailController extends BaseController {
 
     public void addServiceItem(ServiceItem item) {
         if (item.getService().getId() == service.getId()) {
+            serviceItems.add(item);
             refreshServiceItems();
             lb_service_price.setText(String.format("%.2f", totalPrice(service)));
         }
