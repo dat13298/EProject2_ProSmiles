@@ -1,10 +1,12 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.Model.Entity.ServiceItem;
 import com.aptech.eproject2_prosmiles.Repository.ServiceItemDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -33,6 +35,8 @@ public class AddEditServiceItemController extends BaseController {
 
     @FXML
     private TextField txt_add_service_item_quantity;
+    @FXML
+    private Label lb_add_service_item_notify;
 
     @FXML
     private TextField txt_add_service_item_unit;
@@ -60,12 +64,12 @@ public class AddEditServiceItemController extends BaseController {
     public void setDialogStage(Stage dialogStage) {
         this.dialogStage = dialogStage;
     }
+
     private ServiceDetailController serviceDetailController;
 
     public void setServiceDetailController(ServiceDetailController controller) {
         this.serviceDetailController = controller;
     }
-
 
 
     @FXML
@@ -82,7 +86,7 @@ public class AddEditServiceItemController extends BaseController {
         handleSaveServiceItem();
     }
 
-    public void setServiceItemTextField(){
+    public void setServiceItemTextField() {
         txt_add_service_item_name.setText(serviceItem.getName());
         txt_add_service_item_unit.setText(serviceItem.getUnit());
         txt_add_service_item_price.setText(String.valueOf(serviceItem.getPrice()));
@@ -91,41 +95,76 @@ public class AddEditServiceItemController extends BaseController {
     }
 
     private void handleSaveServiceItem() {
+        lb_add_service_item_notify.setText("");
+
         if (serviceItem == null) {
             serviceItem = new ServiceItem();
         }
+
         String name = txt_add_service_item_name.getText();
         String unit = txt_add_service_item_unit.getText();
         String quantity = txt_add_service_item_quantity.getText();
         String price = txt_add_service_item_price.getText();
         String description = txt_add_service_item_description.getText();
 
-        if (!name.isEmpty() && !unit.isEmpty() && !quantity.isEmpty() && !price.isEmpty() && !description.isEmpty()) {
+        if (name == null || name.trim().isEmpty()) {
+            lb_add_service_item_notify.setText("Name cannot be empty");
+            lb_add_service_item_notify.getStyleClass().add("error-label");
+            return;
+        }
+
+        if (unit == null || unit.trim().isEmpty()) {
+            lb_add_service_item_notify.setText("Unit cannot be empty");
+            lb_add_service_item_notify.getStyleClass().add("error-label");
+            return;
+        }
+
+        if (quantity == null || quantity.trim().isEmpty()) {
+            lb_add_service_item_notify.setText("Quantity cannot be empty");
+            lb_add_service_item_notify.getStyleClass().add("error-label");
+            return;
+        }
+
+        if (price == null || price.trim().isEmpty()) {
+            lb_add_service_item_notify.setText("Price cannot be empty");
+            lb_add_service_item_notify.getStyleClass().add("error-label");
+            return;
+        }
+
+        if (description == null || description.trim().isEmpty()) {
+            lb_add_service_item_notify.setText("Description cannot be empty");
+            lb_add_service_item_notify.getStyleClass().add("error-label");
+            return;
+        }
+
+        try {
             serviceItem.setService(selectedService);
             serviceItem.setName(name);
             serviceItem.setUnit(unit);
             serviceItem.setQuantity(Integer.parseInt(quantity));
             serviceItem.setPrice(Double.parseDouble(price));
             serviceItem.setDescription(description);
+
             ServiceItemDAO serviceItemDAO = new ServiceItemDAO();
-            if(isEditMode) {
+            if (isEditMode) {
                 serviceItemDAO.update(serviceItem);
                 serviceItemDetailController.setItemTextLabel(serviceItem);
-            }else {
+                DialogHelper.showNotificationDialog("Success", "Update new service item successfully");
+            } else {
                 serviceItemDAO.save(serviceItem);
+                DialogHelper.showNotificationDialog("Success", "Create new service item successfully");
+
             }
+
             serviceDetailController.addServiceItem(serviceItem);
             serviceDetailController.refreshServiceItems();
 
             Stage stage = (Stage) btn_add_save.getScene().getWindow();
             stage.close();
-        } else {
-            System.out.println("Please fill in all fields!");
+        } catch (Exception e) {
+            lb_add_service_item_notify.setText("Error: " + e.getMessage());
         }
     }
-
-
-
 
 
 }
