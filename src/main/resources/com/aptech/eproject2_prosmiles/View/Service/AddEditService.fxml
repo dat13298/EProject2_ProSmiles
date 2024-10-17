@@ -43,5 +43,6 @@
       </Button>
       <ImageView fx:id="imv_service_picture" fitHeight="150.0" fitWidth="200.0" layoutX="319.0" layoutY="47.0" pickOnBounds="true" preserveRatio="true" />
       <TextArea fx:id="txt_description_service" layoutX="105.0" layoutY="101.0" prefHeight="111.0" prefWidth="177.0" />
+      <Label fx:id="lb_add_service_notify" layoutX="327.0" layoutY="253.0" />
    </children>
 </AnchorPane>
