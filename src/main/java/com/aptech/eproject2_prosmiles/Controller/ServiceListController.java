@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Service;
 import com.aptech.eproject2_prosmiles.Model.Enum.EIsDeleted;
@@ -116,7 +117,7 @@ public class ServiceListController extends BaseController {
     @RolePermissionRequired(roles = {"Manager"})
     public void handleDelete(ActionEvent event) {
         if (selectedService != null) {
-            boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service?");
+            boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service?");
             if (confirmed) {
                 selectedService.setIsDeleted(EIsDeleted.INACTIVE);
                 ServiceDAO serviceDAO = new ServiceDAO();
@@ -191,13 +192,11 @@ public class ServiceListController extends BaseController {
     }
 
     private void highlightSelectedService(VBox selectedVBox) {
-        // Xóa highlight của các dịch vụ khác
         for (var node : serviceGrid.getChildren()) {
             if (node instanceof VBox) {
                 node.getStyleClass().remove("selected-service");
             }
         }
-        // Thêm highlight cho VBox được chọn
         selectedVBox.getStyleClass().add("selected-service");
     }
 
