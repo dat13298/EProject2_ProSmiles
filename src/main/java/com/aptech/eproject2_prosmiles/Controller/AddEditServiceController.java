@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.Model.Entity.Service;
 import com.aptech.eproject2_prosmiles.Repository.ServiceDAO;
 import javafx.collections.ObservableList;
@@ -46,6 +47,9 @@ public class AddEditServiceController extends BaseController {
     @FXML
     private TextField txt_service_name;
 
+    @FXML
+    private Label lb_add_service_notify;
+
     private Stage dialogStage;
     private boolean saved = false;
     private Service service;
@@ -85,32 +89,43 @@ public class AddEditServiceController extends BaseController {
 
     public void handleSelectFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Hình ảnh", "*.png", "*.jpg"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image", "*.png", "*.jpg"));
         selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             Image image = new Image(selectedFile.toURI().toString());
             imv_service_picture.setImage(image);
         }else{
             System.out.println("no image found");
-
         }
     }
 
     private void handleSave(ActionEvent event) {
-        if (service == null) {
-            System.out.println("Service is not initialized.");
+        lb_add_service_notify.setText("");
+
+        String serviceName = txt_service_name.getText();
+        if (serviceName == null || serviceName.trim().isEmpty()) {
+            lb_add_service_notify.setText("Name cannot be empty");
+            lb_add_service_notify.getStyleClass().add("error-label");
             return;
         }
 
-        if (selectedFile != null || isEditMode) {
-            String serviceName = txt_service_name.getText();
-            if (serviceName != null && !serviceName.isEmpty()) {
-                service.setName(serviceName);
-            }
-            String serviceDescription = txt_description_service.getText();
-            if (serviceDescription != null && !serviceDescription.isEmpty()) {
-                service.setDescription(serviceDescription);
-            }
+        String serviceDescription = txt_description_service.getText();
+        if (serviceDescription == null || serviceDescription.trim().isEmpty()) {
+            lb_add_service_notify.setText("Description cannot be empty");
+            lb_add_service_notify.getStyleClass().add("error-label");
+            return;
+        }
+
+        if (selectedFile == null && !isEditMode) {
+            lb_add_service_notify.setText("Please upload an image.");
+            lb_add_service_notify.getStyleClass().add("error-label");
+            return;
+        }
+
+        try {
+            service.setName(serviceName);
+            service.setDescription(serviceDescription);
+
             if (selectedFile != null) {
                 File savedFile = saveImageToDirectory(selectedFile);
                 String imagePath = savedFile.getName();
@@ -119,27 +134,33 @@ public class AddEditServiceController extends BaseController {
 
             if (!isEditMode) {
                 serviceDAO.save(service);
+                DialogHelper.showNotificationDialog("Success", "Create new service successfully");
             } else {
                 serviceDAO.update(service);
+                DialogHelper.showNotificationDialog("Success", "Edit service successfully");
             }
+
             saved = true;
 
             if (dialogStage != null) {
                 dialogStage.close();
             }
+
             if (serviceDetailController != null) {
                 serviceDetailController.refreshServiceDetails(service);
             }
 
+        } catch (Exception e) {
+            lb_add_service_notify.setText("Error: " + e.getMessage());
         }
     }
+
+
 
     private void refreshServiceList() {
         ObservableList<Service> updatedServices = serviceDAO.getAll();
         cmb_belong_service.getItems().setAll(updatedServices);
     }
-
-
 
     public void initializeForm() {
         if (service != null) {

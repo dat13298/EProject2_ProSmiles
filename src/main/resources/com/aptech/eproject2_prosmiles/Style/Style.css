@@ -211,5 +211,18 @@
     -fx-background-color: rgba(0, 0, 0, 0.1); /* Màu nền mờ hơn */
 }
 
+/* Style cho thông báo lỗi */
+.error-label {
+    -fx-text-fill: red; /* Màu chữ đỏ */
+    -fx-font-weight: bold; /* In đậm chữ */
+}
+
+/* Style cho thông báo lỗi hover */
+.error-label:hover {
+    -fx-text-fill: #ff4d4d; /* Thay đổi màu khi hover */
+}
+
+
+
 
 

@@ -74,8 +74,7 @@ public class ServiceItemDetailController extends BaseController {
             if (dialogStage != null) {
                 dialogStage.close();
             }
-        })
-        ;
+        });
 
         btn_edit.setOnAction((ActionEvent event) -> {
             try {

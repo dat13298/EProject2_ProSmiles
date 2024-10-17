@@ -1,5 +1,6 @@
 package com.aptech.eproject2_prosmiles.Controller;
 
+import com.aptech.eproject2_prosmiles.Global.DialogHelper;
 import com.aptech.eproject2_prosmiles.Model.Annotation.RolePermissionRequired;
 import com.aptech.eproject2_prosmiles.Model.Entity.Service;
 import com.aptech.eproject2_prosmiles.Model.Entity.ServiceItem;
@@ -105,7 +106,7 @@ public class ServiceDetailController extends BaseController {
         });
 
         tbl_service_item.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) { // Kiểm tra nếu nhấp đúp
+            if (event.getClickCount() == 2) {
                 showServiceItemDetail();
             }
         });
@@ -126,9 +127,8 @@ public class ServiceDetailController extends BaseController {
     public void handleDeleteServiceItem(ActionEvent event) {
         ServiceItem selectedServiceItem = tbl_service_item.getSelectionModel().getSelectedItem();
         if (selectedServiceItem != null) {
-            boolean confirmed = showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service item?");
+            boolean confirmed = DialogHelper.showConfirmationDialog("Confirm for delete", "Do you want to DELETE this service item?");
             if (confirmed) {
-                // Lưu giá của ServiceItem trước khi xóa
                 double priceToRemove = selectedServiceItem.getPrice();
 
                 selectedServiceItem.setIsDeleted(EIsDeleted.INACTIVE);
@@ -136,7 +136,6 @@ public class ServiceDetailController extends BaseController {
                 tbl_service_item.getItems().remove(selectedServiceItem);
                 tbl_service_item.refresh();
 
-                // Cập nhật giá tổng sau khi xoá ServiceItem
                 double newTotalPrice = totalPrice(service) - priceToRemove;
                 lb_service_price.setText(String.format("%.2f", newTotalPrice));
             }
