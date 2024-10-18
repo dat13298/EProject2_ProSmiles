@@ -125,12 +125,37 @@ public class AddEditServiceItemController extends BaseController {
             return;
         }
 
+        try {
+            int quantityValue = Integer.parseInt(quantity);
+            if (quantityValue <= 0) {
+                lb_add_service_item_notify.setText("Quantity must be greater than 0");
+                lb_add_service_item_notify.getStyleClass().add("error-label");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            lb_add_service_item_notify.setText("Quantity must be a valid number");
+            lb_add_service_item_notify.getStyleClass().add("error-label");
+            return;
+        }
+
         if (price == null || price.trim().isEmpty()) {
             lb_add_service_item_notify.setText("Price cannot be empty");
             lb_add_service_item_notify.getStyleClass().add("error-label");
             return;
         }
 
+        try {
+            double priceValue = Double.parseDouble(price);
+            if (priceValue <= 0) {
+                lb_add_service_item_notify.setText("Price must be greater than 0");
+                lb_add_service_item_notify.getStyleClass().add("error-label");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            lb_add_service_item_notify.setText("Price must be a valid number");
+            lb_add_service_item_notify.getStyleClass().add("error-label");
+            return;
+        }
         if (description == null || description.trim().isEmpty()) {
             lb_add_service_item_notify.setText("Description cannot be empty");
             lb_add_service_item_notify.getStyleClass().add("error-label");
