@@ -27,10 +27,22 @@ public class StaffDAO implements DentalRepository<Staff> {
                 throw new SQLException("Failed to connect Database");
             }
 
-            String sql = "SELECT s.id, s.password, s.first_name, s.last_name, s.email, s.phone, s.otp " +
-                    "FROM staff s WHERE s.email = ?";
+            String sql = "";
+            if (staff.getPhone() != null) {
+                sql = "SELECT s.id, s.password, s.first_name, s.last_name, s.email, s.phone, s.otp " +
+                        "FROM staff s WHERE s.phone = ?";
+            }
+            if (staff.getEmail() != null) {
+                sql = "SELECT s.id, s.password, s.first_name, s.last_name, s.email, s.phone, s.otp " +
+                        "FROM staff s WHERE s.email = ?";
+            }
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, staff.getEmail());
+            if (staff.getPhone() != null) {
+                pstmt.setString(1, staff.getPhone());
+            }
+            if (staff.getEmail() != null) {
+                pstmt.setString(1, staff.getEmail());
+            }
 
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
