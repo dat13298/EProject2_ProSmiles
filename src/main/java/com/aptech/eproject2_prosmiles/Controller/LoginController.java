@@ -74,7 +74,7 @@ public class LoginController implements Initializable {
 
                 try {
 
-                    cloneRegister();
+//                    cloneRegister();
 
                     Staff staffLogin = new Staff();
                     if(Validation.isEmailValid(username)){
